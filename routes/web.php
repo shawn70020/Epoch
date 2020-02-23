@@ -11,7 +11,4 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/eeee', 'ArticleController@index')->where('any', '.*');
+Route::get('/{any}', 'SpaController@index')->where('any', '.*');
