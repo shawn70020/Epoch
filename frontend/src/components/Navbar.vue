@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">VStore</a>
+        <a class="navbar-brand" href="#">VueStore</a>
         <button
             class="navbar-toggler"
             type="button"
