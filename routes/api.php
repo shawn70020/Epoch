@@ -18,3 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::post('/signin', 'UserController@store')->where('any', '.*');
 Route::post('/login', 'UserController@checkLogin')->where('any', '.*');
+Route::post('/products/imageupload', 'ProductsController@imageUpload')->where('any', '.*');
+Route::post('/products/upload', 'ProductsController@createProducts')->where('any', '.*');
+Route::get('/products/men', 'ProductsController@getProducts')->where('any', '.*');

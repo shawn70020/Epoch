@@ -6,6 +6,9 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Admin from '../views/Admin.vue'
 import Dashboard from "../components/Dashboard"
+import Products from "../views/Products"
+import Man from "../views/Man"
+import Item from "../views/Item"
 
 Vue.use(VueRouter)
 
@@ -21,7 +24,7 @@ const routes = [{
     {
         path: '/index',
         name: 'Index',
-        component: Index
+        component: Index,
     },
     {
         path: '/login',
@@ -32,6 +35,16 @@ const routes = [{
         path: '/register',
         name: 'Register',
         component: Register
+    },
+    {
+        path: '/man',
+        name: 'Man',
+        component: Man
+    },
+    {
+        path: '/item',
+        name: 'Item',
+        component: Item
     },
     {
         path: '/admin',
@@ -49,17 +62,11 @@ const routes = [{
             {
                 path: 'products',
                 name: 'Products',
-                component: Login,
+                component: Products,
                 meta: {
                     requiresAuth: true
                 },
             },
-            //   {
-            //     path: 'orders',
-            //     name: 'Orders',
-            //     component: Orders,
-            //     meta: { requiresAuth: true },
-            //   },
         ],
     },
 ]

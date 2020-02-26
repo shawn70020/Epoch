@@ -38,21 +38,21 @@ class UserController extends Controller
      * 會員註冊
      * @return json
      */
-    public function store(Request $request)
+    public function store(Request $_oRequest)
     {
         ## 檢查會員是否重複
-        $aResult = User::select('email')->where('email', $request->input('email'))->get();
+        $aResult = User::select('email')->where('email', $_oRequest->input('email'))->get();
         if (!collect($aResult)->isEmpty()) {
             return response()->json(['result' => false]);
         };
 
         ## 新增會員
         $aArray = [
-            'email' => $request->input('email'),
-            'passwd' =>  Hash::make($request->input('password')),
-            'name' => $request->input('name'),
-            'birthday' => $request->input('date'),
-            'sex' =>  $request->input('sex'),
+            'email' => $_oRequest->input('email'),
+            'passwd' =>  Hash::make($_oRequest->input('password')),
+            'name' => $_oRequest->input('name'),
+            'birthday' => $_oRequest->input('date'),
+            'sex' =>  $_oRequest->input('sex'),
         ];
 
         User::create($aArray);
@@ -63,9 +63,9 @@ class UserController extends Controller
      * 登入驗證
      * @return json
      */
-    public function checkLogin(Request $request)
+    public function checkLogin(Request $_oRequest)
     {
-        $email = $request->input('email');
+        $email = $_oRequest->input('email');
         $aResult = User::where('email', $email)->get();
 
         ## 查無此會員
@@ -75,7 +75,7 @@ class UserController extends Controller
 
         ## 會員密碼錯誤
         $sCheckPasswd  = $aResult[0]['passwd'];
-        if ((!Hash::check($request->input('password'), $sCheckPasswd))) {
+        if ((!Hash::check($_oRequest->input('password'), $sCheckPasswd))) {
             return response()->json(['result' => false]);
         };
 
