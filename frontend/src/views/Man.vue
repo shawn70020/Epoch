@@ -57,7 +57,13 @@
             </div>
         </div>
         <div class="product">
-                <div v-for="item in products" :key="item.id" class="item">
+            <div v-for="item in products" :key="item.id" class="item">
+                <router-link
+                    :to="{
+                        name: 'Item',
+                        params: { pid: item.id }
+                    }"
+                >
                     <img
                         :src="'data:image/png;base64,' + item.image"
                         class="img-fluid"
@@ -67,8 +73,9 @@
                         <h5>{{ item.name }}</h5>
                         <h4>NT ${{ item.price }}</h4>
                     </div>
-                </div>
+                </router-link>
             </div>
+        </div>
     </div>
 </template>
 <script>
@@ -105,7 +112,6 @@ export default {
             axios
                 .get("/api/products/men")
                 .then(res => {
-                    console.log(456);
                     this.products = res.data.data;
                 })
                 .catch(err => {
@@ -213,44 +219,49 @@ $color: #1010c4;
     }
 }
 .product {
-        width: 1300px;
-        display: flex;
-        flex-wrap: wrap;
-        margin: auto;
-        .item {
-            position: relative;
-            padding: 10px;
-            margin-top: 25px;
-            img {
-                width: 300px;
-                height: 404px;
+    width: 1300px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+    
+    .item {
+        position: relative;
+        padding: 10px;
+        margin-top: 25px;
+        a{
+            text-decoration: none;
+        }
+        img {
+            width: 300px;
+            height: 404px;
+        }
+        .heart {
+            width: 36px;
+            height: 36px;
+            text-align: center;
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            bottom: 100px;
+            right: 20px;
+            .far {
+                line-height: 36px;
+                width: 20px;
+                height: 18px;
+                color: #2d2d2d;
             }
-            .heart {
-                width: 36px;
-                height: 36px;
-                text-align: center;
-                position: absolute;
-                background: #fff;
-                border-radius: 50%;
-                bottom: 100px;
-                right: 20px;
-                .far {
-                    line-height: 36px;
-                    width: 20px;
-                    height: 18px;
-                    color: #2d2d2d;
-                }
+        }
+        .item-txt {
+            margin-top: 10px;
+            h5 {
+                font-size: 16px;
+                color: #000000;
             }
-            .item-txt {
-                margin-top: 10px;
-                h5 {
-                    font-size: 16px;
-                }
-                h4 {
-                    font-size: 18px;
-                    color: #2d2d2d;
-                }
+            h4 {
+                font-size: 18px;
+                color: #2d2d2d;
             }
         }
     }
+}
 </style>

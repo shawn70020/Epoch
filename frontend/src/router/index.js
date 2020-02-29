@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import Index from '../views/Index.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
@@ -18,18 +17,16 @@ const routes = [{
     },
     {
         path: '/',
-        name: 'Home',
-        component: Home
-    },
-    {
-        path: '/index',
         name: 'Index',
         component: Index,
     },
     {
         path: '/login',
         name: 'Login',
-        component: Login
+        component: Login,
+        meta: {
+            requiresAuth: true
+        },
     },
     {
         path: '/register',
@@ -39,19 +36,24 @@ const routes = [{
     {
         path: '/man',
         name: 'Man',
-        component: Man
+        component: Man,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
-        path: '/item',
+        path: '/item/:pid',
         name: 'Item',
-        component: Item
+        component: Item,
+        meta: {
+            requiresAuth: true
+        },
     },
     {
         path: '/admin',
         name: 'Admin',
         component: Admin,
-        children: [
-            {
+        children: [{
                 path: 'dashboard',
                 name: 'dashboard',
                 component: Dashboard,

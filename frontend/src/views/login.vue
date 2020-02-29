@@ -82,9 +82,10 @@ export default {
                 .then(res => {
                     vm.isLoading = false;
                     if (res.data.result === true) {
-                        this.$cookie.set("token", res.data.token, 1);
+                        localStorage.setItem("token", res.data.token);
+                        this.$store.state.isLogin = true;
                         if (res.data.level === "member") {
-                            vm.$router.push("/index");
+                            vm.$router.push("/man");
                         } else {
                             vm.$router.push("/admin");
                         }
@@ -168,7 +169,7 @@ export default {
             .msg {
                 h5 {
                     font-size: 15px;
-                    font-family: 'Roboto Mono';
+                    font-family: "Roboto Mono";
                 }
             }
         }

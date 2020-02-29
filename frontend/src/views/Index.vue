@@ -159,7 +159,7 @@ export default {
     }),
     created() {
         this.getUser();
-        console.log(this.$store.state);
+        // console.log(this.$store.state);
     },
     methods: {
         // 映射 vuex 对象上的方法

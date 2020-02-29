@@ -1,7 +1,7 @@
 <template>
     <div class="wrap">
         <Navbar></Navbar>
-          <div class="banner">
+        <div class="banner">
             <a href="#">
                 <div class="shop-link">
                     WOMEN
@@ -14,15 +14,62 @@
                 </div>
             </a>
         </div>
-         <div class="navs">
+        <div class="navs">
             <ol class="bread">
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Men</a></li>
                 <li><a href="#">New In</a></li>
+                <li><a href="#">New In: Clothing</a></li>
             </ol>
         </div>
         <div class="container">
-            
+            <div class="top">
+                <div class="left-img">
+                    <img
+                        :src="'data:image/png;base64,' + products.image"
+                        class="img-fluid"
+                    />
+                </div>
+                <div class="right-info">
+                    <h3>{{ products.name }}</h3>
+                    <h4>NT${{ products.price }}</h4>
+                    <h5>COLOUR: White</h5>
+                    <h5>SIZE : {{ value }}</h5>
+                    <el-select
+                        v-model="value"
+                        placeholder="Please Select"
+                        class="el-select"
+                    >
+                        <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        >
+                        </el-option>
+                    </el-select>
+                    <button type="button" class="btn" @click="addCart">
+                        ADD TO BAG
+                    </button>
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="bottom-info">
+                    <h3>PRODUCT DETAILS</h3>
+                    <h5>{{ products.content }}</h5>
+                    <p></p>
+                </div>
+                <div class="bottom-info">
+                    <h3>ABOUT ME</h3>
+                    <h5>{{ products.detail }}</h5>
+                    <p></p>
+                </div>
+                <div class="bottom-info">
+                    <h3>PRODUCT CODE|CATEGORY</h3>
+                    <h5>{{ products.id }}|{{ products.class }}</h5>
+                    <p></p>
+                </div>
+            </div>
         </div>
         <Carousel></Carousel>
         <div class="social">
@@ -106,36 +153,81 @@
 </template>
 
 <script>
+import axios from "axios";
 import Navbar from "../components/Navbar";
 import Carousel from "../components/Carousel";
-import { mapState, mapActions } from "vuex";
 export default {
-    name: "Index",
+    name: "Item",
+    data() {
+        return {
+            pid: this.$route.params.pid,
+            products: [],
+            options: [
+                {
+                    value: "XS",
+                    label: "XS - (86-91cm)"
+                },
+                {
+                    value: "S",
+                    label: "S - (91-96cm)"
+                },
+                {
+                    value: "M",
+                    label: "M - (96-101cm)"
+                },
+                {
+                    value: "L",
+                    label: "L - (101-106cm)"
+                },
+                {
+                    value: "XL",
+                    label: "XL - (106-111cm)"
+                }
+            ],
+            value: ""
+        };
+    },
     components: {
         Navbar,
         Carousel
     },
-    computed: mapState({
-        user: state => state.users
-    }),
     created() {
-        this.getUser();
-        console.log(this.$store.state);
+        this.getProduct(this.pid);
     },
     methods: {
-        // 映射 vuex 对象上的方法
-        ...mapActions(["getUser"])
+        getProduct(id) {
+            axios
+                .get(`/api/products/men/item/${id}`)
+                .then(res => {
+                    this.products = res.data.data;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        addCart() {
+            axios
+                .post("/api/user/addcart", {
+                    uid: this.$store.state.info.id,
+                    pid: this.pid
+                })
+                .then(res => {
+                    console.log(res);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     }
 };
 </script>
 <style lang="scss" scoped>
-* {
-    list-style: none;
-}
+@import url("https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap");
+$color: #1010c4;
+$color1: #1ca753;
 .wrap {
     height: 100vh;
 }
-$color: #1010c4;
 .banner {
     display: flex;
     height: 50px;
@@ -167,7 +259,6 @@ $color: #1010c4;
 .navs {
     background: #fff;
     height: 50px;
-    border-bottom: 1px solid #ccc;
 }
 .bread {
     display: flex;
@@ -202,82 +293,65 @@ $color: #1010c4;
     }
 }
 .container {
-    .ad {
-        width: 100%;
-        height: 600px;
-        background-image: url(../assets/image/ads.jpg);
-        background-repeat: no-repeat;
-        background-size: cover;
-        margin-top: 40px;
+    .top {
         display: flex;
-        flex-direction: column;
+        margin-top: 30px;
         justify-content: center;
-        align-items: center;
-        .title {
-            font-family: "Krona One", sans-serif;
-            color: #fff;
-            font-size: 64px;
-        }
-        a {
-            text-decoration: none;
-            background: #fff;
-            color: #000;
-            transition: 0.6s;
-            &:hover {
-                background: #000;
-                color: #fff;
+        .left-img {
+            img {
+                width: 512px;
+                height: 654px;
             }
-            .shop-link {
-                font-family: "Krona One", sans-serif;
-                width: 180px;
-                height: 44px;
+        }
+        .right-info {
+            padding-top: 30px;
+            padding-left: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            font-family: "Open Sans Condensed";
+            h3 {
+                font-size: 24px;
+            }
+            h4 {
+                font-size: 26px;
+                margin-top: 10px;
+            }
+            h5 {
+                font-size: 20px;
+                margin-top: 10px;
+            }
+            .el-select {
+                margin-top: 20px;
+            }
+            .btn {
+                margin-top: 30px;
+                width: 240px;
+                height: 45px;
+                background: darken($color1, 10%);
+                padding-top: 10px;
+                color: #fff;
                 font-size: 18px;
-                line-height: 44px;
-                text-align: center;
-                border: solid 2px #000;
             }
         }
     }
-    .row {
-        .col-6 {
-            text-align: center;
-            padding-bottom: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            h4 {
-                font-family: "Sriracha", cursive;
+    .bottom {
+        display: flex;
+        margin-top: 50px;
+        justify-content: center;
+        margin-bottom: 100px;
+        .bottom-info {
+            width: 25%;
+            font-family: "Open Sans Condensed";
+            padding-left: 30px;
+            h3 {
+                color: #999;
+                font-size: 16px;
                 font-weight: bold;
-                margin-top: 15px;
             }
             h5 {
+                color: #2d2d2d;
                 font-size: 18px;
-            }
-            img {
-                width: 500px;
-                height: 640px;
-            }
-            a {
-                text-decoration: none;
-                background: #fff;
-                color: #000;
-                transition: 0.6s;
-                margin-top: 8px;
-                &:hover {
-                    background: #000;
-                    color: #fff;
-                }
-                .shop-link {
-                    font-family: "Krona One", sans-serif;
-                    width: 180px;
-                    height: 44px;
-                    font-size: 12px;
-                    font-weight: bold;
-                    line-height: 44px;
-                    text-align: center;
-                    border: solid 2px #000;
-                }
             }
         }
     }
