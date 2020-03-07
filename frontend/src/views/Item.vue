@@ -32,7 +32,7 @@
                 </div>
                 <div class="right-info">
                     <h3>{{ products.name }}</h3>
-                    <h4>NT${{ products.price }}</h4>
+                    <h4>NT {{ products.price | currency }}</h4>
                     <h5>COLOUR: White</h5>
                     <h5>SIZE : {{ value }}</h5>
                     <el-select
@@ -48,6 +48,14 @@
                         >
                         </el-option>
                     </el-select>
+                    <div class="error" :style="{ opacity: showError }">
+                        <div class="msg">
+                            <h5>
+                                Please select from the available colour and size
+                                options
+                            </h5>
+                        </div>
+                    </div>
                     <button type="button" class="btn" @click="addCart">
                         ADD TO BAG
                     </button>
@@ -65,8 +73,8 @@
                     <p></p>
                 </div>
                 <div class="bottom-info">
-                    <h3>PRODUCT CODE|CATEGORY</h3>
-                    <h5>{{ products.id }}|{{ products.class }}</h5>
+                    <h3>PRODUCT CODE | CATEGORY</h3>
+                    <h5>{{ products.id }} | {{ products.class }}</h5>
                     <p></p>
                 </div>
             </div>
@@ -146,8 +154,8 @@
                 <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
             </div>
         </div>
-        <div class="vuestore">
-            <h5>VUESTORE</h5>
+        <div class="epoch">
+            <h5>Epoch</h5>
         </div>
     </div>
 </template>
@@ -160,6 +168,7 @@ export default {
     name: "Item",
     data() {
         return {
+            showError: 0,
             pid: this.$route.params.pid,
             products: [],
             options: [
@@ -206,18 +215,48 @@ export default {
                 });
         },
         addCart() {
+            if (this.value == "") {
+                this.showError = 1;
+            } else {
+                axios
+                    .post("/api/user/addcart", {
+                        uid: this.$store.state.info.id,
+                        pid: this.pid
+                    })
+                    .then(res => {
+                        console.log(res);
+                        this.$store.commit('updateCart',parseInt(this.pid));
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
+        },
+         getUserCart() {
+            let aCart = this.$store.state.cart;
+            let i;
+            let arr = [];
+            for (i = 0; i < aCart.length; i++) {
+                arr.push(aCart[i].pid);
+            }
             axios
-                .post("/api/user/addcart", {
-                    uid: this.$store.state.info.id,
-                    pid: this.pid
+                .post("/api/user/getusercart", {
+                    post: arr
                 })
                 .then(res => {
-                    console.log(res);
+                    this.carts = res.data.data;
+                    for (i = 0; i < aCart.length; i++) {
+                        this.carts[i].item = this.cart[i].num;
+                        this.items = aCart.length;
+                        this.total =
+                            this.total +
+                            this.carts[i].item * this.carts[i].price;
+                    }
                 })
                 .catch(err => {
                     console.log(err);
                 });
-        }
+        },
     }
 };
 </script>
@@ -298,6 +337,7 @@ $color1: #1ca753;
         margin-top: 30px;
         justify-content: center;
         .left-img {
+            padding-right: 67px;
             img {
                 width: 512px;
                 height: 654px;
@@ -309,7 +349,7 @@ $color1: #1ca753;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            font-family: "Open Sans Condensed";
+            font-family: "Cormorant SC";
             h3 {
                 font-size: 24px;
             }
@@ -333,6 +373,18 @@ $color1: #1ca753;
                 color: #fff;
                 font-size: 18px;
             }
+            .error {
+                width: 330px;
+                height: 60px;
+                background: #fae7ec;
+                color: #2d2d2d;
+                margin-top: 20px;
+                h5 {
+                    font-size: 16px;
+                    padding-left: 15px;
+                    padding-right: 5px;
+                }
+            }
         }
     }
     .bottom {
@@ -341,13 +393,14 @@ $color1: #1ca753;
         justify-content: center;
         margin-bottom: 100px;
         .bottom-info {
-            width: 25%;
-            font-family: "Open Sans Condensed";
+            width: 30%;
+            font-family: "Lato";
             padding-left: 30px;
             h3 {
                 color: #999;
                 font-size: 16px;
                 font-weight: bold;
+                padding-bottom: 10px;
             }
             h5 {
                 color: #2d2d2d;
@@ -445,12 +498,12 @@ $color1: #1ca753;
         }
     }
 }
-.vuestore {
+.epoch {
     padding-left: 21%;
     height: 45px;
     h5 {
-        font-size: 18px;
-        font-family: "Krona One", sans-serif;
+        font-size:30px;
+        font-family: 'IM Fell Great Primer SC' ;
         line-height: 45px;
     }
 }

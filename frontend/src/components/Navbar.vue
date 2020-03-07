@@ -1,85 +1,83 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">VueStore</a>
-        <button
-            class="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-        >
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#"
-                        >Home <span class="sr-only">(current)</span></a
-                    >
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" @click="signout">Sign In</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a
-                        class="nav-link dropdown-toggle"
-                        href="#"
-                        id="navbarDropdownMenuLink"
-                        role="button"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                    >
-                        Top Trand
+    <div>
+        <header class="main-header">
+            <div class="nav">
+                <nav class="main-nav">
+                    <a href="#" class="logo">
+                        <h5>Epoch</h5>
                     </a>
-                    <div
-                        class="dropdown-menu"
-                        aria-labelledby="navbarDropdownMenuLink"
-                    >
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#"
-                            >Something else here</a
-                        >
-                    </div>
-                </li>
-                <li class="nav-item cart">
-                    <a class="nav-link" href="#"
-                        ><i class="fas fa-shopping-bag"></i
-                    ></a>
-                    <div class="dot">{{ items }}</div>
-                    <div class="card-wrap">
-                        <div class="triangle-1"></div>
-                        <div class="top">
-                            <h5>My Bag, {{ items }} items</h5>
+                    <a href="#" class="woman">WOMEN</a>
+                    <a href="#" class="men">MEN</a>
+                </nav>
+                <form action="" class="header-search">
+                    <input
+                        type="search"
+                        name=""
+                        id=""
+                        placeholder="Search for items,style and dream"
+                    />
+                    <button><i class="fas fa-search"></i></button>
+                </form>
+                <nav class="side-nav">
+                    <li>
+                        <a href="#"><i class="icon far fa-user"></i></a>
+                    </li>
+                    <li>
+                        <a href="#" @click="signout"
+                            ><i class="icon far fa-heart"></i
+                        ></a>
+                    </li>
+                    <li class="cart" v-on:mouseover="mouseover">
+                        <a href="#"><i class="icon fas fa-shopping-bag"></i></a>
+                        <div class="dot" :style="{ display: showDot }">
+                            {{ items }}
                         </div>
-                        <div class="cart-item">
-                            <div
-                                class="product"
-                                v-for="item in carts"
-                                :key="item.id"
-                            >
-                                <img
-                                    :src="'data:image/png;base64,' + item.image"
-                                    class="img-fluid"
-                                />
-                                <div class="product-info">
-                                    <h3>NT$ {{ item.price }}</h3>
-                                    <h4>{{ item.name }}</h4>
-                                    <h4>QTY:{{ item.item }}</h4>
-                                </div>
-                            </div>
+                    </li>
+                </nav>
+            </div>
+        </header>
+        <div class="card-wrap" :class="{ rollon: isA, rolldown: isB }">
+            <div class="top">
+                <h5>My Bag, {{ items }} items</h5>
+                <i class="fas fa-times" @click="closeItem"></i>
+            </div>
+            <div class="empty-bag" :style="{ display: toggle.empty }">
+                <div class="wrap">
+                    <i class="icon fas fa-shopping-bag"></i>
+                    <h4>Your bag is empty</h4>
+                    <h5>
+                        Items remain in your bag for 1 day, and then they’re
+                        moved to your Saved Items.
+                    </h5>
+                </div>
+            </div>
+            <div class="cart-item" :style="{ display: toggle.bag }">
+                <div class="cart-wrap">
+                    <div class="product" v-for="item in carts" :key="item.id">
+                        <img
+                            :src="'data:image/png;base64,' + item.image"
+                            class="img-fluid"
+                        />
+                        <div class="product-info">
+                            <h3>NT {{ item.price | currency }}</h3>
+                            <h4>{{ item.name }}</h4>
+                            <h4>QTY:{{ item.item }}</h4>
                         </div>
                     </div>
-                </li>
-            </ul>
+                </div>
+                <div class="total">
+                    <h5>Sub-total</h5>
+                    <h5>NT {{ total | currency }}</h5>
+                </div>
+                <div class="btn-group">
+                    <router-link to="/user/bag">
+                        <button class="bt btn-bag">VIEW BAG</button>
+                    </router-link>
+                    <button class="bt btn-check">CHECKOUT</button>
+                </div>
+            </div>
         </div>
-    </nav>
+    </div>
 </template>
 
 <script>
@@ -91,97 +89,252 @@ export default {
             uid: this.$store.state.info,
             cart: this.$store.state.cart,
             carts: [],
-            items: ""
+            items: "",
+            total: 0,
+            isA: false,
+            isB: false,
+            showDot: "block",
+            toggle: {
+                empty: "none",
+                bag: "block"
+            }
         };
     },
-    created() {
-        this.getUserCart();
+    computed: {
+        getCart() {
+            return this.$store.state.cart;
+        }
+    },
+    watch: {
+        getCart: {
+            handler(aCart) {
+                if (this.$store.state.isEmpty === false) {
+                    this.showDot = "none";
+                    this.toggle.empty = "block";
+                    this.toggle.bag = "none";
+                } else {
+                    this.showDot = "block";
+                    this.toggle.empty = "none";
+                    this.toggle.bag = "block";
+                    this.carts = [];
+                    let i;
+                    let arr = [];
+                    for (i = 0; i < aCart.length; i++) {
+                        arr.push(aCart[i].pid);
+                    }
+                    axios
+                        .post("/api/user/getusercart", {
+                            post: arr
+                        })
+                        .then(res => {
+                            this.carts = res.data.data;
+                            for (i = 0; i < aCart.length; i++) {
+                                this.carts[i].item = aCart[i].num;
+                                this.items = aCart.length;
+                                this.total =
+                                    this.total +
+                                    this.carts[i].item * this.carts[i].price;
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                }
+            },
+            immediate: true,
+            deep: true
+        }
     },
     methods: {
-        getUserCart() {
-            let aCart = this.$store.state.cart;
-            let i;
-            let arr = [];
-            for (i = 0; i < aCart.length; i++) {
-                arr.push(aCart[i].pid);
-            }
-            axios
-                .post("/api/user/getusercart", {
-                    post: arr
-                })
-                .then(res => {
-                    this.carts = res.data.data;
-                    for (i = 0; i < aCart.length; i++) {
-                        console.log(123);
-                        this.carts[i].item = this.cart[i].num;
-                        this.items = aCart.length;
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        },
         signout() {
             localStorage.removeItem("token");
             localStorage.removeItem("isLogin");
             this.$router.push("/login");
+        },
+        closeItem() {
+            this.isB = false;
+            this.isA = true;
+        },
+        mouseover() {
+            this.isB = true;
         }
     }
 };
 </script>
-<style lang="scss">
-nav{
+
+<style lang="scss" scoped>
+$color1: #1ca753;
+.main-header {
+    height: 60px;
+    width: 100%;
+    background: #2d2d2d;
+    font-family: "Krona+One";
     position: relative;
-    z-index: 99;
+    z-index: 3;
+    a {
+        text-decoration: none;
+    }
+    .nav {
+        display: flex;
+        justify-content: center;
+        .main-nav {
+            display: flex;
+            text-align: center;
+            align-items: center;
+            .logo {
+                color: #fff;
+                margin-right: 30px;
+                h5 {
+                    font-size: 40px;
+                    font-family: "IM Fell Great Primer SC";
+                }
+            }
+            .woman,
+            .men {
+                color: #eee;
+                width: 114px;
+                height: 60px;
+                font-size: 18px;
+                line-height: 60px;
+                border-right: 1px solid #666;
+                // font-family: 'Oxanium' ;
+                font-family: "IM Fell Great Primer SC";
+            }
+            .woman {
+                border-left: 1px solid #666;
+            }
+        }
+        .header-search {
+            display: flex;
+            width: 40%;
+            height: 40px;
+            align-items: center;
+            padding-top: 18px;
+            padding-left: 30px;
+            button,
+            input {
+                border: none;
+                background-color: #fff;
+                padding: 5px 10px;
+                &:focus {
+                    //focus藍框移除
+                    outline: none;
+                }
+            }
+            button {
+                //左上 右上 右下 左下
+                border-radius: 0 200px 200px 0;
+            }
+            input {
+                width: 100%;
+                border-radius: 200px 0 0 200px;
+            }
+        }
+        .side-nav {
+            display: flex;
+            padding-left: 20px;
+            width: 10%;
+            li {
+                .icon {
+                    color: #fff;
+                    width: 55px;
+                    height: 60px;
+                    line-height: 60px;
+                }
+            }
+        }
+    }
 }
 .cart {
     position: relative;
-    &:hover {
-        .card-wrap {
-            z-index:auto;
-            transition: 1.2s;
-            transform: translateY(650px);
-        }
-    }
     .dot {
         width: 15px;
         height: 15px;
-        background: #faf;
+        background: #0f4c81;
         font-size: 10px;
         text-align: center;
         border-radius: 50%;
         line-height: 15px;
         position: absolute;
-        right: 2px;
-        top: 10px;
-        color: #2d2d2d;
+        right: 30px;
+        top: 15px;
+        color: #fff;
+        font-family: "Sriracha";
     }
-    .card-wrap {
-        position: absolute;
-        top: -590px;
-        z-index: -2;
-        width: 320px;
+}
+.card-wrap {
+    position: absolute;
+    z-index: 2;
+    right: 40px;
+    top: -560px;
+    width: 320px;
+    background: #fff;
+    border: 1px solid rgb(219, 216, 216);
+    .empty-bag {
+        width: 100%;
+        height: 260px;
         background: #fff;
-        border: 1px solid rgb(219, 216, 216);
-        .triangle-1 {
-            position: absolute;
-            top: -32px;
-            left: 5px;
-            border-color: transparent transparent #ccc transparent;
-            border-style: solid solid solid solid;
-            border-width: 16px;
-            height: 0px;
-            width: 0px;
-        }
-        .top {
-            background: #ccc;
-            h5{
-                font-size: 20px;
-                font-family: "Sriracha";
-                padding: 5px;
+        display: flex;
+        .wrap {
+            width: 70%;
+            height: 330px;
+            background: #fff;
+            margin: auto;
+            text-align: center;
+            padding: 10px;
+            font-family: "Sriracha";
+            .icon {
+            }
+            h4 {
+                margin-top: 10px;
+                font-size: 24px;
+                font-weight: bold;
+            }
+            h5 {
+                margin-top: 15px;
+                font-size: 16px;
+                line-height: 25px;
+            }
+            button {
+                margin-top: 15px;
+                width: 288px;
+                height: 55px;
+                background: darken($color1, 10%);
+                color: #fff;
+                font-size: 16px;
+            }
+            a {
+                margin-top: 20px;
+                display: block;
+                color: #2d2d2d;
+                text-decoration: underline;
             }
         }
-        .cart-item {
+    }
+    .top {
+        background: lighten(#999, 28%);
+        width: 100%;
+        height: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        h5 {
+            font-size: 20px;
+            font-family: "Sriracha";
+            padding-left: 10px;
+            padding-top: 3px;
+        }
+        .fa-times {
+            font-size: 24px;
+            padding-right: 10px;
+        }
+    }
+    .cart-item {
+        margin-top: 15px;
+        .cart-wrap {
+            height: 360px;
+            width: 100%;
+            overflow-y: scroll;
             .product {
                 padding-left: 10px;
                 display: flex;
@@ -193,13 +346,13 @@ nav{
                 }
                 .product-info {
                     font-family: "Sriracha";
-                    &:hover{
-                        h3,h4{
+                    &:hover {
+                        h3,
+                        h4 {
                             color: rgb(102, 123, 216);
                         }
-                        
                     }
-                    h3{
+                    h3 {
                         font-size: 18px;
                         font-weight: bold;
                     }
@@ -210,6 +363,48 @@ nav{
                 }
             }
         }
+
+        .total {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            width: 100%;
+            height: 55px;
+            background: #eee;
+            h5 {
+                font-family: "Sriracha";
+                font-size: 20px;
+            }
+        }
+        .btn-group {
+            width: 100%;
+            height: 70px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: lighten(#999, 28%);
+            .bt {
+                font-family: "Sriracha";
+                width: 125px;
+                height: 40px;
+            }
+            .btn-bag {
+                background: #fff;
+                color: #2d2d2d;
+            }
+            .btn-check {
+                background: #1ca753;
+                color: #fff;
+            }
+        }
     }
+}
+.rollon {
+    transform: translateY(-600px);
+    transition: 1.5s;
+}
+.rolldown {
+    transform: translateY(620px);
+    transition: 0.8s;
 }
 </style>

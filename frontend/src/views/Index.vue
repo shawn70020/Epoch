@@ -1,14 +1,29 @@
 <template>
     <div class="wrap">
         <Navbar></Navbar>
+        <div class="banner-up">
+            <a href="#">
+                <div class="shop-link">
+                    WOMEN
+                </div>
+            </a>
+            <h5>GET 20% OFF* (HELLO, SAVED ITEMS) With code: AMAZING20</h5>
+            <a href="#">
+                <div class="shop-link">
+                    MEN
+                </div>
+            </a>
+        </div>
         <div class="banner">
             <div class="banner-top">
                 <a href="#">
-                    GET 20% OFF TOP PICKS
+                    <div class="solgan1">GET 20% OFF*</div>
+                    <div class="solgan2">(HELLO, SAVED ITEMS)</div>
+                    <div class="solgan3">With code: AMAZING20</div>
                 </a>
             </div>
             <div class="banner-bottom">
-                Limited time only. Selected styles marked down on site
+                *Limited time only. Selected styles marked down on site
             </div>
         </div>
         <div class="container">
@@ -138,8 +153,8 @@
                 <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
             </div>
         </div>
-        <div class="vuestore">
-            <h5>VUESTORE</h5>
+        <div class="epoch">
+            <h5>Epoch</h5>
         </div>
     </div>
 </template>
@@ -168,39 +183,92 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+$color: #7f033b;
 * {
     list-style: none;
 }
 .wrap {
     height: 100vh;
 }
+.banner-up {
+    display: flex;
+    height: 50px;
+    background: #ff9173;
+    align-items: center;
+    justify-content: space-around;
+    font-family: "Sriracha";
+    margin-bottom: 2px;
+    h5 {
+        padding-top: 10px;
+        font-size: 18px;
+        color: $color;
+    }
+    a {
+        width: 96px;
+        height: 30px;
+        text-decoration: none;
+        color: $color;
+        border: 2px solid $color;
+        text-align: center;
+        line-height: 30px;
+        font-size: 14px;
+        transition: 0.5s;
+        &:hover {
+            color: lighten($color, 20%);
+            border: 2px solid lighten($color, 20%);
+        }
+    }
+}
 .banner {
     width: 100%;
-    height: 120px;
-    background: #1ca753;
+    height: 210px;
+    background: #ff9173;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     .banner-top {
         width: 500px;
-        height: 55px;
-        background: #1010c4;
-        box-shadow: 0.37em 0 0 #1010c4, -0.37em 0 0 #1010c4;
+        height: 160px;
+        background: #ff9173;
         margin-top: 20px;
         text-align: center;
         a {
-            font-family: "Krona One", sans-serif;
-            color: #fa81e4;
-            font-size: 28px;
-            line-height: 55px;
+            font-family: "Sriracha";
+            color: #fffd37;
             text-decoration: none;
+            .solgan1,
+            .solgan2,
+            .solgan3 {
+                background: $color;
+                margin: auto;
+            }
+            .solgan1 {
+                width: 300px;
+                height: 50px;
+                line-height: 50px;
+                font-size: 32px;
+            }
+            .solgan2 {
+                width: 400px;
+                height: 50px;
+                line-height: 50px;
+                margin-top: 3px;
+                font-size: 32px;
+            }
+            .solgan3 {
+                width: 250px;
+                height: 35px;
+                line-height: 35px;
+                margin-top: 10px;
+                font-size: 20px;
+            }
         }
     }
     .banner-bottom {
-        color: #fff;
+        color: #000;
         font-size: 10px;
-        padding-top: 16px;
+        padding: 5px;
     }
 }
 .container {
@@ -373,12 +441,12 @@ export default {
         }
     }
 }
-.vuestore {
+.epoch {
     padding-left: 21%;
     height: 45px;
     h5 {
-        font-size: 18px;
-        font-family: "Krona One", sans-serif;
+       font-size:30px;
+        font-family: 'IM Fell Great Primer SC' ;
         line-height: 45px;
     }
 }

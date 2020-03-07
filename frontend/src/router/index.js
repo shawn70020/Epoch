@@ -8,6 +8,7 @@ import Dashboard from "../components/Dashboard"
 import Products from "../views/Products"
 import Man from "../views/Man"
 import Item from "../views/Item"
+import Bag from "../views/Bag"
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,14 @@ const routes = [{
         path: '/item/:pid',
         name: 'Item',
         component: Item,
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
+        path: '/user/bag',
+        name: 'Bag',
+        component: Bag,
         meta: {
             requiresAuth: true
         },

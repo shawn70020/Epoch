@@ -8,20 +8,40 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         isLogin: false,
+        isEmpty: false,
         info: {},
         cart: {}
     },
     mutations: {
-      getUserInfo(state, token) {
-            return axios.get(`/api/getuserinfo/${token}`)
-                .then(res => {
-                    state.info = res.data.info;
-                    state.cart = res.data.cart;
-                    console.log(344)
-                }).catch(err => {
-                    console.log(err);
+        async getUserInfo(state, token) {
+            try {
+                const res = await axios.get(`/api/getuserinfo/${token}`);
+                state.info = res.data.info;
+                state.cart = res.data.cart;
+                if(state.cart.length > 0){
+                    state.isEmpty = true;
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        updateCart(state, updatePid) {
+            let i;
+            let repeat = false;
+            for (i = 0; i < state.cart.length; i++) {
+                if (state.cart[i].pid == updatePid) {
+                    state.cart[i].num++
+                    repeat = true;
+                }
+            }
+            if (repeat == false) {
+                state.cart.push({
+                    num: 1,
+                    pid: updatePid
                 })
-        }
+            }
+            state.isEmpty = true;
+        },
     },
     modules: {
         user

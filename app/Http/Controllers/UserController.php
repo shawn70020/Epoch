@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\models\User;
+use App\models\Cart;
 use App\Http\Resources\Article as ArticleResources;
 use Illuminate\Support\Facades\Hash;
-use Symfony\Component\HttpFoundation\Cookie;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserController extends Controller
 {
@@ -25,19 +26,9 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-     /**
-     * 會員註冊
-     * @return json
-     */
+    * 會員註冊
+    * @return json
+    */
     public function store(Request $_oRequest)
     {
         ## 檢查會員是否重複
@@ -106,48 +97,16 @@ class UserController extends Controller
         $sToken = substr(str_shuffle($sStr), 0, $iKeyLength);
         return $sToken;
     }
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * 取得使用者基本資訊
+     * @return json
      */
-    public function edit($id)
+    public function getUserInfo($sToken)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $aResult = User::select('id', 'name')->where('token', $sToken)->firstorFail();
+        $iUid = $aResult['id'];
+        $aCart = Cart::select('pid','num')->where('uid', $iUid)->get();
+        return response()->json(['result' => true, 'info'=> $aResult,'cart' => $aCart]);
     }
 }

@@ -19,6 +19,17 @@ class ProductsController extends Controller
     }
 
     /**
+     * 取得單一商品資料
+     * @return json
+     */
+    public function getSingleProduct($id)
+    {
+        ## 取得單一商品資料
+        $aResult = Product::find($id);
+        return response()->json(['result' => true, 'data' => $aResult]);
+
+    }
+    /**
     * 圖片上傳確認
     * @return json
     */

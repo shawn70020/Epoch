@@ -71,7 +71,7 @@
                     <div class="heart"><i class="far fa-heart"></i></div>
                     <div class="item-txt">
                         <h5>{{ item.name }}</h5>
-                        <h4>NT ${{ item.price }}</h4>
+                        <h4>NT {{ item.price | currency }}</h4>
                     </div>
                 </router-link>
             </div>

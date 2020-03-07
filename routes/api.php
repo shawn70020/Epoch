@@ -21,3 +21,8 @@ Route::post('/login', 'UserController@checkLogin')->where('any', '.*');
 Route::post('/products/imageupload', 'ProductsController@imageUpload')->where('any', '.*');
 Route::post('/products/upload', 'ProductsController@createProducts')->where('any', '.*');
 Route::get('/products/men', 'ProductsController@getProducts')->where('any', '.*');
+Route::get('/products/men/item/{id}', 'ProductsController@getSingleProduct')->where('any', '.*');
+Route::get('/getuserinfo/{token}', 'UserController@getUserInfo')->where('any', '.*');
+Route::post('/user/addcart', 'CartController@addCart')->where('any', '.*');
+Route::post('/user/getusercart', 'CartController@getUserCart')->where('any', '.*');
+Route::post('/user/updatecart', 'CartController@updateUserCart')->where('any', '.*');

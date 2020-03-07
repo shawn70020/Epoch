@@ -34,12 +34,17 @@
                         v-model="user.email"
                     />
                     <label for="inputPassword">PASSWORD:</label>
-                    <input
-                        type="password"
-                        id="inputPassword"
-                        class="form-control"
-                        v-model="user.password"
-                    />
+                    <div class="password-group">
+                        <input
+                            :type="type"
+                            id="inputPassword"
+                            class="form-control"
+                            v-model="user.password"
+                        />
+                        <button @click.prevent="showPassword">
+                            {{ btnText }}
+                        </button>
+                    </div>
                     <button class="btn btn-sm btn-dark btn-block" type="submit">
                         SIGN IN
                     </button>
@@ -64,6 +69,8 @@ export default {
         return {
             isLoading: false,
             showError: 0,
+            type: "password",
+            btnText: "SHOW",
             user: {
                 email: "",
                 password: ""
@@ -96,6 +103,15 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        showPassword() {
+            if(this.type === 'password'){
+                this.type = 'text';
+                this.btnText = 'HIDE'
+            } else {
+                this.type = 'password';
+                this.btnText = 'SHOW'
+            }
         }
     }
 };
@@ -194,6 +210,23 @@ export default {
                 border: none;
                 &:hover {
                     background: #aaa;
+                }
+            }
+            .password-group {
+                display: flex;
+                position: relative;
+                button {
+                    position: absolute;
+                    right: 2px;
+                    top: 10px;
+                    border: none;
+                    background-color: #fff;
+                    font-size: 16px;
+                    font-family: "IM Fell Great Primer SC";
+                    &:focus {
+                        //focus藍框移除
+                        outline: none;
+                    }
                 }
             }
         }
