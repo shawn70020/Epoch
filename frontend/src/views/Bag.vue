@@ -238,7 +238,7 @@ export default {
         };
     },
     components: {
-        Navbar,
+        Navbar
     },
     computed: {
         getCart() {
@@ -248,7 +248,7 @@ export default {
     watch: {
         getCart: {
             handler(aCart) {
-                if(aCart.length == 0){
+                if (this.$store.state.isEmpty === false) {
                     console.log(123);
                 }
                 this.carts = [];
@@ -316,7 +316,22 @@ export default {
                 });
         },
         checkoutCart() {
-            
+            let checkout = [];
+            checkout = this.$store.state.cart;
+            let info = this.$store.state.info;
+            axios
+                .post("/api/user/checkout", {
+                    cart: checkout,
+                    user: info
+                })
+                .then(res => {
+                    if (res.data.result === true) {
+                        console.log(123);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }
 };
@@ -595,7 +610,7 @@ $color1: #1ca753;
                     color: #fff;
                     font-size: 18px;
                     margin-left: 1.5rem;
-                    &:hover{
+                    &:hover {
                         background: darken($color1, 10%);
                     }
                 }
@@ -696,8 +711,8 @@ $color1: #1ca753;
     padding-left: 21%;
     height: 45px;
     h5 {
-       font-size:30px;
-        font-family: 'IM Fell Great Primer SC' ;
+        font-size: 30px;
+        font-family: "IM Fell Great Primer SC";
         line-height: 45px;
     }
 }

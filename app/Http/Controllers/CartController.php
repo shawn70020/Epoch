@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\models\Cart;
+use App\models\User;
+use App\models\Order;
 use App\models\Product;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 class CartController extends Controller
 {
@@ -23,54 +26,6 @@ class CartController extends Controller
         ## 砍掉超過1天的購物車
         Cart::where('addtime', '<=', $dBeforeDate)
              ->delete();
-    }
-    /**
-     * 取得全部商品資料
-     * @return json
-     */
-    public function getProducts()
-    {
-        ## 取得所有商品資料
-        $aResult = Product::get();
-        return response()->json(['result' => true, 'data' => $aResult]);
-    }
-
-    /**
-     * 取得單一商品資料
-     * @return json
-     */
-    public function getSingleProduct($id)
-    {
-        ## 取得單一商品資料
-        $aResult = Product::find($id);
-        return response()->json(['result' => true, 'data' => $aResult]);
-    }
-    /**
-    * 圖片上傳確認
-    * @return json
-    */
-    public function imageUpload(Request $_oRequest)
-    {
-        ## 接收檔案並確認是否存在及圖片檔
-        $image = $_oRequest->hasFile("file-to-upload") ? $_oRequest->file("file-to-upload") : null;
-        if (is_null($image) || substr($image->getMimeType(), 0, 5) !== 'image') {
-            return response()->json(['result' => false]);
-        }
-
-        ## 圖片轉換為base64
-        $imageConvert = $this->imageFormat($image);
-        return response()->json(['result' => true, 'data' => $imageConvert]);
-    }
-
-    /**
-     * 圖片格式轉換
-     * @param object ## 圖片資訊
-     * @return string
-     */
-    protected function imageFormat($_oImage)
-    {
-        ## 取得經過base64編碼圖片
-        return chunk_split(base64_encode(fread(fopen($_oImage->path(), 'r'), $_oImage->getClientSize())));
     }
 
     /**
@@ -102,6 +57,10 @@ class CartController extends Controller
         return response()->json(['result' => true]);
     }
 
+    /**
+     * 取得會員購物車
+     * @return json
+     */
     public function getUserCart(Request $_oRequest)
     {
         $arr = [];
@@ -115,6 +74,10 @@ class CartController extends Controller
         return response()->json(['result' => true, 'data'=>$arr]);
     }
 
+    /**
+     * 更新會員購物車
+     * @return json
+     */
     public function updateUserCart(Request $_oRequest)
     {
         $aResponse = $_oRequest->input('post');
@@ -127,5 +90,59 @@ class CartController extends Controller
         }
         $aCart = Cart::select('pid', 'num')->where('uid', 11)->get();
         return response()->json(['result' => true,'data' => $aCart]);
+    }
+
+    /**
+     * 新增訂單
+     * @return json
+     */
+    public function addOrder(Request $_oRequest)
+    {
+        ## 參數初始化
+        $aCart = $_oRequest->input('cart');
+        $aUser = $_oRequest->input('user');
+        $cartNum = count($aCart);
+
+        ## 檢查會員是否存在
+        $iUid = (int) $aUser['id'];
+        $aResult = User::find($iUid);
+        if (!$aResult) {
+            return response()->json(['result' => false, 'msg' => 'member']);
+        }
+
+        ## 檢查購物車是否為空及數量一致
+        if ($cartNum === 0) {
+            return response()->json(['result' => false, 'msg' => 'emptycart']);
+        }
+
+        $aCartResult = Cart::select('pid', 'num')->where('uid', $iUid)->get()->toArray();
+        for ($i = 0;$i < $cartNum; $i++) {
+            if ($aCart[$i]['pid'] !== $aCartResult[$i]['pid'] || $aCart[$i]['num'] !== $aCartResult[$i]['num']) {
+                return response()->json(['result' => false, 'msg' => 'member']);
+                break;
+            }
+        }
+
+        ## 檢查購物車是否已被結帳
+        $aData = Cart::where('uid', $iUid)->get();
+        if ($aData->isEmpty()) {
+            return response()->json(['result' => false, 'msg' => 'checked']);
+        }
+
+        ## 檢查商品庫存
+        $aProductNum = [];
+        for ($i = 0; $i < $cartNum; $i++) {
+            $result  = Product::select('num')->where('id', $aCart[$i]['pid'])->get();
+            $aProductNum[$i] = $result[0]['num'];
+            if ($aProductNum[$i] < $aCart[$i]['num']) {
+                return response()->json(['result' => false, 'msg' => 'num']);
+                break;
+            }
+        }
+
+        ## 結帳
+        $post = new Order();
+        $post->addOrder($iUid, $aCart);
+        return response()->json(['result' => true]);
     }
 }
