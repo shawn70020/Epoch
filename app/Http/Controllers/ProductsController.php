@@ -8,14 +8,29 @@ use App\models\Product;
 class ProductsController extends Controller
 {
     /**
-     * 取得全部商品資料
+     * 取得男性商品資料
      * @return json
      */
-    public function getProducts()
+    public function getMenProducts()
     {
-        ## 取得所有商品資料
-        $aResult = Product::get();
-        return response()->json(['result' => true, 'data' => $aResult]);
+        ## 取得前12筆商品資料
+        $aTotal = Product::where('sex', 'M')->get();
+        $aResult = Product::where('sex', 'M')->skip(0)->take(12)->get();
+
+        return response()->json(['result' => true, 'data' => $aResult,'total' => count($aTotal)]);
+    }
+
+    /**
+     * 取得女性商品資料
+     * @return json
+     */
+    public function getWomenProducts()
+    {
+        ## 取得前12筆商品資料
+        $aTotal = Product::where('sex', 'W')->get();
+        $aResult = Product::where('sex', 'W')->skip(0)->take(12)->get();
+
+        return response()->json(['result' => true, 'data' => $aResult,'total' => count($aTotal)]);
     }
 
     /**
@@ -27,7 +42,25 @@ class ProductsController extends Controller
         ## 取得單一商品資料
         $aResult = Product::find($id);
         return response()->json(['result' => true, 'data' => $aResult]);
+    }
 
+    /**
+    * 取得當前頁數商品資料
+    * @return json
+    */
+    public function changePage($sex, $num)
+    {
+        if ($sex === 'men') {
+            $get ='M';
+        } else {
+            $get = 'W';
+        }
+        ##取得抓取筆數
+        $nowNum = ($num- 1) * 12;
+        ## 取得單一商品資料
+        $aResult = Product::where('sex', $get)->skip($nowNum)->take(12)->get();
+
+        return response()->json(['result' => true, 'data' => $aResult]);
     }
     /**
     * 圖片上傳確認
@@ -37,7 +70,7 @@ class ProductsController extends Controller
     {
         ## 接收檔案並確認是否存在及圖片檔
         $image = $_oRequest->hasFile("file-to-upload") ? $_oRequest->file("file-to-upload") : null;
-        if (is_null($image) || substr($image->getMimeType(), 0, 5) !== 'image' ) {
+        if (is_null($image) || substr($image->getMimeType(), 0, 5) !== 'image') {
             return response()->json(['result' => false]);
         }
 
@@ -58,7 +91,7 @@ class ProductsController extends Controller
     }
 
     /**
-     * 登入驗證
+     * 新增商品
      * @return json
      */
     public function createProducts(Request $_oRequest)
@@ -76,50 +109,5 @@ class ProductsController extends Controller
         ];
         Product::create($aParam);
         return response()->json(['result' => true]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

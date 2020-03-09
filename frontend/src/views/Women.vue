@@ -77,20 +77,26 @@
             </div>
         </div>
         <div class="page">
-            <h5>You've viewed 144 of 1,142 products</h5>
-            <div class="progress" style="height: 5px;">
+            <h5>You've viewed {{ nowNum }} of {{ allNum }} products</h5>
+            <div class="progress" style="height: 2.5px;">
                 <div
                     class="progress-bar"
                     role="progressbar"
-                    style="width: 20%;"
+                    :style="{ width: bar }"
                     aria-valuenow="20"
                     aria-valuemin="0"
                     aria-valuemax="100"
                 ></div>
             </div>
-            <button class="load" @click="changePage">LOAD MORE</button>
+            <button
+                class="load"
+                :style="{ display: loadBtn }"
+                @click="changePage"
+            >
+                LOAD MORE
+            </button>
         </div>
-         <div class="social">
+        <div class="social">
             <ul>
                 <li>
                     <div class="icon fb">
@@ -177,8 +183,12 @@ export default {
     data() {
         return {
             show: "none",
-            page: 1,
-            products: []
+            page: 2,
+            products: [],
+            nowNum: 12,
+            allNum: 1,
+            bar: "1%",
+            loadBtn: "block"
         };
     },
     components: {
@@ -203,21 +213,48 @@ export default {
         },
         getProducts() {
             axios
-                .get("/api/products/men")
+                .get("/api/products/women")
                 .then(res => {
                     this.products = res.data.data;
-                    this.products = this.products.filter(e => e.sex === "W");
-                    // console.log(this.products.filter(e=>e.sex === 'W'));
+                    this.allNum = res.data.total;
+                    let barWidth;
+                    barWidth = (
+                        this.products.length *
+                        (100 / this.allNum)
+                    ).toString();
+                    this.bar = barWidth + "%";
+                    if (this.nowNum === this.allNum) {
+                        this.loadBtn = "none";
+                    } else {
+                        this.loadBtn = "block";
+                    }
                 })
                 .catch(err => {
                     console.log(err);
                 });
         },
-        changePage(){
-           axios.get(`/api/products/women/page=${this.page}`)
+        changePage() {
+            axios
+                .get(`/api/products/women/page=${this.page}`)
                 .then(res => {
-                    this.products = res.data.data;
+                    let newData = res.data.data;
+                    console.log(newData[0]);
+                    for (let i = 0; i < newData.length; i++) {
+                        this.products.push(newData[i]);
+                    }
+                    this.nowNum = this.products.length;
                     this.page = this.page + 1;
+                    let barWidth;
+                    barWidth = (
+                        this.products.length *
+                        (100 / this.allNum)
+                    ).toString();
+                    this.bar = barWidth + "%";
+                    if (this.nowNum === this.allNum) {
+                        this.loadBtn = "none";
+                    } else {
+                        this.loadBtn = "block";
+                    }
                 })
                 .catch(err => {
                     console.log(err);
@@ -369,29 +406,31 @@ $color: #fa81e4;
         }
     }
 }
-.page{
+.page {
     width: 1300px;
     margin: auto;
     text-align: center;
     margin-top: 25px;
     font-family: "Cormorant SC";
-    h5{
+    h5 {
         font-size: 18px;
         color: #666666;
     }
-    .progress{
-        width: 30%;
+    .progress {
+        width: 20%;
         margin: auto;
+        margin-top: 20px;
     }
-    .load{
+    .load {
+        margin: auto;
         width: 300px;
         height: 55px;
-        color: #2d2d2d;
+        color: #fff;
         line-height: 55px;
         font-size: 18px;
         margin-top: 25px;
         font-weight: bold;
-        background: #fff;
+        background: #0f4c81;
     }
 }
 .social {

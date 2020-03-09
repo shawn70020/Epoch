@@ -20,11 +20,13 @@ Route::post('/signin', 'UserController@store')->where('any', '.*');
 Route::post('/login', 'UserController@checkLogin')->where('any', '.*');
 Route::post('/products/imageupload', 'ProductsController@imageUpload')->where('any', '.*');
 Route::post('/products/upload', 'ProductsController@createProducts')->where('any', '.*');
-Route::get('/products/men', 'ProductsController@getProducts')->where('any', '.*');
+Route::get('/products/men', 'ProductsController@getMenProducts')->where('any', '.*');
+Route::get('/products/women', 'ProductsController@getWomenProducts')->where('any', '.*');
 Route::get('/products/men/item/{id}', 'ProductsController@getSingleProduct')->where('any', '.*');
 Route::get('/getuserinfo/{token}', 'UserController@getUserInfo')->where('any', '.*');
 Route::post('/user/addcart', 'CartController@addCart')->where('any', '.*');
 Route::post('/user/getusercart', 'CartController@getUserCart')->where('any', '.*');
 Route::post('/user/updatecart', 'CartController@updateUserCart')->where('any', '.*');
 Route::post('/user/checkout', 'CartController@addOrder');
-Route::get('/products/women/page={num}', 'ProductsController@changePage');
+Route::get('/products/{sex}/page={num}', 'ProductsController@changePage');
+
