@@ -66,6 +66,7 @@ class ProductsController extends Controller
         ## 新增商品
         $aParam = [
             'name' => $_oRequest->input('title'),
+            'sex' => $_oRequest->input('sex'),
             'class' => $_oRequest->input('category'),
             'price' => $_oRequest->input('price'),
             'content' => $_oRequest->input('content'),

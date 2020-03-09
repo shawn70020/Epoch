@@ -14,7 +14,7 @@
                 </div>
             </a>
         </div>
-        <div class="empty-bag" :style="{ display: show }">
+        <div class="empty-bag" :style="{ display: isA }">
             <div class="wrap">
                 <i class="icon fas fa-shopping-bag"></i>
                 <h4>Your bag is empty</h4>
@@ -23,10 +23,10 @@
                     to your Saved Items.
                 </h5>
                 <button>VIEW SAVED ITEMS</button>
-                <a href="#">Continue Shopping</a>ⓔ
+                <a href="#">Continue Shopping</a>
             </div>
         </div>
-        <div class="bag">
+        <div class="bag" :style="{ display: isB }">
             <div class="bag-top">
                 <div class="left">
                     <div class="bag-item">
@@ -210,7 +210,8 @@ export default {
         return {
             carts: [],
             isLoading: false,
-            show: "none",
+            isA: "none",
+            isB: "block",
             total: 0,
             options: [
                 {
@@ -249,31 +250,35 @@ export default {
         getCart: {
             handler(aCart) {
                 if (this.$store.state.isEmpty === false) {
-                    console.log(123);
+                    this.isA = "flex";
+                    this.isB = "none";
+                } else {
+                    this.isA = "none";
+                    this.isB = "block";
+                    this.carts = [];
+                    let i;
+                    let arr = [];
+                    for (i = 0; i < aCart.length; i++) {
+                        arr.push(aCart[i].pid);
+                    }
+                    axios
+                        .post("/api/user/getusercart", {
+                            post: arr
+                        })
+                        .then(res => {
+                            this.carts = res.data.data;
+                            for (i = 0; i < aCart.length; i++) {
+                                this.carts[i].item = aCart[i].num;
+                                this.items = aCart.length;
+                                this.total =
+                                    this.total +
+                                    this.carts[i].item * this.carts[i].price;
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
                 }
-                this.carts = [];
-                let i;
-                let arr = [];
-                for (i = 0; i < aCart.length; i++) {
-                    arr.push(aCart[i].pid);
-                }
-                axios
-                    .post("/api/user/getusercart", {
-                        post: arr
-                    })
-                    .then(res => {
-                        this.carts = res.data.data;
-                        for (i = 0; i < aCart.length; i++) {
-                            this.carts[i].item = aCart[i].num;
-                            this.items = aCart.length;
-                            this.total =
-                                this.total +
-                                this.carts[i].item * this.carts[i].price;
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
             },
             immediate: true,
             deep: true
@@ -292,7 +297,6 @@ export default {
         },
         updateNum() {
             this.isLoading = true;
-
             let i;
             for (i = 0; i < this.carts.length; i++) {
                 this.num[i] = this.carts[i].item;

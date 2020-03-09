@@ -2,17 +2,17 @@
     <div class="wrap">
         <Navbar></Navbar>
         <div class="banner-up">
-            <a href="#">
+            <router-link to="/women" class="">
                 <div class="shop-link">
                     WOMEN
                 </div>
-            </a>
-            <h5>GET 20% OFF* (HELLO, SAVED ITEMS) With code: AMAZING20</h5>
-            <a href="#">
+            </router-link>
+            <h5>UP TO 30% OFF BETWEEN-SEASON STYLES</h5>
+            <router-link to="/men" class="">
                 <div class="shop-link">
                     MEN
-                </div>
-            </a>
+                </div></router-link
+            >
         </div>
         <div class="banner">
             <div class="banner-top">
@@ -445,8 +445,8 @@ $color: #7f033b;
     padding-left: 21%;
     height: 45px;
     h5 {
-       font-size:30px;
-        font-family: 'IM Fell Great Primer SC' ;
+        font-size: 30px;
+        font-family: "IM Fell Great Primer SC";
         line-height: 45px;
     }
 }

@@ -6,7 +6,8 @@ import Register from '../views/Register.vue'
 import Admin from '../views/Admin.vue'
 import Dashboard from "../components/Dashboard"
 import Products from "../views/Products"
-import Man from "../views/Man"
+import Men from "../views/Men"
+import Women from "../views/Women"
 import Item from "../views/Item"
 import Bag from "../views/Bag"
 
@@ -35,9 +36,17 @@ const routes = [{
         component: Register
     },
     {
-        path: '/man',
-        name: 'Man',
-        component: Man,
+        path: '/men',
+        name: 'Men',
+        component: Men,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/women',
+        name: 'Women',
+        component: Women,
         meta: {
             requiresAuth: true
         }

@@ -3,11 +3,11 @@
         <header class="main-header">
             <div class="nav">
                 <nav class="main-nav">
-                    <a href="#" class="logo">
+                    <router-link to="/" class="logo">
                         <h5>Epoch</h5>
-                    </a>
-                    <a href="#" class="woman">WOMEN</a>
-                    <a href="#" class="men">MEN</a>
+                    </router-link>
+                    <router-link to="/women" class="women">WOMEN</router-link>
+                    <router-link to="/men" class="men">MEN</router-link>
                 </nav>
                 <form action="" class="header-search">
                     <input
@@ -184,12 +184,13 @@ $color1: #1ca753;
             .logo {
                 color: #fff;
                 margin-right: 30px;
+                margin-top: 5px;
                 h5 {
                     font-size: 40px;
                     font-family: "IM Fell Great Primer SC";
                 }
             }
-            .woman,
+            .women,
             .men {
                 color: #eee;
                 width: 114px;
@@ -200,7 +201,7 @@ $color1: #1ca753;
                 // font-family: 'Oxanium' ;
                 font-family: "IM Fell Great Primer SC";
             }
-            .woman {
+            .women {
                 border-left: 1px solid #666;
             }
         }

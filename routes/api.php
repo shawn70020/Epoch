@@ -27,3 +27,4 @@ Route::post('/user/addcart', 'CartController@addCart')->where('any', '.*');
 Route::post('/user/getusercart', 'CartController@getUserCart')->where('any', '.*');
 Route::post('/user/updatecart', 'CartController@updateUserCart')->where('any', '.*');
 Route::post('/user/checkout', 'CartController@addOrder');
+Route::get('/products/women/page={num}', 'ProductsController@changePage');

@@ -2,22 +2,22 @@
     <div>
         <Navbar></Navbar>
         <div class="banner">
-            <a href="#">
+            <router-link to="/women" class="">
                 <div class="shop-link">
                     WOMEN
                 </div>
-            </a>
+            </router-link>
             <h5>UP TO 30% OFF BETWEEN-SEASON STYLES</h5>
-            <a href="#">
+            <router-link to="/men" class="">
                 <div class="shop-link">
                     MEN
-                </div>
-            </a>
+                </div></router-link
+            >
         </div>
         <div class="navs">
             <ol class="bread">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Men</a></li>
+                <li><router-link to="/">Home</router-link></li>
+                <li><router-link to="/men">Men</router-link></li>
                 <li><a href="#">New In</a></li>
             </ol>
         </div>
@@ -113,6 +113,7 @@ export default {
                 .get("/api/products/men")
                 .then(res => {
                     this.products = res.data.data;
+                    this.products = this.products.filter(e => e.sex === "M");
                 })
                 .catch(err => {
                     console.log(err);
@@ -223,12 +224,12 @@ $color: #1010c4;
     display: flex;
     flex-wrap: wrap;
     margin: auto;
-    
+
     .item {
         position: relative;
         padding: 10px;
         margin-top: 25px;
-        a{
+        a {
             text-decoration: none;
         }
         img {

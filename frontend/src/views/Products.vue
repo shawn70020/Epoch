@@ -117,8 +117,37 @@
                                 </div>
 
                                 <div class="form-row">
-                                    <div class="form-group col-md-8">
-                                        <label for="category">分類</label>
+                                    <div class="form-group col-md-6">
+                                        <label for="category">大分類</label>
+                                        <input
+                                            class="form-control"
+                                            type="radio"
+                                            name="inlineRadioOptions"
+                                            id="category"
+                                            value="W"
+                                            v-model="tempProduct.sex"
+                                        />
+                                        <label
+                                            class="form-check-label"
+                                            for="category"
+                                            >女裝</label
+                                        >
+                                        <input
+                                            class="form-control"
+                                            type="radio"
+                                            name="inlineRadioOptions"
+                                            id="category"
+                                            value="M"
+                                            v-model="tempProduct.sex"
+                                        />
+                                        <label
+                                            class="form-check-label"
+                                            for="inlineRadio2"
+                                            >男裝</label
+                                        >
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="category">細分類</label>
                                         <input
                                             type="text"
                                             class="form-control"

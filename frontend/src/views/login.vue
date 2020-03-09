@@ -92,7 +92,7 @@ export default {
                         localStorage.setItem("token", res.data.token);
                         this.$store.state.isLogin = true;
                         if (res.data.level === "member") {
-                            vm.$router.push("/man");
+                            vm.$router.push("/men");
                         } else {
                             vm.$router.push("/admin");
                         }
