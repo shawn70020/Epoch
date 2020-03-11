@@ -7,5 +7,5 @@ class Cart extends Model
 {
     public $timestamps = false;
     protected $guarded = ['id'];
-    protected $fillable = ['uid', 'pid', 'num'];
+    protected $fillable = ['uid', 'pid', 'num','delete_at'];
 }

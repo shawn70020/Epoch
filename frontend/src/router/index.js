@@ -10,6 +10,9 @@ import Men from "../views/Men"
 import Women from "../views/Women"
 import Item from "../views/Item"
 import Bag from "../views/Bag"
+import Account from "../views/Account"
+import Details from "../components/Details"
+import Password from "../components/Password"
 
 Vue.use(VueRouter)
 
@@ -68,6 +71,30 @@ const routes = [{
         },
     },
     {
+        path: '/account',
+        name: 'Account',
+        component: Account,
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
+        path: '/mydetails',
+        name: 'Details',
+        component: Details,
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
+        path: '/mypassword',
+        name: 'Password',
+        component: Password,
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
         path: '/admin',
         name: 'Admin',
         component: Admin,
@@ -88,7 +115,7 @@ const routes = [{
                 },
             },
         ],
-    },
+    }
 ]
 
 const router = new VueRouter({

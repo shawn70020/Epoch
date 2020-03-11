@@ -25,6 +25,8 @@ import Element from 'element-ui';
 import './plugins/element.js';
 
 import currencyFilter from './filters/currency';
+import moment from "moment";
+Vue.prototype.$moment = moment;
 
 extend('required', {
     ...required,
@@ -37,6 +39,7 @@ Vue.use(VueCookie);
 Vue.use(Element);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
+
 Vue.filter('currency', currencyFilter);
 Vue.component('Loading', Loading)
 Vue.prototype.$http = axios;

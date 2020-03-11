@@ -8,7 +8,6 @@ use App\models\User;
 use App\models\Order;
 use App\models\Product;
 use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 
 class CartController extends Controller
 {
@@ -21,11 +20,11 @@ class CartController extends Controller
         $dNowDate = (string) Carbon::now('Asia/Taipei');
 
         ## 往前推1天
-        $dBeforeDate = (string) Carbon::parse($dNowDate)->subDays(1)->toDateTimeString();
+        $dBeforeDate = (string) Carbon::parse($dNowDate)->subHours(1)->toDateTimeString();
 
         ## 砍掉超過1天的購物車
         Cart::where('addtime', '<=', $dBeforeDate)
-             ->delete();
+             ->update(['delete_at' => 1]);
     }
 
     /**
@@ -56,7 +55,28 @@ class CartController extends Controller
         }
         return response()->json(['result' => true]);
     }
+    /**
+    * 刪除購物車商品
+    * @return json
+    */
+    public function deleteCart($_iUid, $_iPid)
+    {
+        ## 檢查會員是否存在及狀態
+        if ($_iUid === '') {
+            return response()->json(['result' => false]);
+        }
 
+        ## 檢查商品存在
+        $iPid = (int) $_iPid;
+        $aResult = Product::where('id', $_iPid)->get();
+        if ($iPid === '' || $aResult->isEmpty()) {
+            return response()->json(['result' => false]);
+        }
+
+        ## 刪除購物車商品
+        Cart::where('uid', $_iUid)->where('pid', $_iPid)->delete();
+        return response()->json(['result' => true]);
+    }
     /**
      * 取得會員購物車
      * @return json

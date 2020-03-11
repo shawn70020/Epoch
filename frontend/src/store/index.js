@@ -18,7 +18,7 @@ export default new Vuex.Store({
                 const res = await axios.get(`/api/getuserinfo/${token}`);
                 state.info = res.data.info;
                 state.cart = res.data.cart;
-                if(state.cart.length > 0){
+                if (state.cart.length > 0) {
                     state.isEmpty = true;
                 }
             } catch (err) {
@@ -42,6 +42,17 @@ export default new Vuex.Store({
             }
             state.isEmpty = true;
         },
+        deleteCart(state, deletePid) {
+            let i;
+            for (i = 0; i < state.cart.length; i++) {
+                if (state.cart[i].pid == deletePid) {
+                    state.cart.splice(i, 1);
+                }
+            }
+            if (state.cart.length === 0) {
+                state.isEmpty = false;
+            }
+        }
     },
     modules: {
         user

@@ -15,6 +15,7 @@
                 </div>
             </div>
             <div class="sign-form">
+                <h3>{{ datee }}</h3>
                 <h3>SIGN UP USING YOUR EMAIL ADDRESS</h3>
                 <form class="form-signin" @submit.prevent="signin">
                     <label for="inputEmail">EMAIL ADDRESS:</label>
@@ -80,6 +81,7 @@
                         JOIN
                     </button>
                 </form>
+                <button @click="getdate">jijo</button>
             </div>
             <div class="txt">
                 <h5>&copy; 2020</h5>
@@ -89,24 +91,29 @@
 </template>
 
 <script>
+// var moment = require("moment");
 import axios from "axios";
 import VueDatepickerLocal from "vue-datepicker-local";
 
 export default {
-    name: "Login",
+    name: "Register",
     components: {
         VueDatepickerLocal
     },
     data() {
         return {
+            datee: "",
             user: {
                 email: "",
                 username: "",
                 password: "",
-                time: new Date(),
+                time: "",
                 sex: ""
             }
         };
+    },
+    created() {
+        this.getdate();
     },
     methods: {
         signin() {
@@ -127,6 +134,13 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        getdate() {
+            axios.get("/api/date").then(res => {
+                this.user.time = res.data.data;
+                // let d = moment(res.data.data).format();
+                // console.log(d);
+            });
         }
     }
 };

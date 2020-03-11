@@ -19,7 +19,7 @@
                     <button><i class="fas fa-search"></i></button>
                 </form>
                 <nav class="side-nav">
-                    <li>
+                    <li v-on:mouseover="userMouseOver">
                         <a href="#"><i class="icon far fa-user"></i></a>
                     </li>
                     <li>
@@ -27,7 +27,7 @@
                             ><i class="icon far fa-heart"></i
                         ></a>
                     </li>
-                    <li class="cart" v-on:mouseover="mouseover">
+                    <li class="cart" v-on:mouseover="cartMouseOver">
                         <a href="#"><i class="icon fas fa-shopping-bag"></i></a>
                         <div class="dot" :style="{ display: showDot }">
                             {{ items }}
@@ -36,7 +36,28 @@
                 </nav>
             </div>
         </header>
-        <div class="card-wrap" :class="{ rollon: isA, rolldown: isB }">
+        <div class="user-wrap" :class="{ rollon: isClose, userdown: isUser }">
+            <div class="top">
+                <h5>Hi {{ userName }}</h5>
+                <a href="#" @click="signout">Sign Out</a>
+                <i class="fas fa-times" @click="closeItem"></i>
+            </div>
+            <div class="info">
+                <div class="account">
+                    <router-link to="/account" class="user-account">
+                        <i class="fas fa-skating"></i>
+                        <h5>My Account</h5>
+                    </router-link>
+                </div>
+                <div class="order">
+                    <router-link to="/women" class="user-order">
+                        <i class="fas fa-home"></i>
+                        <h5>My Orders</h5>
+                    </router-link>
+                </div>
+            </div>
+        </div>
+        <div class="card-wrap" :class="{ rollon: isClose, carddown: isCard }">
             <div class="top">
                 <h5>My Bag, {{ items }} items</h5>
                 <i class="fas fa-times" @click="closeItem"></i>
@@ -62,6 +83,10 @@
                             <h3>NT {{ item.price | currency }}</h3>
                             <h4>{{ item.name }}</h4>
                             <h4>QTY:{{ item.item }}</h4>
+                            <i
+                                class="far fa-trash-alt"
+                                @click="deleteCart(item.id)"
+                            ></i>
                         </div>
                     </div>
                 </div>
@@ -86,13 +111,15 @@ export default {
     name: "Navbar",
     data() {
         return {
-            uid: this.$store.state.info,
+            userName: this.$store.state.info.name,
+            uid: this.$store.state.info.id,
             cart: this.$store.state.cart,
             carts: [],
             items: "",
             total: 0,
-            isA: false,
-            isB: false,
+            isClose: false,
+            isCard: false,
+            isUser: false,
             showDot: "block",
             toggle: {
                 empty: "none",
@@ -112,6 +139,8 @@ export default {
                     this.showDot = "none";
                     this.toggle.empty = "block";
                     this.toggle.bag = "none";
+                    this.items = aCart.length;
+                    this.total = 0;
                 } else {
                     this.showDot = "block";
                     this.toggle.empty = "none";
@@ -147,16 +176,44 @@ export default {
     },
     methods: {
         signout() {
-            localStorage.removeItem("token");
-            localStorage.removeItem("isLogin");
-            this.$router.push("/login");
+            let uid = this.$store.state.info.id;
+            axios
+                .put("/api/user/logout", {
+                    user: uid
+                })
+                .then(res => {
+                    if (res.data.result === true) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("isLogin");
+                        this.$router.push("/login");
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        deleteCart(id) {
+            axios.delete(`/api/cart/${this.uid}/${id}`).then(res => {
+                console.log(res);
+                this.$store.commit('deleteCart',parseInt(id));
+            });
         },
         closeItem() {
-            this.isB = false;
-            this.isA = true;
+            this.isCard = false;
+            this.isUser = false;
+            this.isClose = true;
         },
-        mouseover() {
-            this.isB = true;
+        userMouseOver() {
+            if (this.isCard === true) {
+                this.isCard = false;
+            }
+            this.isUser = true;
+        },
+        cartMouseOver() {
+            if (this.isUser === true) {
+                this.isUser = false;
+            }
+            this.isCard = true;
         }
     }
 };
@@ -168,7 +225,6 @@ $color1: #1ca753;
     height: 60px;
     width: 100%;
     background: #2d2d2d;
-    font-family: "Krona+One";
     position: relative;
     z-index: 3;
     a {
@@ -198,7 +254,6 @@ $color1: #1ca753;
                 font-size: 18px;
                 line-height: 60px;
                 border-right: 1px solid #666;
-                // font-family: 'Oxanium' ;
                 font-family: "IM Fell Great Primer SC";
             }
             .women {
@@ -284,8 +339,6 @@ $color1: #1ca753;
             text-align: center;
             padding: 10px;
             font-family: "Sriracha";
-            .icon {
-            }
             h4 {
                 margin-top: 10px;
                 font-size: 24px;
@@ -400,11 +453,89 @@ $color1: #1ca753;
         }
     }
 }
+.user-wrap {
+    position: absolute;
+    z-index: 2;
+    right: 170px;
+    top: -80px;
+    width: 300px;
+    background: #fff;
+    border: 1px solid rgb(219, 216, 216);
+    .top {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: 45px;
+        background: lighten(#999, 28%);
+        font-family: "Lato";
+        position: relative;
+        h5 {
+            margin-right: 10px;
+            margin-top: 5px;
+            margin-left: 5px;
+            color: #2d2d2d;
+            font-size: 24px;
+        }
+        a {
+            color: #2d2d2d;
+            text-decoration: underline;
+            font-size: 20px;
+            margin-bottom: 5px;
+            &:hover {
+                color: #0f4c81;
+            }
+        }
+        .fa-times {
+            position: absolute;
+            right: 10px;
+        }
+    }
+    .info {
+        .account {
+            width: 100%;
+            height: 45px;
+            border-bottom: 1px solid lighten(#666666, 40%);
+            font-family: "Lato";
+            .user-account {
+                display: flex;
+                color: #2d2d2d;
+                .fa-skating {
+                    margin: 10px;
+                }
+                h5 {
+                    font-size: 22px;
+                    margin-top: 6px;
+                }
+            }
+        }
+        .order {
+            width: 100%;
+            height: 45px;
+            font-family: "Lato";
+            .user-order {
+                display: flex;
+                color: #2d2d2d;
+                .fa-home {
+                    margin: 10px;
+                }
+                h5 {
+                    font-size: 22px;
+                    margin-top: 6px;
+                }
+            }
+        }
+    }
+}
 .rollon {
     transform: translateY(-600px);
     transition: 1.5s;
 }
-.rolldown {
+.userdown {
+    transform: translateY(140px);
+    transition: 0.8s;
+}
+.carddown {
     transform: translateY(620px);
     transition: 0.8s;
 }

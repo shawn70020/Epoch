@@ -12,25 +12,13 @@ use Illuminate\Database\Eloquent\Collection;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $article = Article::paginate(5);
-        return ArticleResources::collection($article)->additional(['meta' => [
-            'version' => '1.0.0',
-            'API_base_url' => url('/')
-        ]]);
-    }
-
-    /**
     * 會員註冊
     * @return json
     */
     public function store(Request $_oRequest)
     {
+        echo $_oRequest->input('date');
+        exit;
         ## 檢查會員是否重複
         $aResult = User::select('email')->where('email', $_oRequest->input('email'))->get();
         if (!collect($aResult)->isEmpty()) {
@@ -99,14 +87,107 @@ class UserController extends Controller
     }
 
     /**
-     * 取得使用者基本資訊
+     * 會員登出
+     * @return json
+     */
+    public function userLogout(Request $_oRequest)
+    {
+        ## 判斷會員id是否為空
+        $iUid =  $_oRequest->input('user');
+        ## 登出解除cookie及資料庫token
+        $aUser =  User::find($iUid);
+        $aUser->token = '';
+        $aUser->save();
+
+        return response()->json(['result' => true]);
+    }
+
+    /**
+     * 取得使用者基本資訊及購物車資料
      * @return json
      */
     public function getUserInfo($sToken)
     {
         $aResult = User::select('id', 'name')->where('token', $sToken)->firstorFail();
         $iUid = $aResult['id'];
-        $aCart = Cart::select('pid','num')->where('uid', $iUid)->get();
+        $aCart = Cart::select('pid', 'num')->where('uid', $iUid)->get();
         return response()->json(['result' => true, 'info'=> $aResult,'cart' => $aCart]);
+    }
+
+    /**
+     * 取得使用者基本資訊
+     * @return json
+     */
+    public function getUserData($_iUid)
+    {
+        $aResult = User::select('email', 'name', 'birthday', 'sex')->where('id', $_iUid)->get();
+        return response()->json(['result' => true, 'data' => $aResult]);
+    }
+
+    /**
+     * 修改個人資料
+     * @return json
+     */
+    public function changeUserInfo($_iUid, Request $_oRequest)
+    {
+        ## 參數初始化
+        $sEmail = $_oRequest->input('email');
+        $sUserName = $_oRequest->input('name');
+        $sBirth = $_oRequest->input('birthday');
+        $sSex = $_oRequest->input('sex');
+
+        ## 檢查會員是否存在及狀態
+        if ($_iUid === '') {
+            return response()->json(['result' => false]);
+        }
+
+        ## 檢查會員是否有特殊符號
+        if (!preg_match("/^[A-Za-z0-9]+$/", $sUserName)) {
+            return response()->json(['result' => false]);
+        }
+
+        ##檢查信箱格式
+        if (!preg_match("/([\w\-]+\@[\w\-]+\.[\w\-]+)/", $sEmail)) {
+            return response()->json(['result' => false]);
+        }
+
+        ## 更改會員資料
+        $User = User::find($_iUid);
+        $User->email = $sEmail;
+        $User->name = $sUserName;
+        $User->birthday = $sBirth;
+        $User->sex = $sSex;
+        $User->save();
+        return response()->json(['result' => true]);
+    }
+
+    public function changeUserPassword($_iUid, Request $_oRequest)
+    {
+        ## 參數初始化
+        $sOld = $_oRequest->input('oldpass');
+        $sNew = $_oRequest->input('newpass');
+
+        ## 檢查會員是否存在及狀態
+        if ($_iUid === '') {
+            return response()->json(['result' => false]);
+        }
+
+        ## 舊密碼確認
+        $aResult =User::select('passwd')->where('id', $_iUid)->get();
+        $sPassWd = $aResult[0]['passwd'];
+        if (!Hash::check($sOld, $sPassWd)) {
+            return response()->json(['result' => false]);
+        }
+
+        ## 密碼重複驗證
+        if ($sOld === $sNew) {
+            return response()->json(['result' => false]);
+        }
+
+        ## 更改密碼
+        $User = User::find($_iUid);
+        $User->passwd = Hash::make($sNew);
+        $User->save();
+        return response()->json(['result' => true]);
     }
 }
