@@ -2,17 +2,17 @@
     <div class="wrap">
         <Navbar></Navbar>
         <div class="banner">
-            <a href="#">
+            <router-link to="/women" class="">
                 <div class="shop-link">
                     WOMEN
                 </div>
-            </a>
+            </router-link>
             <h5>UP TO 30% OFF BETWEEN-SEASON STYLES</h5>
-            <a href="#">
+            <router-link to="/men" class="">
                 <div class="shop-link">
                     MEN
-                </div>
-            </a>
+                </div></router-link
+            >
         </div>
         <div class="navs">
             <ol class="bread">
@@ -225,14 +225,14 @@ export default {
                     })
                     .then(res => {
                         console.log(res);
-                        this.$store.commit('updateCart',parseInt(this.pid));
+                        this.$store.commit("updateCart", parseInt(this.pid));
                     })
                     .catch(err => {
                         console.log(err);
                     });
             }
         },
-         getUserCart() {
+        getUserCart() {
             let aCart = this.$store.state.cart;
             let i;
             let arr = [];
@@ -256,7 +256,7 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
-        },
+        }
     }
 };
 </script>
@@ -502,8 +502,8 @@ $color1: #1ca753;
     padding-left: 21%;
     height: 45px;
     h5 {
-        font-size:30px;
-        font-family: 'IM Fell Great Primer SC' ;
+        font-size: 30px;
+        font-family: "IM Fell Great Primer SC";
         line-height: 45px;
     }
 }

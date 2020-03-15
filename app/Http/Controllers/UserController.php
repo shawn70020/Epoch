@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\models\User;
 use App\models\Cart;
+use App\models\Product;
 use App\Http\Resources\Article as ArticleResources;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,12 +18,10 @@ class UserController extends Controller
     */
     public function store(Request $_oRequest)
     {
-        echo $_oRequest->input('date');
-        exit;
         ## 檢查會員是否重複
         $aResult = User::select('email')->where('email', $_oRequest->input('email'))->get();
         if (!collect($aResult)->isEmpty()) {
-            return response()->json(['result' => false]);
+            return response()->json(['result' => false,'msg' => '此會員已被註冊']);
         };
 
         ## 新增會員
@@ -67,8 +66,9 @@ class UserController extends Controller
 
         ## 判斷身份導路由並給予使用者相關資訊
         $iLevel  = $aResult[0]['level'];
+        $sSex = $aResult[0]['sex'];
         if ($iLevel === 0) {
-            return response()->json(['result' => true, 'level' => 'member', 'token' => $sToken ]);
+            return response()->json(['result' => true, 'level' => 'member', 'sex' => $sSex, 'token' => $sToken ]);
         } else {
             return response()->json(['result' => true, 'level' => 'admin', 'token' => $sToken ]);
         }
@@ -110,7 +110,7 @@ class UserController extends Controller
     {
         $aResult = User::select('id', 'name')->where('token', $sToken)->firstorFail();
         $iUid = $aResult['id'];
-        $aCart = Cart::select('pid', 'num')->where('uid', $iUid)->get();
+        $aCart = Cart::select('pid', 'num')->where('uid', $iUid)->where('delete_at', null)->get();
         return response()->json(['result' => true, 'info'=> $aResult,'cart' => $aCart]);
     }
 
@@ -138,17 +138,17 @@ class UserController extends Controller
 
         ## 檢查會員是否存在及狀態
         if ($_iUid === '') {
-            return response()->json(['result' => false]);
+            return response()->json(['result' => false,'msg' => '會員不存在']);
         }
 
         ## 檢查會員是否有特殊符號
         if (!preg_match("/^[A-Za-z0-9]+$/", $sUserName)) {
-            return response()->json(['result' => false]);
+            return response()->json(['result' => false,'msg' => '會員格式錯誤']);
         }
 
         ##檢查信箱格式
         if (!preg_match("/([\w\-]+\@[\w\-]+\.[\w\-]+)/", $sEmail)) {
-            return response()->json(['result' => false]);
+            return response()->json(['result' => false,'msg' => '信箱格式錯誤']);
         }
 
         ## 更改會員資料
@@ -161,6 +161,10 @@ class UserController extends Controller
         return response()->json(['result' => true]);
     }
 
+    /**
+     * 修改個人密碼
+     * @return json
+     */
     public function changeUserPassword($_iUid, Request $_oRequest)
     {
         ## 參數初始化
@@ -169,19 +173,19 @@ class UserController extends Controller
 
         ## 檢查會員是否存在及狀態
         if ($_iUid === '') {
-            return response()->json(['result' => false]);
+            return response()->json(['result' => false,'msg' => '會員不存在!']);
         }
 
         ## 舊密碼確認
         $aResult =User::select('passwd')->where('id', $_iUid)->get();
         $sPassWd = $aResult[0]['passwd'];
         if (!Hash::check($sOld, $sPassWd)) {
-            return response()->json(['result' => false]);
+            return response()->json(['result' => false,'msg' => '舊密碼錯誤!']);
         }
 
         ## 密碼重複驗證
         if ($sOld === $sNew) {
-            return response()->json(['result' => false]);
+            return response()->json(['result' => false,'msg' => '新舊密碼不能重複!']);
         }
 
         ## 更改密碼
@@ -189,5 +193,22 @@ class UserController extends Controller
         $User->passwd = Hash::make($sNew);
         $User->save();
         return response()->json(['result' => true]);
+    }
+
+    /**
+     * 取得使用者保留商品資料
+     * @return json
+     */
+    public function getUserSaved($_iUid)
+    {
+        ## 取得使用者保留商品資料
+        $aResult = Cart::select('pid')->where('uid', $_iUid)->where('delete_at', 1)->get();
+        // print_r($aResult);
+        $arr = [];
+        for ($i = 0;$i < count($aResult); $i++) {
+            $aData = Product::find($aResult[$i]['pid']);
+            array_push($arr, $aData);
+        }
+        return response()->json(['result' => true, 'data' => $arr]);
     }
 }

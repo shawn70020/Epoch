@@ -183,8 +183,8 @@ export default {
         return {
             show: "none",
             products: [],
-            nowNum: 12,
-            allNum: 1,
+            nowNum: '',
+            allNum: '',
             bar: "1%",
             page: 2,
             loadBtn: "block"
@@ -216,6 +216,7 @@ export default {
                 .then(res => {
                     this.products = res.data.data;
                     this.allNum = res.data.total;
+                    this.nowNum = res.data.data.length;
                     let barWidth;
                     barWidth = (
                         this.products.length *

@@ -8,6 +8,30 @@ use App\models\Product;
 class ProductsController extends Controller
 {
     /**
+     * 取得全部商品資料
+     * @return json
+     */
+    public function getAllProducts()
+    {
+        $aResult = Product::skip(0)->take(10)->get();
+
+        return response()->json(['result' => true, 'data' => $aResult]);
+    }
+
+    public function changeAdminPage($num)
+    {
+        $aResult = Product::all();
+        $iTotalPage =  floor(count($aResult)/10) + 1;
+
+        ##取得抓取筆數
+        $nowNum = ($num- 1) * 10;
+        ## 取得單一商品資料
+        $aResult = Product::skip($nowNum)->take(10)->get();
+
+        return response()->json(['result' => true, 'data' => $aResult,'total' => $iTotalPage]);
+    }
+
+    /**
      * 取得男性商品資料
      * @return json
      */
@@ -98,16 +122,49 @@ class ProductsController extends Controller
     {
         ## 新增商品
         $aParam = [
-            'name' => $_oRequest->input('title'),
+            'name' => $_oRequest->input('name'),
             'sex' => $_oRequest->input('sex'),
-            'class' => $_oRequest->input('category'),
+            'class' => $_oRequest->input('class'),
             'price' => $_oRequest->input('price'),
             'content' => $_oRequest->input('content'),
-            'detail' => $_oRequest->input('description'),
+            'detail' => $_oRequest->input('detail'),
             'image'  => $_oRequest->input('image'),
-            'enable'  => $_oRequest->input('is_enabled'),
+            'enable'  => $_oRequest->input('enable'),
         ];
         Product::create($aParam);
         return response()->json(['result' => true]);
+    }
+
+    /**
+     * 更新商品
+     * @return json
+     */
+    public function updateProducts(Request $_oRequest)
+    {
+        ## 參數初始化
+        $iPid = $_oRequest->input('id');
+        $sName = $_oRequest->input('name');
+        $sSex = $_oRequest->input('sex');
+        $sClass = $_oRequest->input('class');
+        $iPrice = $_oRequest->input('price');
+        $sContent = $_oRequest->input('content');
+        $sDetail = $_oRequest->input('detail');
+        $sImage = $_oRequest->input('image');
+        $iEnable = $_oRequest->input('enable');
+
+        ## 更新商品
+        $product = Product::find($iPid);
+        $product->name = $sName;
+        $product->sex = $sSex;
+        $product->class = $sClass;
+        $product->price = $iPrice;
+        $product->content = $sContent;
+        $product->detail = $sDetail;
+        $product->image = $sImage;
+        $product->enable = $iEnable;
+        $product->save();
+
+        return response()->json(['result' => true]);
+
     }
 }

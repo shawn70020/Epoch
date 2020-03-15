@@ -10,7 +10,7 @@ export default new Vuex.Store({
         isLogin: false,
         isEmpty: false,
         info: {},
-        cart: {}
+        cart: {},
     },
     mutations: {
         async getUserInfo(state, token) {
@@ -52,7 +52,7 @@ export default new Vuex.Store({
             if (state.cart.length === 0) {
                 state.isEmpty = false;
             }
-        }
+        },
     },
     modules: {
         user

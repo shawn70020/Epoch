@@ -9,10 +9,12 @@ import Products from "../views/Products"
 import Men from "../views/Men"
 import Women from "../views/Women"
 import Item from "../views/Item"
+import Saved from "../views/Saved"
 import Bag from "../views/Bag"
 import Account from "../views/Account"
 import Details from "../components/Details"
 import Password from "../components/Password"
+import Coupon from "../components/Coupon"
 
 Vue.use(VueRouter)
 
@@ -71,6 +73,14 @@ const routes = [{
         },
     },
     {
+        path: '/user/saved',
+        name: 'Saved',
+        component: Saved,
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
         path: '/account',
         name: 'Account',
         component: Account,
@@ -110,6 +120,14 @@ const routes = [{
                 path: 'products',
                 name: 'Products',
                 component: Products,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: 'coupon',
+                name: 'Coupon',
+                component: Coupon,
                 meta: {
                     requiresAuth: true
                 },

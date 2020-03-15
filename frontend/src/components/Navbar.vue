@@ -23,9 +23,9 @@
                         <a href="#"><i class="icon far fa-user"></i></a>
                     </li>
                     <li>
-                        <a href="#" @click="signout"
+                        <router-link to="/user/saved" class="women"
                             ><i class="icon far fa-heart"></i
-                        ></a>
+                        ></router-link>
                     </li>
                     <li class="cart" v-on:mouseover="cartMouseOver">
                         <a href="#"><i class="icon fas fa-shopping-bag"></i></a>
@@ -38,8 +38,14 @@
         </header>
         <div class="user-wrap" :class="{ rollon: isClose, userdown: isUser }">
             <div class="top">
-                <h5>Hi {{ userName }}</h5>
-                <a href="#" @click="signout">Sign Out</a>
+                <h5 v-if="userName !== undefined">Hi {{ userName }}</h5>
+                <router-link to="/login" class="user-account">
+                <h5 v-if="userName == undefined">Sign In |</h5>
+                </router-link>
+                <router-link to="/register" class="user-account">
+                <h5 v-if="userName == undefined">Join</h5>
+                </router-link>
+                <a href="#" v-if="userName !== undefined" @click="signout">Sign Out</a>
                 <i class="fas fa-times" @click="closeItem"></i>
             </div>
             <div class="info">
@@ -111,8 +117,8 @@ export default {
     name: "Navbar",
     data() {
         return {
-            userName: this.$store.state.info.name,
-            uid: this.$store.state.info.id,
+            userName: "",
+            uid: "",
             cart: this.$store.state.cart,
             carts: [],
             items: "",
@@ -130,6 +136,9 @@ export default {
     computed: {
         getCart() {
             return this.$store.state.cart;
+        },
+        userInfo() {
+            return this.$store.state.info;
         }
     },
     watch: {
@@ -156,6 +165,7 @@ export default {
                             post: arr
                         })
                         .then(res => {
+                            this.total = 0;
                             this.carts = res.data.data;
                             for (i = 0; i < aCart.length; i++) {
                                 this.carts[i].item = aCart[i].num;
@@ -169,6 +179,14 @@ export default {
                             console.log(err);
                         });
                 }
+            },
+            immediate: true,
+            deep: true
+        },
+        userInfo: {
+            handler(aInfo) {
+                this.userName = aInfo.name;
+                this.uid = aInfo.id;
             },
             immediate: true,
             deep: true
@@ -195,7 +213,7 @@ export default {
         deleteCart(id) {
             axios.delete(`/api/cart/${this.uid}/${id}`).then(res => {
                 console.log(res);
-                this.$store.commit('deleteCart',parseInt(id));
+                this.$store.commit("deleteCart", parseInt(id));
             });
         },
         closeItem() {

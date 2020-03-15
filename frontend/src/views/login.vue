@@ -1,7 +1,7 @@
 <template>
     <div class="wrap">
         <div class="title">
-            <h2>VueStore</h2>
+            <h2>Epoch</h2>
         </div>
         <div class="container">
             <div class="tabs">
@@ -53,7 +53,7 @@
             <div class="txt">
                 <h5>WELCOME</h5>
                 <h5>TO</h5>
-                <h5>VueSTORE</h5>
+                <h5>Epoch</h5>
                 <h5>&copy; 2020</h5>
             </div>
         </div>
@@ -92,9 +92,13 @@ export default {
                         localStorage.setItem("token", res.data.token);
                         this.$store.state.isLogin = true;
                         if (res.data.level === "member") {
-                            vm.$router.push("/men");
+                            if (res.data.sex === "M") {
+                                vm.$router.push("/men");
+                            } else {
+                                vm.$router.push("/women");
+                            }
                         } else {
-                            vm.$router.push("/admin");
+                            vm.$router.push("/admin/dashboard");
                         }
                     } else {
                         vm.showError = 1;
@@ -105,12 +109,12 @@ export default {
                 });
         },
         showPassword() {
-            if(this.type === 'password'){
-                this.type = 'text';
-                this.btnText = 'HIDE'
+            if (this.type === "password") {
+                this.type = "text";
+                this.btnText = "HIDE";
             } else {
-                this.type = 'password';
-                this.btnText = 'SHOW'
+                this.type = "password";
+                this.btnText = "SHOW";
             }
         }
     }

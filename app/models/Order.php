@@ -13,10 +13,11 @@ class Order extends Model
     protected $guarded = ['id'];
     protected $fillable = ['uid'];
 
-    public function addOrder($_iUid, $_aCart)
+    public function addOrder($_iUid, $_aCart,$_iTotal)
     {
         $iOid = new Order;
         $iOid->uid = $_iUid;
+        $iOid->total = $_iTotal;
         $iOid->save();
         $aLastOid = Order::where('uid', $_iUid)->latest('addDate')->first();
 

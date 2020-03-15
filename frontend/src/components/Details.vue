@@ -140,7 +140,17 @@ export default {
                     sex: this.user[0].sex
                 })
                 .then(res => {
-                    this.value1 = res.data.data;
+                    if(res.data.result === false){
+                        this.$notify.error({
+                            title: "抱歉",
+                            message: res.data.msg
+                        });
+                    } else {
+                        this.$message({
+                            message: "恭喜您！資料修改成功",
+                            type: "success"
+                        });
+                    }
                 });
         }
     }

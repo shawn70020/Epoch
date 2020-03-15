@@ -14,66 +14,23 @@
                 </div></router-link
             >
         </div>
-        <div class="navs">
-            <ol class="bread">
-                <li><router-link to="/">Home</router-link></li>
-                <li><router-link to="/women">Women</router-link></li>
-                <li><a href="#">New In</a></li>
-            </ol>
-        </div>
-        <div class="container">
-            <div class="introduce">
-                <h3>Women's New in</h3>
-                <p>
-                    Looking for something new? Discover emerging trends, the
-                    latest clothing for men and the freshest new fits with our
-                    ASOS New In page. From sharp office shirts and suits to see
-                    you right through to 5PM, to the shorts, tees and vests
-                    that’ll keep you looking fresh– you can find the look here
-                    as soon as it lands. What’s more, our men’s new clothing
-                    selection includes all those accessory touches that make the
-                    difference, from laidback caps and timeless
-                    <span id="more" :style="{ display: show }">
-                        >shades to boardroom-ready watches and belts. Expect
-                        fresh drops from sportswear authorities Nike and adidas
-                        Originals. If you’re after a style change up, you’ll
-                        find the best in men’s new clothing, shoes and
-                        accessories courtesy of our very own ASOS Design. Men’s
-                        denim doesn’t get much better than the likes of Cheap
-                        Monday, while brands like BOSS combine sophisticated
-                        prints with casual fits for a weekend-ready look.
-                    </span>
-                </p>
-                <div class="view-btn">
-                    <button
-                        type="button"
-                        class="btn"
-                        id="myBtn"
-                        @click="showMore"
-                    >
-                        View more
-                    </button>
-                </div>
-            </div>
+        <div class="title">
+            <h5>Saved Items</h5>
         </div>
         <div class="product">
             <div v-for="item in products" :key="item.id" class="item">
-                <router-link
-                    :to="{
-                        name: 'Item',
-                        params: { pid: item.id }
-                    }"
-                >
-                    <img
-                        :src="'data:image/png;base64,' + item.image"
-                        class="img-fluid"
-                    />
-                    <div class="heart"><i class="far fa-heart"></i></div>
-                    <div class="item-txt">
-                        <h5>{{ item.name }}</h5>
-                        <h4>NT {{ item.price | currency }}</h4>
-                    </div>
-                </router-link>
+                <img
+                    :src="'data:image/png;base64,' + item.image"
+                    class="img-fluid"
+                />
+                <div class="heart"><i class="far fa-trash-alt"></i></div>
+                <div class="item-txt">
+                    <h5>{{ item.name }}</h5>
+                    <h4>NT {{ item.price | currency }}</h4>
+                </div>
+                <button class="bag-btn" @click="moveToBag(item.id)">
+                    MOVE TO BAG
+                </button>
             </div>
         </div>
         <div class="page">
@@ -179,15 +136,16 @@
 import axios from "axios";
 import Navbar from "../components/Navbar";
 export default {
-    name: "Women",
+    name: "Saved",
     data() {
         return {
+            uid: this.$store.state.info.id,
             show: "none",
-            page: 2,
             products: [],
-            nowNum: '',
-            allNum: '',
+            nowNum: 12,
+            allNum: 1,
             bar: "1%",
+            page: 2,
             loadBtn: "block"
         };
     },
@@ -195,29 +153,15 @@ export default {
         Navbar
     },
     created() {
-        this.getProducts();
+        this.getSavedItems(this.uid);
     },
     methods: {
-        showMore() {
-            let btnTxt = document.getElementById("myBtn");
-            let btn = document.querySelector(".view-btn");
-            if (this.show == "none") {
-                this.show = "block";
-                btnTxt.innerHTML = "View Less";
-                btn.style.position = "static";
-            } else {
-                this.show = "none";
-                btnTxt.innerHTML = "View More";
-                btn.style.position = "relative";
-            }
-        },
-        getProducts() {
+        getSavedItems(id) {
             axios
-                .get("/api/products/women")
+                .get(`/api/user/saved/${id}`)
                 .then(res => {
                     this.products = res.data.data;
                     this.allNum = res.data.total;
-                    this.nowNum = res.data.data.length;
                     let barWidth;
                     barWidth = (
                         this.products.length *
@@ -234,9 +178,20 @@ export default {
                     console.log(err);
                 });
         },
+        moveToBag(id) {
+            axios
+                .put(`/api/saved/moveback/${this.uid}/${id}`)
+                .then(res => {
+                    console.log(res);
+                    this.getSavedItems(this.uid);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
         changePage() {
             axios
-                .get(`/api/products/women/page=${this.page}`)
+                .get(`/api/products/men/page=${this.page}`)
                 .then(res => {
                     let newData = res.data.data;
                     console.log(newData[0]);
@@ -266,11 +221,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$color: #fa81e4;
+$color: #1010c4;
 .banner {
     display: flex;
     height: 50px;
-    background: #232323;
+    background: rgb(187, 167, 249);
     align-items: center;
     justify-content: space-around;
     font-family: "Sriracha";
@@ -295,70 +250,15 @@ $color: #fa81e4;
         }
     }
 }
-.navs {
-    background: #fff;
-    height: 50px;
-    border-bottom: 1px solid #ccc;
-}
-.bread {
-    display: flex;
-    list-style: none;
-    line-height: 50px;
-    font-size: 18px;
-    font-family: "Sriracha";
-    li {
-        padding: 0 15px;
-        a {
-            text-decoration: none;
-            color: #2d2d2d;
-        }
-        &:last-child {
-            &::before {
-                content: ">";
-                color: #999;
-                margin-right: 15px;
-            }
-            a {
-                color: #999;
-            }
-        }
-    }
-    li + li {
-        padding-left: 0;
-    }
-    li + li::before {
-        content: ">";
-        color: #2d2d2d;
-        margin-right: 15px;
-    }
-}
-.container {
-    .introduce {
-        text-align: center;
-        margin-top: 30px;
-        font-family: "Sriracha";
-        h3 {
-            font-size: 28px;
-        }
-        p {
-            font-size: 16px;
-            color: lighten(#000000, 35%);
-        }
-        .view-btn {
-            position: relative;
-            top: -32px;
-            width: 100%;
-            height: 70px;
-            background: #fff;
-            box-shadow: 0 -5px 10px 0 #fff;
-            .btn {
-                font-family: "Sriracha";
-                padding: 0;
-                border: none;
-                background: none;
-                outline: none;
-            }
-        }
+.title {
+    width: 100%;
+    height: 80px;
+    background: #eee;
+    color: #2d2d2d;
+    text-align: center;
+    h5 {
+        line-height: 80px;
+        font-weight: bold;
     }
 }
 .product {
@@ -385,7 +285,7 @@ $color: #fa81e4;
             position: absolute;
             background: #fff;
             border-radius: 50%;
-            bottom: 100px;
+            bottom: 110px;
             right: 20px;
             .far {
                 line-height: 36px;
@@ -404,6 +304,15 @@ $color: #fa81e4;
                 font-size: 18px;
                 color: #2d2d2d;
             }
+        }
+        .bag-btn {
+            background: Transparent;
+            width: 100%;
+            height: 32px;
+            font-size: 14px;
+            font-weight: bold;
+            border: 2px solid darken(#1ca753, 5%);
+            margin-top: 15px;
         }
     }
 }

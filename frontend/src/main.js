@@ -53,13 +53,15 @@ router.beforeEach((to, from, next) => {
             next({
                 path: '/login',
             });
-        } else if (!isLogin && to.path !== '/login') { // 已經在登入頁面進入首頁的時候
+        } else if (!isLogin && to.path !== '/login') { 
+            console.log(123)// 已經在登入頁面進入首頁的時候
             //將local狀態改變
             localStorage.setItem('isLogin', store.state.isLogin);
             //使用local的token給vuex取得該使用者資訊
             store.commit('getUserInfo', token);
             next();
-        } else if (isLogin && to.path !== '/login') { // 登入進入後重新整理頁面時
+        } else if (isLogin && to.path !== '/login') {
+            console.log(9) // 登入進入後重新整理頁面時
             //使用local的token給vuex取得該使用者資訊
             store.commit('getUserInfo', token);
             //使用local的isLogin給vuex重新設置isLogin

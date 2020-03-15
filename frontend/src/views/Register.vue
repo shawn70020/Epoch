@@ -1,7 +1,7 @@
 <template>
     <div class="wrap">
         <div class="title">
-            <h2>VueStore</h2>
+            <h2>Epoch</h2>
         </div>
         <div class="container">
             <div class="tabs">
@@ -81,7 +81,6 @@
                         JOIN
                     </button>
                 </form>
-                <button @click="getdate">jijo</button>
             </div>
             <div class="txt">
                 <h5>&copy; 2020</h5>
@@ -91,7 +90,6 @@
 </template>
 
 <script>
-// var moment = require("moment");
 import axios from "axios";
 import VueDatepickerLocal from "vue-datepicker-local";
 
@@ -116,6 +114,19 @@ export default {
         this.getdate();
     },
     methods: {
+        success() {
+            this.$notify({
+                title: "成功",
+                message: "註冊會員",
+                type: "success"
+            });
+        },
+        error() {
+            this.$notify.error({
+                title: "抱歉",
+                message: "註冊失敗！請重新嘗試"
+            });
+        },
         signin() {
             const vm = this;
             axios
@@ -128,19 +139,23 @@ export default {
                 })
                 .then(res => {
                     if (res.data.result === true) {
-                        vm.$router.push("/login");
+                        this.$message({
+                            message: "恭喜您！註冊會員成功",
+                            type: "success"
+                        });
+                        setTimeout(() => {
+                            vm.$router.push("/login");
+                        }, 1500);
+                    } else {
+                        this.$notify.error({
+                            title: "抱歉",
+                            message: res.data.msg
+                        });
                     }
                 })
                 .catch(err => {
                     console.log(err);
                 });
-        },
-        getdate() {
-            axios.get("/api/date").then(res => {
-                this.user.time = res.data.data;
-                // let d = moment(res.data.data).format();
-                // console.log(d);
-            });
         }
     }
 };
