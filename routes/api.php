@@ -40,4 +40,7 @@ Route::delete('/cart/{uid}/{pid}', 'CartController@deleteCart');
 Route::post('/user/coupon', 'CartController@useCoupon');
 Route::get('/admin/products', 'ProductsController@getAllProducts');
 Route::get('/admin/products/page={num}', 'ProductsController@changeAdminPage');
+Route::get('/admin/coupons/page={num}', 'OrderController@changeCouponPage');
+Route::post('/coupons/upload', 'OrderController@createCoupons')->where('any', '.*');
+Route::put('/coupons/update', 'OrderController@updateCoupons')->where('any', '.*');
 

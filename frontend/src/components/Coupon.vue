@@ -1,10 +1,10 @@
 <template>
     <div class="wrap">
         <div class="top">
-            <div class="title"><h3>優惠券管理</h3></div>
+            <div class="title"><h3>商品管理</h3></div>
             <div class="open-modal">
                 <button class="btn btn-primary" @click="openModal(true)">
-                    建立優惠券
+                    建立新商品
                 </button>
             </div>
         </div>
@@ -21,10 +21,9 @@
                 </thead>
                 <tbody>
                     <tr v-for="item in products" :key="item.id">
-                        <th>{{ item.class }}</th>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.price }}</td>
-                        <td>{{ item.num }}</td>
+                        <th>{{ item.name }}</th>
+                        <td>{{ item.discount }}</td>
+                        <td>{{ moment(item.expiry_date).calendar() }}</td>
                         <td v-if="item.enable === 1">啟用</td>
                         <td v-if="item.enable === 0">未啟用</td>
                         <td class="operate-btn">
@@ -53,7 +52,7 @@
                 <div class="modal-content border-0">
                     <div class="modal-header bg-dark text-white">
                         <h5 class="modal-title" id="exampleModalLabel">
-                            <span>優惠券管理</span>
+                            <span>商品管理</span>
                         </h5>
                         <button
                             type="button"
@@ -68,24 +67,24 @@
                         <div class="row">
                             <div class="col-sm-8">
                                 <div class="form-group">
-                                    <label for="title">券名</label>
+                                    <label for="title">優惠券名</label>
                                     <input
                                         type="text"
                                         class="form-control"
                                         id="title"
                                         v-model="tempProduct.name"
-                                        placeholder="請輸入優惠券名稱"
+                                        placeholder="請輸入商品名稱"
                                     />
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label for="category">優惠碼</label>
+                                        <label for="category">折扣碼</label>
                                         <input
                                             type="text"
                                             class="form-control"
                                             id="category"
-                                            v-model="tempProduct.class"
-                                            placeholder="請輸入分類"
+                                            v-model="tempProduct.code"
+                                            placeholder="請輸入折扣法"
                                         />
                                     </div>
                                 </div>
@@ -99,8 +98,8 @@
                                             type="number"
                                             class="form-control"
                                             id="origin_price"
-                                            v-model="tempProduct.price"
-                                            placeholder="請輸入原價"
+                                            v-model="tempProduct.discount"
+                                            placeholder="請輸入百分比"
                                         />
                                     </div>
                                 </div>
@@ -108,9 +107,9 @@
                                 <div class="form-group">
                                     <label for="due_date">到期日</label>
                                     <el-date-picker
-                                        v-model="tempProduct.date"
+                                        v-model="tempProduct.expiry_date"
                                         type="date"
-                                        placeholder="Choose Date"
+                                        placeholder="請選擇到期日"
                                     >
                                     </el-date-picker>
                                 </div>
@@ -207,6 +206,7 @@
 </template>
 
 <script>
+var moment = require("moment");
 import axios from "axios";
 import $ from "jquery";
 
@@ -214,6 +214,7 @@ export default {
     name: "Coupon",
     data() {
         return {
+            moment: moment,
             products: [],
             page: 1,
             total: "",
@@ -226,12 +227,15 @@ export default {
             }
         };
     },
+    components: {
+        // Pagination,
+    },
     created() {
-        this.getProducts();
+        this.getCoupons();
     },
     methods: {
-        getProducts() {
-            axios.get(`/api/admin/products/page=${this.page}`).then(res => {
+        getCoupons() {
+            axios.get(`/api/admin/coupons/page=${this.page}`).then(res => {
                 this.products = res.data.data;
                 this.total = res.data.total;
             });
@@ -240,7 +244,7 @@ export default {
             let page = this.page - 1;
             if (page > 0) {
                 axios
-                    .get(`/api/admin/products/page=${page}`)
+                    .get(`/api/admin/coupons/page=${page}`)
                     .then(res => {
                         this.products = res.data.data;
                         this.page = page;
@@ -259,7 +263,7 @@ export default {
             let page = this.page + 1;
             if (page <= this.total) {
                 axios
-                    .get(`/api/admin/products/page=${page}`)
+                    .get(`/api/admin/coupons/page=${page}`)
                     .then(res => {
                         this.products = res.data.data;
                         this.page = page;
@@ -277,14 +281,10 @@ export default {
         openModal(isNew, item) {
             if (isNew) {
                 this.tempProduct = {
-                    is_enabled: 0
+                    enable: 0
                 };
-                this.imageUrl = null;
-                $("#customFile").val("");
                 this.isNew = true;
             } else {
-                this.imageUrl = null;
-                $("#customFile").val("");
                 this.tempProduct = Object.assign({}, item);
                 this.isNew = false;
             }
@@ -294,11 +294,16 @@ export default {
             const vm = this;
             if (!vm.isNew) {
                 axios
-                    .put("/api/products/update", vm.tempProduct)
+                    .put("/api/coupons/update", vm.tempProduct)
                     .then(res => {
                         if (res.data.result === true) {
+                            this.$notify({
+                                title: "成功",
+                                message: "已編輯一筆優惠券",
+                                type: "success"
+                            });
                             $("#productModal").modal("hide");
-                            this.getProducts();
+                            this.getCoupons();
                         }
                     })
                     .catch(err => {
@@ -306,11 +311,16 @@ export default {
                     });
             } else {
                 axios
-                    .post("/api/products/upload", vm.tempProduct)
+                    .post("/api/coupons/upload", vm.tempProduct)
                     .then(res => {
                         if (res.data.result === true) {
+                            this.$notify({
+                                title: "成功",
+                                message: "已新增一筆優惠券",
+                                type: "success"
+                            });
                             $("#productModal").modal("hide");
-                            this.getProducts();
+                            this.getCoupons();
                         }
                     })
                     .catch(err => {
@@ -332,6 +342,30 @@ export default {
                 vm.isLoading = false;
                 this.getProducts();
             });
+        },
+        uploadFile() {
+            const uploadedFile = this.$refs.files.files[0];
+            const formData = new FormData();
+            formData.append("file-to-upload", uploadedFile);
+            const config = {
+                headers: { "Content-Type": "multipart/form-data" }
+            };
+            this.status.fileUploading = true;
+            axios
+                .post("/api/products/imageupload", formData, config)
+                .then(res => {
+                    this.status.fileUploading = false;
+                    if (res.data.result === true) {
+                        this.imageUrl = URL.createObjectURL(uploadedFile);
+                        this.tempProduct.image = res.data.data;
+                    } else {
+                        this.imageUrl = null;
+                        this.tempProduct.image = "";
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }
 };
