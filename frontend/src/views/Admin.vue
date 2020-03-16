@@ -18,7 +18,7 @@
                                 <i class="fas fa-box-open"></i>商品
                             </div>
                         </router-link>
-                        <router-link to="/">
+                        <router-link to="/admin/orders">
                         <div class="item">
                             <i class="far fa-list-alt"></i>訂單
                         </div>

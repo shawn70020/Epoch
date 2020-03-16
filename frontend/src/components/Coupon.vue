@@ -227,9 +227,6 @@ export default {
             }
         };
     },
-    components: {
-        // Pagination,
-    },
     created() {
         this.getCoupons();
     },

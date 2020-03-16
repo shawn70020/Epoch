@@ -27,6 +27,15 @@ import './plugins/element.js';
 import currencyFilter from './filters/currency';
 import moment from "moment";
 Vue.prototype.$moment = moment;
+import ECharts from 'vue-echarts'
+import 'echarts/lib/chart/line'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/chart/pie'
+import 'echarts/lib/component/tooltip'
+import 'echarts/lib/component/polar'
+import 'echarts/lib/component/legend'
+import 'echarts/lib/component/title.js'
+Vue.component('chart', ECharts)
 
 extend('required', {
     ...required,
@@ -54,14 +63,14 @@ router.beforeEach((to, from, next) => {
                 path: '/login',
             });
         } else if (!isLogin && to.path !== '/login') { 
-            console.log(123)// 已經在登入頁面進入首頁的時候
+            // console.log(123)// 已經在登入頁面進入首頁的時候
             //將local狀態改變
             localStorage.setItem('isLogin', store.state.isLogin);
             //使用local的token給vuex取得該使用者資訊
             store.commit('getUserInfo', token);
             next();
         } else if (isLogin && to.path !== '/login') {
-            console.log(9) // 登入進入後重新整理頁面時
+            // console.log(9) // 登入進入後重新整理頁面時
             //使用local的token給vuex取得該使用者資訊
             store.commit('getUserInfo', token);
             //使用local的isLogin給vuex重新設置isLogin

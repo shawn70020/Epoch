@@ -11,10 +11,12 @@ import Women from "../views/Women"
 import Item from "../views/Item"
 import Saved from "../views/Saved"
 import Bag from "../views/Bag"
+import Checkout from "../views/Checkout"
 import Account from "../views/Account"
 import Details from "../components/Details"
 import Password from "../components/Password"
 import Coupon from "../components/Coupon"
+import Orders from "../components/Orders"
 
 Vue.use(VueRouter)
 
@@ -73,6 +75,14 @@ const routes = [{
         },
     },
     {
+        path: '/user/checkout',
+        name: 'Checkout',
+        component: Checkout,
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
         path: '/user/saved',
         name: 'Saved',
         component: Saved,
@@ -120,6 +130,14 @@ const routes = [{
                 path: 'products',
                 name: 'Products',
                 component: Products,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
+                path: 'orders',
+                name: 'Orders',
+                component: Orders,
                 meta: {
                     requiresAuth: true
                 },

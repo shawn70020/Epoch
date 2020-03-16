@@ -12,20 +12,18 @@
             <table class="table table-borderless">
                 <thead>
                     <tr>
-                        <th scope="col">分類</th>
                         <th scope="col">名稱</th>
-                        <th scope="col">售價</th>
-                        <th scope="col">庫存</th>
+                        <th scope="col">折扣(%)</th>
+                        <th scope="col">到期日</th>
                         <th scope="col">狀態</th>
                         <th scope="col">操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item in products" :key="item.id">
-                        <th>{{ item.class }}</th>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.price }}</td>
-                        <td>{{ item.num }}</td>
+                        <th>{{ item.name }}</th>
+                        <td>{{ item.discount }}</td>
+                        <td>{{ moment(item.expiry_date).calendar() }}</td>
                         <td v-if="item.enable === 1">啟用</td>
                         <td v-if="item.enable === 0">未啟用</td>
                         <td class="operate-btn">
@@ -67,52 +65,9 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label for="image">輸入圖片網址</label>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        id="image"
-                                        v-model="tempProduct.imageUrl"
-                                        placeholder="請輸入圖片連結"
-                                    />
-                                </div>
-                                <div class="form-group">
-                                    <label for="customFile"
-                                        >或 上傳圖片
-                                        <i
-                                            class="fas fa-spinner fa-spin"
-                                            v-if="status.fileUploading"
-                                        ></i>
-                                    </label>
-                                    <input
-                                        type="file"
-                                        id="customFile"
-                                        class="form-control"
-                                        ref="files"
-                                        @change="uploadFile"
-                                    />
-                                </div>
-                                <img
-                                    class="img-fluid"
-                                    v-if="imageUrl"
-                                    :src="imageUrl"
-                                    alt=""
-                                />
-                                <img
-                                    class="img-fluid"
-                                    v-if="tempProduct.image && !imageUrl"
-                                    :src="
-                                        'data:image/png;base64,' +
-                                            tempProduct.image
-                                    "
-                                    alt=""
-                                />
-                            </div>
                             <div class="col-sm-8">
                                 <div class="form-group">
-                                    <label for="title">品名</label>
+                                    <label for="title">優惠券名</label>
                                     <input
                                         type="text"
                                         class="form-control"
@@ -121,82 +76,42 @@
                                         placeholder="請輸入商品名稱"
                                     />
                                 </div>
-
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label for="category">大分類</label>
-                                        <input
-                                            class="form-control"
-                                            type="radio"
-                                            name="inlineRadioOptions"
-                                            id="category"
-                                            value="W"
-                                            v-model="tempProduct.sex"
-                                        />
-                                        <label
-                                            class="form-check-label"
-                                            for="category"
-                                            >女裝</label
-                                        >
-                                        <input
-                                            class="form-control"
-                                            type="radio"
-                                            name="inlineRadioOptions"
-                                            id="category"
-                                            value="M"
-                                            v-model="tempProduct.sex"
-                                        />
-                                        <label
-                                            class="form-check-label"
-                                            for="inlineRadio2"
-                                            >男裝</label
-                                        >
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="category">細分類</label>
+                                        <label for="category">折扣碼</label>
                                         <input
                                             type="text"
                                             class="form-control"
                                             id="category"
-                                            v-model="tempProduct.class"
-                                            placeholder="請輸入分類"
+                                            v-model="tempProduct.code"
+                                            placeholder="請輸入折扣法"
                                         />
                                     </div>
                                 </div>
 
                                 <div class="form-row">
                                     <div class="form-group col-md-8">
-                                        <label for="origin_price">售價</label>
+                                        <label for="origin_price"
+                                            >折扣百分比</label
+                                        >
                                         <input
                                             type="number"
                                             class="form-control"
                                             id="origin_price"
-                                            v-model="tempProduct.price"
-                                            placeholder="請輸入原價"
+                                            v-model="tempProduct.discount"
+                                            placeholder="請輸入百分比"
                                         />
                                     </div>
                                 </div>
                                 <hr />
-
                                 <div class="form-group">
-                                    <label for="description">產品描述</label>
-                                    <textarea
-                                        type="text"
-                                        class="form-control"
-                                        id="description"
-                                        v-model="tempProduct.detail"
-                                        placeholder="請輸入產品描述"
-                                    ></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="content">說明內容</label>
-                                    <textarea
-                                        type="text"
-                                        class="form-control"
-                                        id="content"
-                                        v-model="tempProduct.content"
-                                        placeholder="請輸入產品說明內容"
-                                    ></textarea>
+                                    <label for="due_date">到期日</label>
+                                    <el-date-picker
+                                        v-model="tempProduct.expiry_date"
+                                        type="date"
+                                        placeholder="請選擇到期日"
+                                    >
+                                    </el-date-picker>
                                 </div>
                                 <div class="form-group">
                                     <div class="form-check">
@@ -291,14 +206,15 @@
 </template>
 
 <script>
+var moment = require("moment");
 import axios from "axios";
 import $ from "jquery";
-// import Pagination from '../components/Pagination';
 
 export default {
-    name: "Products",
+    name: "Orders",
     data() {
         return {
+            moment: moment,
             products: [],
             page: 1,
             total: "",
@@ -315,11 +231,11 @@ export default {
         // Pagination,
     },
     created() {
-        this.getProducts();
+        this.getCoupons();
     },
     methods: {
-        getProducts() {
-            axios.get(`/api/admin/products/page=${this.page}`).then(res => {
+        getCoupons() {
+            axios.get(`/api/admin/coupons/page=${this.page}`).then(res => {
                 this.products = res.data.data;
                 this.total = res.data.total;
             });
@@ -328,7 +244,7 @@ export default {
             let page = this.page - 1;
             if (page > 0) {
                 axios
-                    .get(`/api/admin/products/page=${page}`)
+                    .get(`/api/admin/coupons/page=${page}`)
                     .then(res => {
                         this.products = res.data.data;
                         this.page = page;
@@ -347,7 +263,7 @@ export default {
             let page = this.page + 1;
             if (page <= this.total) {
                 axios
-                    .get(`/api/admin/products/page=${page}`)
+                    .get(`/api/admin/coupons/page=${page}`)
                     .then(res => {
                         this.products = res.data.data;
                         this.page = page;
@@ -365,14 +281,10 @@ export default {
         openModal(isNew, item) {
             if (isNew) {
                 this.tempProduct = {
-                    is_enabled: 0
+                    enable: 0
                 };
-                this.imageUrl = null;
-                $("#customFile").val("");
                 this.isNew = true;
             } else {
-                this.imageUrl = null;
-                $("#customFile").val("");
                 this.tempProduct = Object.assign({}, item);
                 this.isNew = false;
             }
@@ -382,16 +294,16 @@ export default {
             const vm = this;
             if (!vm.isNew) {
                 axios
-                    .put("/api/products/update", vm.tempProduct)
+                    .put("/api/coupons/update", vm.tempProduct)
                     .then(res => {
                         if (res.data.result === true) {
                             this.$notify({
                                 title: "成功",
-                                message: "已編輯一筆商品",
+                                message: "已編輯一筆優惠券",
                                 type: "success"
                             });
                             $("#productModal").modal("hide");
-                            this.getProducts();
+                            this.getCoupons();
                         }
                     })
                     .catch(err => {
@@ -399,16 +311,16 @@ export default {
                     });
             } else {
                 axios
-                    .post("/api/products/upload", vm.tempProduct)
+                    .post("/api/coupons/upload", vm.tempProduct)
                     .then(res => {
                         if (res.data.result === true) {
                             this.$notify({
                                 title: "成功",
-                                message: "已編輯一筆商品",
+                                message: "已新增一筆優惠券",
                                 type: "success"
                             });
                             $("#productModal").modal("hide");
-                            this.getProducts();
+                            this.getCoupons();
                         }
                     })
                     .catch(err => {

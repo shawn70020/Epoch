@@ -22,7 +22,9 @@
                     Items remain in your bag for 1 day, and then they’re moved
                     to your Saved Items.
                 </h5>
-                <router-link to="/user/saved"><button>VIEW SAVED ITEMS</button></router-link>
+                <router-link to="/user/saved"
+                    ><button>VIEW SAVED ITEMS</button></router-link
+                >
                 <a href="#">Continue Shopping</a>
             </div>
         </div>
@@ -109,31 +111,16 @@
                         <div class="wrap">
                             <div class="title">
                                 <h4>Sub-total</h4>
-                                <h4 v-if="total !== finalTotal" class="coupon-total">Total</h4>
                             </div>
                             <div class="cost">
                                 <h4>NT {{ total | currency }}</h4>
-                                <h4 v-if="total !== finalTotal" class="coupon-total">
-                                    NT {{ finalTotal | currency }}
-                                </h4>
                             </div>
                         </div>
-                        <div class="coupon">
-                            <div class="coupon-icon">%</div>
-                            <input
-                                type="text"
-                                class="code"
-                                placeholder="折價券"
-                                v-model="coupon"
-                            />
-                            <i
-                                class="fas fa-arrow-right"
-                                @click="useCoupon"
-                            ></i>
-                        </div>
-                        <button @click="checkoutCart" class="checkout-btn">
-                            CHECKOUT
-                        </button>
+                        <router-link to="/user/checkout"
+                            ><button class="checkout-btn">
+                                CHECKOUT
+                            </button></router-link
+                        >
                     </div>
                 </div>
             </div>
@@ -231,7 +218,6 @@ export default {
             isB: "block",
             total: 0,
             finalTotal: 0,
-            coupon: "",
             options: [
                 {
                     value: 1,
@@ -306,19 +292,6 @@ export default {
         }
     },
     methods: {
-        success() {
-            this.$notify({
-                title: "成功",
-                message: "已兌換優惠券",
-                type: "success"
-            });
-        },
-        error() {
-            this.$notify.error({
-                title: "抱歉",
-                message: "此優惠券不存在"
-            });
-        },
         getProducts() {
             axios
                 .get("/api/products/men")
@@ -351,49 +324,6 @@ export default {
                 })
                 .catch(err => {
                     console.log(err);
-                });
-        },
-        checkoutCart() {
-            let checkout = [];
-            checkout = this.$store.state.cart;
-            let info = this.$store.state.info;
-            let finalTotal = this.finalTotal;
-            axios
-                .post("/api/user/checkout", {
-                    cart: checkout,
-                    user: info,
-                    total: finalTotal
-                })
-                .then(res => {
-                    if (res.data.result === true) {
-                        this.$message({
-                            message: "恭喜您！註冊會員成功",
-                            type: "success"
-                        });
-                    } else {
-                        this.$notify.error({
-                            title: "抱歉",
-                            message: res.data.msg
-                        });
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        },
-        useCoupon() {
-            axios
-                .post("/api/user/coupon", {
-                    coupon: this.coupon
-                })
-                .then(res => {
-                    if (res.data.result === true) {
-                        let discount = res.data.data;
-                        this.finalTotal = this.finalTotal * discount;
-                        this.success();
-                    } else {
-                        this.error();
-                    }
                 });
         }
     }
@@ -651,10 +581,6 @@ $color1: #1ca753;
                     display: flex;
                     justify-content: space-between;
                     font-family: "PT Serif", serif;
-                    .coupon-total{
-                        margin-top: 15px;
-                        color: #1ca753;
-                    }
                     .title {
                         h4 {
                             font-size: 22px;
@@ -666,39 +592,6 @@ $color1: #1ca753;
                             font-size: 18px;
                         }
                     }
-                }
-                .coupon {
-                    display: flex;
-                    margin-top: 30px;
-                    margin-left: 1.5rem;
-                    width: 260px;
-                    height: 45px;
-                    border: 1px dotted darken(#eee, 20%);
-                    .coupon-icon {
-                        width: 20px;
-                        height: 15px;
-                        background: #fff;
-                        border: 1px solid #2d2d2d;
-                        font-size: 10px;
-                        line-height: 15px;
-                        text-align: center;
-                        // margin: auto;
-                        margin: 15px;
-                    }
-                    .code {
-                        // height: 20px;
-                        border-top-style: hidden;
-                        border-right-style: hidden;
-                        border-left-style: hidden;
-                        border-bottom: hidden;
-                        width: 173px;
-                        font-size: 12px;
-                        outline: none;
-                    }
-                    .fa-arrow-right {
-                        margin: 15px 0;
-                    }
-                    
                 }
                 .checkout-btn {
                     margin-top: 30px;
