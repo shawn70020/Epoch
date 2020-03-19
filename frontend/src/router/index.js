@@ -17,6 +17,9 @@ import Details from "../components/Details"
 import Password from "../components/Password"
 import Coupon from "../components/Coupon"
 import Orders from "../components/Orders"
+import Orderdetails from "../views/Orderdetails"
+import Member from "../views/Member"
+// import Memberdetails from "../views/Memberdetails"
 
 Vue.use(VueRouter)
 
@@ -143,6 +146,14 @@ const routes = [{
                 },
             },
             {
+                path: 'orderdetails/:oid',
+                name: 'Orderdetails',
+                component: Orderdetails,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            {
                 path: 'coupon',
                 name: 'Coupon',
                 component: Coupon,
@@ -150,6 +161,22 @@ const routes = [{
                     requiresAuth: true
                 },
             },
+            {
+                path: 'member',
+                name: 'Member',
+                component: Member,
+                meta: {
+                    requiresAuth: true
+                },
+            },
+            // {
+            //     path: 'memberdetails/:uid',
+            //     name: 'Memberdetails',
+            //     component: Memberdetails,
+            //     meta: {
+            //         requiresAuth: true
+            //     },
+            // },
         ],
     }
 ]

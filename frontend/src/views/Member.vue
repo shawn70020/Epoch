@@ -1,47 +1,33 @@
 <template>
     <div class="wrap">
         <div class="top">
-            <div class="title"><h3>訂單管理</h3></div>
+            <div class="title"><h3>會員管理</h3></div>
         </div>
-        <el-select
-            v-model="value"
-            placeholder="請選擇"
-            @change="selectItem"
-            class="selectBox"
-        >
-            <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-            >
-            </el-option>
-        </el-select>
         <div class="table-wrap">
             <table class="table table-borderless">
                 <thead>
                     <tr>
-                        <th scope="col">分類</th>
-                        <th scope="col">訂單編號</th>
-                        <th scope="col">下單者ID</th>
-                        <th scope="col">成立日期</th>
+                        <th scope="col">＃會員編號</th>
+                        <th scope="col">會員信箱</th>
+                        <th scope="col">會員狀態</th>
+                        <th scope="col">加入日期</th>
+                        <th scope="col">上次登入日期</th>
                         <th scope="col">操作</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in orders" :key="item.id">
-                        <th v-if="item.status === 0">處理中</th>
-                        <td v-if="item.status === 1">已出貨</td>
-                        <td v-if="item.status === 2">完成</td>
-                        <td v-if="item.status === 3">取消</td>
+                    <tr v-for="item in member" :key="item.id">
                         <td>{{ item.id }}</td>
-                        <td>{{ item.uid }}</td>
+                        <td>{{ item.email }}</td>
+                        <td v-if="item.status === 0">可使用</td>
+                        <td v-if="item.status === 1">已凍結</td>
                         <td>{{ item.addDate }}</td>
+                        <td>{{ item.lastDate }}</td>
                         <td class="operate-btn">
                             <router-link
                                 :to="{
-                                    name: 'Orderdetails',
-                                    params: { oid: item.id }
+                                    name: 'Memberdetail',
+                                    params: { uid: item.id }
                                 }"
                             >
                                 <i class="fas fa-edit"></i>
@@ -64,50 +50,22 @@ export default {
     name: "Orders",
     data() {
         return {
-            orders: [],
-            array: [],
+            member: [],
             page: 1,
             total: "",
             tempProduct: {},
             isNew: false,
-            isLoading: false,
-            imageUrl: null,
-            status: {
-                fileUploading: false
-            },
-            options: [
-                {
-                    value: 4,
-                    label: "全部"
-                },
-                {
-                    value: 0,
-                    label: "處理中"
-                },
-                {
-                    value: 1,
-                    label: "已出貨"
-                },
-                {
-                    value: 2,
-                    label: "完成"
-                },
-                {
-                    value: 3,
-                    label: "取消"
-                }
-            ],
-            value: ""
         };
     },
     created() {
-        this.getOrders();
+        this.getMembers();
     },
     methods: {
-        getOrders() {
-            axios.get(`/api/admin/orders/page=${this.page}`).then(res => {
-                this.orders = res.data.data;
-                this.array = res.data.data;
+        getMembers() {
+            axios.get(`/api/admin/member/page=${this.page}`).then(res => {
+                this.member = res.data.data.filter(function(item){
+                    return item.level === 0;
+                });
                 this.total = res.data.total;
             });
         },
@@ -152,32 +110,6 @@ export default {
                 });
             }
         },
-        selectItem() {
-            this.orders = this.array;
-            if (this.value === 4) {
-                return true;
-            }
-            if (this.value === 0) {
-                this.orders = this.orders.filter(function(item) {
-                    return item.status === 0;
-                });
-            }
-            if (this.value === 1) {
-                this.orders = this.orders.filter(function(item) {
-                    return item.status === 1;
-                });
-            }
-            if (this.value === 2) {
-                this.orders = this.orders.filter(function(item) {
-                    return item.status === 2;
-                });
-            }
-            if (this.value === 3) {
-                this.orders = this.orders.filter(function(item) {
-                    return item.status === 3;
-                });
-            }
-        }
     }
 };
 </script>

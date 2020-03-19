@@ -28,7 +28,9 @@
                             <i class="fas fa-ticket-alt"></i>優惠券
                         </div>
                         </router-link>
+                        <router-link to="/admin/member">
                         <div class="item"><i class="fas fa-users"></i>會員</div>
+                        </router-link>
                     </div>
                 </div>
             </div>
