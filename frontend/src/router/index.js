@@ -19,7 +19,7 @@ import Coupon from "../components/Coupon"
 import Orders from "../components/Orders"
 import Orderdetails from "../views/Orderdetails"
 import Member from "../views/Member"
-// import Memberdetails from "../views/Memberdetails"
+import Memberdetails from "../views/Memberdetails"
 
 Vue.use(VueRouter)
 
@@ -169,14 +169,14 @@ const routes = [{
                     requiresAuth: true
                 },
             },
-            // {
-            //     path: 'memberdetails/:uid',
-            //     name: 'Memberdetails',
-            //     component: Memberdetails,
-            //     meta: {
-            //         requiresAuth: true
-            //     },
-            // },
+            {
+                path: 'memberdetails/:uid',
+                name: 'Memberdetails',
+                component: Memberdetails,
+                meta: {
+                    requiresAuth: true
+                },
+            },
         ],
     }
 ]

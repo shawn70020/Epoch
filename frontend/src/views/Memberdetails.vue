@@ -1,29 +1,62 @@
 <template>
-    <div>
+    <div class="body">
         <div class="top">
             <div class="info">
-                <h4>訂單 # {{ oid }}</h4>
+                <h4>會員 # {{ uid }}</h4>
                 <i class="fas fa-angle-double-right"></i>
-                <h5>成立時間：{{ info.addDate }}</h5>
+                <h5>加入時間：{{ info.addDate }}</h5>
             </div>
-            <div class="btn-group">
-                <button class="btn truck" @click="open(1)">
-                    <i class="fas fa-truck-moving"></i>出貨
-                </button>
-                <button class="btn done" @click="open(2)">
-                    <i class="fas fa-check"></i>完成
-                </button>
-                <button class="btn cancel" @click="open(3)">
-                    <i class="fas fa-ban"></i>取消
-                </button>
+            <div class="online">
+                <h5 v-if="info.token === ''" >
+                    會員未上線<div :class="{ grey: true }"></div>
+                </h5>
+                <h5 v-if="info.token === !''" :class="{ green: true }">
+                    會員上線中
+                </h5>
             </div>
         </div>
-        <div class="main-wrap">
-            <div class="order-detail">
+        <div class="main-member">
+            <div class="member-info">
+                <div class="box">
+                    <div v-if="info.sex === 'M'" class="man"></div>
+                    <div v-if="info.sex === 'F'" class="woman"></div>
+                    <h5>{{ info.name }}</h5>
+                    <div class="member-data">
+                        <h5>會員名稱: {{ info.name }}</h5>
+                        <h5>信箱: {{ info.email }}</h5>
+                        <h5>生日: {{ moment(info.birthday).calendar() }}</h5>
+                        <h5 v-if="info.sex === 'M'">性別: 男性</h5>
+                        <h5 v-if="info.sex === 'F'">性別: 女性</h5>
+                        <h5>加入時間: {{ moment(info.addDate).fromNow() }}</h5>
+                    </div>
+                </div>
+                <div class="member-status">
+                    <h4><i class="fas fa-info-circle"></i> 會員狀態</h4>
+                    <div class="status">
+                        <h5 v-if="info.level === 0">等級： 普通會員</h5>
+                        <h5>
+                            上次上線： {{ moment(info.lastDate).fromNow() }}
+                        </h5>
+                        <h5>
+                            狀態：
+                            <el-switch
+                                v-model="value1"
+                                active-color="#13ce66"
+                                inactive-color="#ff4949"
+                                active-text="已凍結"
+                                inactive-text="可使用"
+                                @change="open"
+                            >
+                            </el-switch>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+            <div class="member-order">
                 <div class="product">
                     <div class="product-top">
                         <h4>
-                            <i class="fas fa-sort-amount-down"></i> 訂單明細
+                            <i class="fas fa-sort-amount-down"></i> 訂單列表
                         </h4>
                         <span>按箭頭向下以取得詳細資訊</span>
                         <i
@@ -35,172 +68,42 @@
                     <table :class="{ show: isTrue }">
                         <thead>
                             <tr class="head">
-                                <th scope="col">購買商品品項</th>
-                                <th scope="col">價格</th>
-                                <th scope="col">數量</th>
-                                <th scope="col">金額</th>
+                                <th scope="col">訂單編號</th>
+                                <th scope="col">訂單狀態</th>
+                                <th scope="col">成立時間</th>
+                                <th scope="col">檢視訂單</th>
                             </tr>
                         </thead>
                         <tbody class="tbody">
-                            <tr v-for="(item, index) in products" :key="index">
-                                <td>{{ item.name }}</td>
-                                <td>{{ item.price }}</td>
-                                <td>{{ item.num }}</td>
-                                <td>{{ item.total }}</td>
+                            <tr v-for="(item, index) in order" :key="index">
+                                <td>#{{ item.id }}</td>
+                                <td v-if="item.status === 0">處理中</td>
+                                <td v-if="item.status === 1">已出貨</td>
+                                <td v-if="item.status === 2">完成</td>
+                                <td v-if="item.status === 3">取消</td>
+                                <td>{{ item.addDate }}</td>
+                                <td class="operate-btn">
+                                    <router-link
+                                        :to="{
+                                            name: 'Orderdetails',
+                                            params: { oid: item.id }
+                                        }"
+                                    >
+                                        <i class="fas fa-edit"></i>
+                                    </router-link>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="price">
-                        <h5>小計</h5>
-                        <h5>NT {{ subTotal | currency }}</h5>
-                    </div>
-                </div>
-                <div class="other-fee">
-                    <h4><i class="fas fa-th-list"></i> 清單</h4>
-                    <table>
-                        <thead>
-                            <tr class="head">
-                                <th scope="col" colspan="2">
-                                    折扣明細及運費資訊
-                                </th>
-                                <th scope="col">折抵(百分比)</th>
-                                <th scope="col">金額</th>
-                            </tr>
-                        </thead>
-                        <tbody class="tbody">
-                            <tr>
-                                <td colspan="2" v-if="info.coupon">
-                                    {{ info.coupon }}
-                                </td>
-                                <td colspan="2" v-if="!info.coupon">無使用</td>
-                                <td v-if="info.discount">
-                                    {{ info.discount }}
-                                </td>
-                                <td v-if="!info.discount">無折扣</td>
-                                <td v-if="info.discount">
-                                    -
-                                    {{
-                                        (subTotal * (1 - info.discount))
-                                            | currency
-                                    }}
-                                </td>
-                                <td v-if="!info.discount">
-                                    - $0
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">折扣後(不含運)</td>
-                                <td v-if="info.discount">
-                                    {{ (subTotal * info.discount) | currency }}
-                                </td>
-                                <td v-if="!info.discount">
-                                    {{ subTotal | currency }}
-                                </td>
-                            </tr>
-                            <tr v-if="info.delivery === 'S'">
-                                <td colspan="3">配送費用</td>
-                                <td>$100</td>
-                            </tr>
-                            <tr v-if="info.delivery === 'E'">
-                                <td colspan="3">配送費用</td>
-                                <td>$300</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="price">
-                        <h5>總金額</h5>
-                        <h5 v-if="info.discount && info.delivery === 'S'">
-                            NT {{ (subTotal * info.discount + 100) | currency }}
-                        </h5>
-                        <h5 v-if="info.discount && info.delivery === 'E'">
-                            NT {{ (subTotal * info.discount + 300) | currency }}
-                        </h5>
-                        <h5 v-if="!info.discount && info.delivery === 'S'">
-                            NT {{ (subTotal + 100) | currency }}
-                        </h5>
-                        <h5 v-if="!info.discount && info.delivery === 'E'">
-                            NT {{ (subTotal + 300) | currency }}
-                        </h5>
-                    </div>
-                </div>
-                <div class="bill">
-                    <h4><i class="fas fa-info-circle"></i> 帳單資訊</h4>
-                    <div class="bill-info">
-                        <h5><i class="fas fa-user"></i> {{ info.name }}</h5>
-                        <h5>
-                            <i class="fas fa-envelope"></i> {{ info.email }}
-                        </h5>
-                        <h5><i class="fas fa-phone"></i> {{ info.phone }}</h5>
-                    </div>
-                    <div class="bill-address">
-                        <h5>收貨人地址:</h5>
-                        <h5>{{ info.address }}</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="payment-info">
-                <div class="pay">
-                    <h4><i class="fas fa-dollar-sign"></i> 貨款</h4>
-                    <div class="pay-detail">
-                        <div class="title">
-                            <h5>付款方式</h5>
-                            <h5>付款狀態</h5>
-                        </div>
-                        <div class="txt">
-                            <h5 v-if="info.payment === 'Cash'">貨到付款</h5>
-                            <h5 v-if="info.payment === 'Card'">信用卡</h5>
-                            <h5 v-if="info.payment === 'Atm'">ATM轉帳</h5>
-                            <h5>{{ cash }}</h5>
+                    <div class="order-total">
+                        <h5>訂單總計: {{ total.all }}</h5>
+                        <div class="total">
+                            <h5>處理中: {{ total.handle }}</h5>
+                            <h5>已出貨: {{ total.ship }}</h5>
+                            <h5>完成: {{ total.done }}</h5>
+                            <h5>取消: {{ total.cancel }}</h5>
                         </div>
                     </div>
-                    <div class="btn-pay">
-                        <h5>如以確認收到款項，請按確認收款</h5>
-                        <button @click="getMoney">確認收款</button>
-                    </div>
-                </div>
-                <div class="delivery">
-                    <h4><i class="fas fa-truck-moving"></i> 配送資訊</h4>
-                    <div class="delivery-item">
-                        <div class="title">
-                            <h5>您尚須準備{{ ship.length }}項商品</h5>
-                            <h5>選擇您欲出貨商品</h5>
-                        </div>
-                        <div
-                            v-for="(item, index) in ship"
-                            :key="index"
-                            class="checkbox"
-                        >
-                            <input
-                                type="checkbox"
-                                id="vehicle1"
-                                name="vehicle1"
-                                v-model="group"
-                                :value="item.pid"
-                            />
-                            <label for="vehicle1">{{ item.name }}</label
-                            ><br />
-                        </div>
-                        <div class="btn-send">
-                            <h5>請勾選可出貨商品，並按確認出貨</h5>
-                            <button @click="confirmItem">確認出貨</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="order-note">
-                    <h4><i class="far fa-clipboard"></i> 訂單備註</h4>
-                    <div class="note" v-if="info.note">
-                        <p>
-                            {{ info.note }}
-                        </p>
-                    </div>
-                    <div class="note" v-if="!info.note">
-                        <p>
-                            訂單無備註
-                        </p>
-                    </div>
-                </div>
-                <div class="other-order">
-                    <h4><i class="far fa-clipboard"></i> 此顧客其他訂單</h4>
                 </div>
             </div>
         </div>
@@ -208,44 +111,56 @@
 </template>
 
 <script>
+var moment = require("moment");
+moment.locale("zh-tw");
 import axios from "axios";
-
 export default {
     name: "Memberdetails",
     data() {
         return {
-            showError: 0,
+            moment: moment,
             isTrue: false,
-            oid: this.$route.params.oid,
-            details: [],
+            uid: this.$route.params.uid,
+            order: [],
             info: [],
-            products: [],
             value: "",
             subTotal: 0,
             group: [],
             cash: "尚未收到款項",
-            ship: [],
-            other:[]
+            value1: true,
+            total: {
+                all: 0,
+                handle: 0,
+                ship: 0,
+                done: 0,
+                cancel: 0
+            }
         };
     },
     created() {
-        this.getOrderdetails(this.oid);
+        this.getMemberdetails(this.uid);
     },
     methods: {
-        open(status) {
-            this.$confirm("送出前請確認此狀態, 是否繼續?", "提示", {
+        open() {
+            this.$confirm("更改此會員狀態, 是否繼續?", "提示", {
                 confirmButtonText: "確定",
                 cancelButtonText: "取消",
                 type: "info"
             })
                 .then(() => {
+                    let status;
+                    if (this.value1 === true) {
+                        status = 0;
+                    } else {
+                        status = 1;
+                    }
                     axios
-                        .get(`/api/orders/status/${this.oid}/${status}`)
+                        .get(`/api/member/status/${this.uid}/${status}`)
                         .then(res => {
                             if (res.data.result === true) {
                                 this.$message({
                                     type: "success",
-                                    message: "更改狀態成功!"
+                                    message: "更改會員狀態成功!"
                                 });
                             }
                         })
@@ -254,59 +169,11 @@ export default {
                         });
                 })
                 .catch(() => {
-                    this.$message({
-                        type: "warning",
-                        message: "已取消動作！"
-                    });
-                });
-        },
-        confirmItem() {
-            this.$confirm("送出前請確認此狀態, 是否繼續?", "提示", {
-                confirmButtonText: "確定",
-                cancelButtonText: "取消",
-                type: "info"
-            })
-                .then(() => {
-                    if (this.group.length !== 0) {
-                        axios
-                            .post(`/api/orders/${this.oid}/ship`, {
-                                group: this.group
-                            })
-                            .then(() => {
-                                let i;
-                                let j;
-                                for (i = 0; i < this.ship.length; i++) {
-                                    for (j = 0; j < this.group.length; j++) {
-                                        if (
-                                            this.group[j] === this.ship[i].pid
-                                        ) {
-                                            this.ship.splice(i, 1);
-                                        }
-                                    }
-                                }
-                                this.$message({
-                                    type: "success",
-                                    message: "選中商品已出貨(ﾉ>ω<)ﾉ"
-                                });
-                                if (this.ship.length === 0) {
-                                    setTimeout(() => {
-                                        this.$message({
-                                            type: "info",
-                                            message:
-                                                "所有商品皆已出貨，建議將訂單狀態改為出貨。"
-                                        });
-                                    }, 1000);
-                                }
-                            });
+                    if (this.value1 === true) {
+                        this.value1 = false;
                     } else {
-                        this.$notify.error({
-                            title: "錯誤",
-                            message: "請至少選取一項商品",
-                            type: "info"
-                        });
+                        this.value1 = true;
                     }
-                })
-                .catch(() => {
                     this.$message({
                         type: "warning",
                         message: "已取消動作！"
@@ -320,67 +187,35 @@ export default {
                 this.isTrue = false;
             }
         },
-        getOrderdetails(id) {
+        getMemberdetails(id) {
             axios
-                .get(`/api/orders/detail/${id}`)
+                .get(`/api/member/detail/${id}`)
                 .then(res => {
+                    this.info = res.data.data;
+                    if (this.info.status === 1) {
+                        this.value1 = false;
+                    }
+                    this.order = res.data.order;
                     let i;
-                    let j;
-                    this.info = res.data.info;
-                    this.products = res.data.item;
-                    this.other = res.data.other;
-                    this.details = res.data.data;
-                    this.ship = this.details.filter(function(item) {
-                        return item.ship === 0;
-                    });
-                    for (i = 0; i < this.products.length; i++) {
-                        this.products[i].num = this.details[i].num;
-                        this.products[i].id = this.details[i].pid;
-                        this.products[i].total =
-                            this.details[i].num * this.products[i].price;
-                        this.subTotal =
-                            this.subTotal + parseInt(this.products[i].total);
-                        for (j = 0; j < this.ship.length; j++) {
-                            if (this.ship[j].pid === this.products[i].id) {
-                                this.ship[j].name = this.products[i].name;
-                            }
+                    for (i = 0; i < this.order.length; i++) {
+                        this.total.all = this.order.length;
+                        if (this.order[i].status === 0) {
+                            this.total.handle = this.total.handle + 1;
+                        }
+                        if (this.order[i].status === 1) {
+                            this.total.ship = this.total.ship + 1;
+                        }
+                        if (this.order[i].status === 2) {
+                            this.total.done = this.total.done + 1;
+                        }
+                        if (this.order[i].status === 3) {
+                            this.total.cancel = this.total.cancel + 1;
                         }
                     }
                 })
                 .catch(err => {
                     console.log(err);
                 });
-        },
-        getMoney() {
-            this.cash = "成功收到款項";
-        },
-        shipping() {
-            if (this.group.length !== 0) {
-                axios
-                    .post(`/api/orders/${this.oid}/ship`, {
-                        group: this.group
-                    })
-                    .then(res => {
-                        console.log(res);
-                        let i;
-                        let j;
-                        for (i = 0; i < this.ship.length; i++) {
-                            for (j = 0; j < this.group.length; j++) {
-                                if (this.group[j] === this.ship[i].pid) {
-                                    this.ship.splice(i, 1);
-                                }
-                            }
-                        }
-                        this.$notify({
-                            title: "成功",
-                            message: "選中商品已出貨(ﾉ>ω<)ﾉ",
-                            type: "success"
-                        });
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
-            }
         }
     }
 };
@@ -388,6 +223,10 @@ export default {
 
 <style lang="scss" scoped>
 $color: #2d2d2d;
+.body {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 400;
+}
 .top {
     display: flex;
     align-items: center;
@@ -411,39 +250,105 @@ $color: #2d2d2d;
             font-size: 20px;
         }
     }
-    .btn-group {
-        margin-right: 20px;
-        .btn {
-            width: 120px;
-            color: #fff;
-            .fas {
-                margin-right: 8px;
-            }
+    .online {
+        margin-right: 30px;
+        h5{
+            display: flex;
+            align-items: center;
         }
-        .truck {
-            background: lighten(#666, 30%);
+        .grey{
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #666;
+            margin-left: 10px;
         }
-        .done {
-            background: #1ca753;
-        }
-        .cancel {
-            background: lighten(red, 20%);
+        .green{
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgb(19, 146, 61);
+            margin-left: 10px;
         }
     }
 }
-.main-wrap {
+.main-member {
     display: flex;
-    margin-top: 30px;
-    margin-left: 75px;
     .toggle {
         transform: scaley(-1);
     }
     .show {
         display: none;
     }
-    .order-detail {
+    .member-info {
+        width: 50%;
+        .box {
+            margin: auto;
+            margin-top: 30px;
+            padding: 15px;
+            width: 70%;
+            background: linear-gradient(5deg, #ffefba, #ffffff);
+            border-radius: 10px;
+            color: #2d2d2d;
+            h5 {
+                text-align: center;
+            }
+            .member-data {
+                width: 60%;
+                margin: auto;
+                padding-left: 30px;
+                margin-top: 20px;
+                h5 {
+                    font-size: 22px;
+                    text-align: left;
+                }
+            }
+            .man {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                background-image: url(../assets/image/jiazhen.jpg);
+                background-repeat: no-repeat;
+                background-size: cover;
+                margin: auto;
+            }
+            .woman {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                background-image: url(../assets/image/Woman.png);
+                background-repeat: no-repeat;
+                background-size: cover;
+                margin: auto;
+            }
+        }
+        .member-status {
+            padding-top: 50px;
+            width: 70%;
+            margin: auto;
+            color: #0f4c81;
+            h4 {
+                &::after {
+                    content: "";
+                    display: block;
+                    width: 100%;
+                    height: 1px;
+                    background: #666;
+                    margin-top: 15px;
+                }
+            }
+            .status {
+                h5 {
+                    color: #2d2d2d;
+                    font-size: 22px;
+                }
+            }
+        }
+    }
+    .member-order {
         width: 50%;
         .product {
+            margin-top: 30px;
             .product-top {
                 display: flex;
                 height: 50px;
@@ -484,13 +389,21 @@ $color: #2d2d2d;
                     tr {
                         height: 50px;
                         &:nth-child(even) {
-                            background: rgb(182, 100, 100);
+                            background: #ffefba;
                         }
                         td {
                             &:first-child {
                                 text-align: left;
                             }
                             text-align: center;
+                        }
+                    }
+                    .operate-btn {
+                        a {
+                            color: #2d2d2d;
+                            &:hover {
+                                color: lighten(#2d2d2d, 20%);
+                            }
                         }
                     }
                 }
@@ -502,177 +415,22 @@ $color: #2d2d2d;
                 justify-content: space-between;
             }
         }
-        .other-fee {
-            margin-top: 50px;
-            h4 {
-                color: #0f4c81;
-            }
-            table {
-                margin-top: 20px;
-                width: 85%;
-                .head {
-                    height: 60px;
-                    background: rgb(37, 59, 109);
-                    color: #fff;
-                    th {
-                        padding-top: 10px;
-                        padding-left: 15px;
-                    }
-                }
-                .tbody {
-                    tr {
-                        height: 50px;
-                        &:nth-child(even) {
-                            background: rgb(182, 100, 100);
-                        }
-                        td {
-                            &:first-child {
-                                text-align: left;
-                            }
-                            text-align: center;
-                        }
-                    }
-                }
-            }
-            .price {
-                width: 85%;
-                display: flex;
-                justify-content: space-between;
-            }
-        }
-    }
-    .bill {
-        width: 85%;
-        margin-top: 40px;
-        h4 {
-            color: #0f4c81;
-        }
-        .bill-info {
+        .order-total {
             margin-top: 30px;
-            width: 100%;
-            height: 60px;
-            display: flex;
-            justify-content: flex-start;
-            background: rgb(226, 236, 248);
-            align-items: center;
-            border: 1px solid #999;
-            color: lighten(#0f4c81, 10%);
-            padding-left: 10px;
-            h5 {
-                font-size: 22px;
-                margin-top: 5px;
-                margin-right: 20px;
-            }
-        }
-        .bill-address {
-            margin-top: 20px;
-            h5 {
-                color: darken(#1ca753, 10%);
-                font-size: 24px;
-                &:last-child {
-                    color: #2d2d2d;
-                }
-            }
-        }
-    }
-    .payment-info {
-        width: 50%;
-        .pay {
+            padding: 12px 0 12px 20px;
             width: 85%;
-            width: 100%;
-            h4 {
-                color: #0f4c81;
-                &::after {
-                    content: "";
-                    display: block;
-                    width: 85%;
-                    height: 1px;
-                    background: #666;
-                    margin-top: 15px;
-                }
-            }
-            .pay-detail {
-                width: 85%;
-                display: flex;
-                justify-content: space-between;
-                margin-top: 20px;
-                .txt {
-                    color: lighten(#0f4c81, 10%);
-                    h5 {
-                        &:last-child {
-                            color: rgb(230, 154, 15);
-                        }
+            color: #2d2d2d;
+            border: 1px solid #666;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            .total {
+                h5 {
+                    font-size: 20px;
+                    & + h5 {
+                        margin-left: 35px;
                     }
                 }
-            }
-            .btn-pay {
-                width: 85%;
                 display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 30px;
-                h5 {
-                    font-size: 18px;
-                    color: #666;
-                }
-                button {
-                    background: #1ca753;
-                    color: #fff;
-                    padding: 5px;
-                }
-            }
-        }
-        .delivery {
-            margin-top: 70px;
-            width: 85%;
-            h4 {
-                color: #0f4c81;
-                &::after {
-                    content: "";
-                    display: block;
-                    width: 100%;
-                    height: 1px;
-                    background: #666;
-                    margin-top: 15px;
-                }
-            }
-            .checkbox {
-                margin-top: 10px;
-                label {
-                    margin-left: 30px;
-                    color: #2d2d2d;
-                }
-            }
-            .btn-send {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 30px;
-                h5 {
-                    font-size: 18px;
-                    color: #666;
-                }
-                button {
-                    background: #1ca753;
-                    color: #fff;
-                    padding: 5px;
-                }
-            }
-        }
-        .order-note {
-            width: 85%;
-            margin-top: 30px;
-            h4 {
-                color: #0f4c81;
-                &::after {
-                    content: "";
-                    display: block;
-                    width: 100%;
-                    height: 1px;
-                    background: #666;
-                    margin-top: 15px;
-                }
             }
         }
     }

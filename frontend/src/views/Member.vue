@@ -26,7 +26,7 @@
                         <td class="operate-btn">
                             <router-link
                                 :to="{
-                                    name: 'Memberdetail',
+                                    name: 'Memberdetails',
                                     params: { uid: item.id }
                                 }"
                             >
@@ -92,7 +92,6 @@ export default {
         nextPage() {
             let page = this.page + 1;
             if (page <= this.total) {
-                console.log('hi');
                 axios
                     .get(`/api/admin/orders/page=${page}`)
                     .then(res => {
