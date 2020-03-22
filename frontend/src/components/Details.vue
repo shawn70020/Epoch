@@ -32,6 +32,12 @@
                         <h5>Change password</h5>
                     </div>
                 </router-link>
+                <router-link to="/myorder">
+                    <div class="item">
+                        <i class="fas fa-list-alt"></i>
+                        <h5>My orders</h5>
+                    </div>
+                </router-link>
             </div>
             <div class="right">
                 <i class="far fa-address-card"></i>

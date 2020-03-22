@@ -40,8 +40,9 @@
                             id="inputPassword"
                             class="form-control"
                             v-model="user.password"
+                            @keyup.enter="login"
                         />
-                        <button @click.prevent="showPassword">
+                        <button @click.self="showPassword">
                             {{ btnText }}
                         </button>
                     </div>

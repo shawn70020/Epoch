@@ -15,6 +15,9 @@ import Checkout from "../views/Checkout"
 import Account from "../views/Account"
 import Details from "../components/Details"
 import Password from "../components/Password"
+import Myorder from "../components/Myorder"
+import Myorderdetail from "../components/Myorderdetail"
+import Ordertrack from "../components/Ordertrack"
 import Coupon from "../components/Coupon"
 import Orders from "../components/Orders"
 import Orderdetails from "../views/Orderdetails"
@@ -113,6 +116,30 @@ const routes = [{
         path: '/mypassword',
         name: 'Password',
         component: Password,
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
+        path: '/myorder',
+        name: 'Myorder',
+        component: Myorder,
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
+        path: '/myorderdetail/:oid',
+        name: 'Myorderdetail',
+        component: Myorderdetail,
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
+        path: '/ordertrack/:oid',
+        name: 'Ordertrack',
+        component: Ordertrack,
         meta: {
             requiresAuth: true
         },

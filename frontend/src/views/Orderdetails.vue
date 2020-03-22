@@ -199,9 +199,6 @@
                         </p>
                     </div>
                 </div>
-                <div class="other-order">
-                    <h4><i class="far fa-clipboard"></i> 此顧客其他訂單</h4>
-                </div>
             </div>
         </div>
     </div>
