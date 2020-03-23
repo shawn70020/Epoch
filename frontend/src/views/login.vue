@@ -25,31 +25,35 @@
                         </h5>
                     </div>
                 </div>
-                <form class="form-signin" @submit.prevent="login">
-                    <label for="inputEmail">EMAIL ADDRESS:</label>
-                    <input
-                        type="email"
-                        id="inputEmail"
-                        class="form-control"
-                        v-model="user.email"
-                    />
-                    <label for="inputPassword">PASSWORD:</label>
-                    <div class="password-group">
-                        <input
-                            :type="type"
-                            id="inputPassword"
-                            class="form-control"
-                            v-model="user.password"
-                            @keyup.enter="login"
-                        />
-                        <button @click.self="showPassword">
-                            {{ btnText }}
-                        </button>
-                    </div>
-                    <button class="btn btn-sm btn-dark btn-block" type="submit">
-                        SIGN IN
-                    </button>
-                </form>
+                <el-form
+                    :model="ruleForm"
+                    :rules="rules"
+                    ref="ruleForm"
+                    label-width="120px"
+                    class="demo-ruleForm form"
+                    status-icon="true"
+                >
+                    <el-form-item label="Email" prop="email">
+                        <el-input v-model="ruleForm.email"></el-input>
+                    </el-form-item>
+                    <el-form-item label="password" prop="password">
+                        <el-input
+                            type="password"
+                            v-model="ruleForm.password"
+                            autocomplete="off"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item class="btn">
+                        <el-button
+                            type="primary"
+                            @click="submitForm('ruleForm')"
+                            >JOIN</el-button
+                        >
+                        <el-button @click="resetForm('ruleForm')"
+                            >RESET</el-button
+                        >
+                    </el-form-item>
+                </el-form>
             </div>
             <div class="txt">
                 <h5>WELCOME</h5>
@@ -72,20 +76,81 @@ export default {
             showError: 0,
             type: "password",
             btnText: "SHOW",
-            user: {
+            ruleForm: {
                 email: "",
                 password: ""
+            },
+            rules: {
+                email: [
+                    {
+                        required: true,
+                        message: "Please Enter Your Email",
+                        trigger: "blur"
+                    },
+                    {
+                        type: "email",
+                        message: "Your Email Type is not correct",
+                        trigger: ["blur", "change"]
+                    }
+                ],
+                password: [
+                    {
+                        required: true,
+                        message: "Please Enter Your Password",
+                        trigger: "blur"
+                    }
+                ]
             }
         };
     },
     methods: {
+        submitForm(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                       const vm = this;
+            vm.isLoading = true;
+            axios
+                .post("/api/login", {
+                    email: vm.ruleForm.email,
+                    password: vm.ruleForm.password
+                })
+                .then(res => {
+                    vm.isLoading = false;
+                    if (res.data.result === true) {
+                        localStorage.setItem("token", res.data.token);
+                        this.$store.state.isLogin = true;
+                        if (res.data.level === "member") {
+                            if (res.data.sex === "M") {
+                                vm.$router.push("/men");
+                            } else {
+                                vm.$router.push("/women");
+                            }
+                        } else {
+                            vm.$router.push("/admin/dashboard");
+                        }
+                    } else {
+                        vm.showError = 1;
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+                } else {
+                    console.log("error submit!!");
+                    return false;
+                }
+            });
+        },
+          resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
         login() {
             const vm = this;
             vm.isLoading = true;
             axios
                 .post("/api/login", {
-                    email: vm.user.email,
-                    password: vm.user.password
+                    email: vm.ruleForm.email,
+                    password: vm.ruleForm.password
                 })
                 .then(res => {
                     vm.isLoading = false;
@@ -196,7 +261,7 @@ export default {
         }
         form {
             padding-top: 20px;
-            width: 350px;
+            width: 75%;
             margin: auto;
             label {
                 color: #666;
@@ -210,12 +275,6 @@ export default {
             .btn {
                 width: 80%;
                 margin: auto;
-                color: #2d2d2d;
-                color: #fff;
-                border: none;
-                &:hover {
-                    background: #aaa;
-                }
             }
             .password-group {
                 display: flex;

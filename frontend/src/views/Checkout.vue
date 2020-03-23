@@ -53,128 +53,139 @@
                 </div>
                 <div class="delivery">
                     <h4>DELIVERY ADDRESS</h4>
-                    <h5>ADD ADDRESS</h5>
-                    <form class="form-signin" @submit.prevent="signin">
-                        <label for="inputName">FULL NAME:</label>
-                        <input type="text" id="inputName" v-model="user.name" />
-                        <label for="inputMobile">MOBILE:</label>
-                        <input
-                            type="number"
-                            id="inputMobile"
-                            v-model="user.phone"
-                        />
-                        <label for="inputAddress">ADDRESS:</label>
-                        <input
-                            type="name"
-                            id="inputAddress"
-                            v-model="user.address"
-                        />
-                        <label for="inputNote">NOTE:</label>
-                        <textarea id="inputNote" v-model="user.note">
-                        </textarea>
-                        <button class="address-btn" type="submit">
-                            DELIVER TO THIS ADDRESS
-                        </button>
-                    </form>
-                </div>
-                <div class="option">
-                    <h3>DELIVERY OPTIONS</h3>
-                    <div class="standard">
-                        <div class="freight">NT $100</div>
-                        <div class="info">
-                            <label for="standard">Standard Delivery:</label>
-                            <h5>
-                                Delivered on or before
-                                {{
-                                    moment()
-                                        .add(10, "days")
-                                        .calendar()
-                                }}
-                            </h5>
-                            <input
-                                type="radio"
-                                class="radio"
-                                name="inlineRadioOptions"
-                                id="standard"
-                                value="S"
-                                v-model="delivery"
-                            />
+                    <h5>ADD ORDER DETAIL</h5>
+                    <el-form
+                        :model="ruleForm"
+                        :rules="rules"
+                        ref="ruleForm"
+                        label-width="100px"
+                        class="demo-ruleForm"
+                        label-position="top"
+                        size="medium"
+                    >
+                        <el-form-item label="FULL NAME :" prop="name">
+                            <el-input v-model="ruleForm.name"></el-input>
+                        </el-form-item>
+                        <el-form-item
+                            label="Mobile :"
+                            prop="phone"
+                            :rules="[
+                                {
+                                    required: true,
+                                    message: 'Mobile should not empty'
+                                },
+                                {
+                                    type: 'number',
+                                    message: 'Please input number'
+                                }
+                            ]"
+                        >
+                            <el-input
+                                type="phone"
+                                v-model.number="ruleForm.phone"
+                                autocomplete="off"
+                            ></el-input>
+                        </el-form-item>
+                        <el-form-item label="ADDRESS :" prop="address">
+                            <el-input v-model="ruleForm.address"></el-input>
+                        </el-form-item>
+                        <el-form-item label="NOTE :" prop="note">
+                            <el-input
+                                type="textarea"
+                                v-model="ruleForm.note"
+                            ></el-input>
+                        </el-form-item>
+                        <div class="delivery-radio">
+                            <el-form-item label="Delivery :" prop="delivery">
+                                <el-radio-group v-model="ruleForm.delivery">
+                                    <h5>
+                                        NT $100 Delivered on or before
+                                        {{
+                                            moment()
+                                                .add(10, "days")
+                                                .calendar()
+                                        }}
+                                    </h5>
+                                    <el-radio label="S"
+                                        >Standard Delivery</el-radio
+                                    >
+                                    <h5>
+                                        NT $300 Delivered on or before
+                                        {{
+                                            moment()
+                                                .add(3, "days")
+                                                .calendar()
+                                        }}
+                                    </h5>
+                                    <el-radio label="E"
+                                        >Express Delivery</el-radio
+                                    >
+                                </el-radio-group>
+                            </el-form-item>
                         </div>
-                    </div>
-                    <div class="express">
-                        <div class="freight">NT $300</div>
-                        <div class="info">
-                            <label for="express"> Express Delivery:</label>
-                            <h5>
-                                Delivered on or before
-                                {{
-                                    moment()
-                                        .add(3, "days")
-                                        .calendar()
-                                }}
-                            </h5>
-                            <input
-                                type="radio"
-                                class="radio"
-                                name="inlineRadioOptions"
-                                id="express"
-                                value="E"
-                                v-model="delivery"
-                            />
+                        <div class="payment-radio">
+                            <el-form-item label="Payment :" prop="payment">
+                                <el-radio-group v-model="ruleForm.payment">
+                                    <el-radio label="Card"
+                                        ><i class="fab fa-cc-visa">
+                                            CREDIT CARD
+                                        </i></el-radio
+                                    >
+                                    <el-radio label="Cash"
+                                        ><i class="fas fa-wallet">
+                                            CASH ON DELIVERY
+                                        </i></el-radio
+                                    >
+                                    <el-radio label="Atm"
+                                        ><i class="fab fa-cc-paypal">
+                                            ATM TRANSFER
+                                        </i></el-radio
+                                    >
+                                </el-radio-group>
+                            </el-form-item>
                         </div>
-                    </div>
+                    </el-form>
                 </div>
                 <div class="payment">
                     <div class="billing-info">
                         <h3>PAYMENT</h3>
                         <h4>BILLING ADDRESS</h4>
-                        <h5>{{ user.name }}</h5>
-                        <h5>{{ user.address }}</h5>
-                        <h5>{{ user.phone }}</h5>
-                    </div>
-                    <div class="payment-type">
-                        <div class="choose">
-                            <label for="express"
-                                ><i class="fab fa-cc-visa"></i> CREDIT
-                                CARD:</label
+                        <h5 v-if="ruleForm.name !==''">
+                            <i class="fas fa-user-circle">
+                                {{ ruleForm.name }}</i
                             >
-                            <input
-                                type="radio"
-                                class="radio"
-                                name="inlineRadioOption"
-                                id="express"
-                                value="Card"
-                                v-model="payment"
-                            />
-                        </div>
-                        <div class="choose">
-                            <label for="express"
-                                ><i class="fas fa-wallet"></i> CASH ON
-                                DELIVERY:</label
+                        </h5>
+                        <h5 v-if="ruleForm.address !==''">
+                            <i class="fas fa-map-marker-alt">
+                                {{ ruleForm.address }}</i
                             >
-                            <input
-                                type="radio"
-                                class="radio"
-                                name="inlineRadioOption"
-                                id="express"
-                                value="Cash"
-                                v-model="payment"
-                            />
-                        </div>
-                        <div class="choose">
-                            <label for="express"
-                                ><i class="fab fa-cc-paypal"></i> ATM
-                                TRANSFER:</label
+                        </h5>
+                        <h5 v-if="ruleForm.phone !==''">
+                            <i class="fas fa-phone-square">
+                                {{ ruleForm.phone }}</i
                             >
-                            <input
-                                type="radio"
-                                class="radio"
-                                name="inlineRadioOption"
-                                id="express"
-                                value="Atm"
-                                v-model="payment"
-                            />
-                        </div>
+                        </h5>
+                        <h5 v-if="ruleForm.delivery === 'S'">
+                            <i class="fas fa-truck"> Standard Delivery</i>
+                        </h5>
+                        <h5 v-if="ruleForm.delivery === 'E'">
+                            <i class="fas fa-truck"> Express Delivery</i>
+                        </h5>
+                        <h5 v-if="ruleForm.payment === 'Cash'">
+                            <i class="fas fa-wallet">
+                                CASH ON DELIVERY
+                            </i>
+                        </h5>
+                        <h5 v-if="ruleForm.payment === 'Atm'">
+                            <i class="fab fa-cc-paypal">
+                                ATM TRANSFER
+                            </i>
+                        </h5>
+                        <h5 v-if="ruleForm.payment === 'Card'">
+                            <i class="fab fa-cc-visa">
+                                CREDIT CARD
+                            </i>
+                        </h5>
                     </div>
                 </div>
             </div>
@@ -220,7 +231,7 @@
                             <h4>NT {{ total | currency }}</h4>
                         </div>
                     </div>
-                    <button class="btn-order" @click="checkoutCart">
+                    <button class="btn-order" @click="submitForm('ruleForm')">
                         PLACE ORDER
                     </button>
                 </div>
@@ -239,18 +250,48 @@ export default {
             moment: moment,
             isTrue: false,
             coupon: "",
-            user: {
+            ruleForm: {
                 name: "",
                 phone: "",
                 address: "",
-                note: ""
+                note: "",
+                delivery: "",
+                payment: ""
             },
             carts: [],
             items: "",
-            payment: "",
             subtotal: "",
-            delivery: "S",
-            discount: 0
+            discount: 0,
+            rules: {
+                name: [
+                    {
+                        required: true,
+                        message: "Please Enter Your Full Name",
+                        trigger: "blur"
+                    }
+                ],
+                address: [
+                    {
+                        required: true,
+                        message: "Please Enter Your Address",
+                        trigger: "blur"
+                    }
+                ],
+                delivery: [
+                    {
+                        required: true,
+                        message: "At least Choose One",
+                        trigger: "change"
+                    }
+                ],
+                payment: [
+                    {
+                        required: true,
+                        message: "At least Choose One Payment",
+                        trigger: "change"
+                    }
+                ]
+            }
         };
     },
     computed: {
@@ -296,6 +337,47 @@ export default {
         }
     },
     methods: {
+        submitForm(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let checkout = [];
+                    checkout = this.$store.state.cart;
+                    let info = this.$store.state.info;
+                    let finalTotal;
+                    if (this.ruleForm.delivery === "S") {
+                        finalTotal = this.subtotal + 100 - this.discount;
+                    } else {
+                        finalTotal = this.subtotal + 300 - this.discount;
+                    }
+                    axios
+                        .post("/api/user/checkout", {
+                            cart: checkout,
+                            user: info,
+                            detail: this.ruleForm,
+                            total: finalTotal
+                        })
+                        .then(res => {
+                            if (res.data.result === true) {
+                                this.$message({
+                                    message: "恭喜您！訂單發送成功",
+                                    type: "success"
+                                });
+                            } else {
+                                this.$notify.error({
+                                    title: "抱歉",
+                                    message: res.data.msg
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                } else {
+                    console.log("error submit!!");
+                    return false;
+                }
+            });
+        },
         success() {
             this.$notify({
                 title: "成功",
@@ -517,31 +599,22 @@ $color: #2d2d2d;
                 font-weight: bold;
                 padding-left: 30px;
             }
-            label {
-                display: block;
-                color: #666;
-                padding-left: 30px;
-                margin-top: 50px;
-            }
-            input {
-                width: 330px;
-                height: 56px;
-                margin-left: 30px;
-                border: 1px solid #2d2d2d;
-            }
-            textarea {
-                width: 330px;
-                height: 112px;
-                margin-left: 30px;
-                border: 1px solid #2d2d2d;
-            }
-            .address-btn {
-                background: $color;
-                color: #fff;
-                width: 326px;
-                height: 56px;
-                margin: 50px 0 50px 30px;
-                line-height: 56px;
+            form {
+                width: 85%;
+                margin: auto;
+                padding-bottom: 20px;
+                .delivery-radio {
+                    h5 {
+                        font-size: 16px;
+                        padding-bottom: 10px;
+                    }
+                }
+                .payment-radio {
+                    label {
+                        display: block;
+                        margin-bottom: 25px;
+                    }
+                }
             }
         }
         .option {
@@ -580,15 +653,7 @@ $color: #2d2d2d;
             background: #fff;
             margin-top: 0.6rem;
             .billing-info {
-                &::after {
-                    display: block;
-                    content: "";
-                    width: 90%;
-                    height: 1px;
-                    background: #666;
-                    margin: auto;
-                    margin-top: 40px;
-                }
+                padding-bottom: 10px;
                 h3 {
                     padding-left: 30px;
                     padding-top: 45px;
