@@ -1,7 +1,9 @@
 <template>
     <div class="body">
         <div class="title">
-            <h4>EPOCH</h4>
+            <router-link to="/">
+                <h4>EPOCH</h4>
+            </router-link>
         </div>
         <div class="wrapper">
             <div class="left-nav">
@@ -38,33 +40,57 @@
                         <h5>My orders</h5>
                     </div>
                 </router-link>
+                <div class="item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <h5 @click="signout" class="pointer">Sign out</h5>
+                </div>
             </div>
             <div class="right">
                 <i class="fas fa-lock"></i>
                 <h3>CHANGE PASSWORD</h3>
                 <h4>
-                    Feel free to update your password so your EPOCH account stays secure.
+                    Feel free to update your password so your EPOCH account
+                    stays secure.
                 </h4>
-                <form class="form-signin" @submit.prevent="changePassword">
-                    <label for="inputEmail">CURRENT PASSWORD:</label>
-                    <input
-                        type="password"
-                        id="inputEmail"
-                        name="email"
-                        class="form-control"
-                        v-model="user.old"
-                    />
-                    <label for="inputName">NEW PASSWORD:</label>
-                    <input
-                        type="password"
-                        id="inputName"
-                        class="form-control"
-                        v-model="user.new"
-                    />
-                    <button class="btn btn-sm btn-dark btn-block" type="submit">
-                        SAVE PASSWORD
-                    </button>
-                </form>
+                <el-form
+                    :model="ruleForm"
+                    status-icon
+                    :rules="rules"
+                    ref="ruleForm"
+                    label-width="150px"
+                    class="demo-ruleForm"
+                >
+                    <el-form-item label="OLD PASSWORD :" prop="old">
+                        <el-input
+                            type="password"
+                            v-model="ruleForm.old"
+                            autocomplete="off"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item label="NEW PASSWORD :" prop="new">
+                        <el-input
+                            type="password"
+                            v-model="ruleForm.new"
+                            autocomplete="off"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item label="PASSWORD CHECK :" prop="checkPass">
+                        <el-input
+                            type="password"
+                            v-model="ruleForm.checkPass"
+                            autocomplete="off"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item
+                        ><div class="btn">
+                            <el-button
+                                type="primary"
+                                @click="submitForm('ruleForm')"
+                                >CHANGE PASSWORD</el-button
+                            >
+                        </div>
+                    </el-form-item>
+                </el-form>
             </div>
         </div>
         <div class="footer">
@@ -82,12 +108,43 @@ export default {
     name: "Password",
 
     data() {
+        var validatePass = (rule, value, callback) => {
+            if (value === "") {
+                callback(new Error("Please Enter Password"));
+            } else {
+                if (this.ruleForm.check !== "") {
+                    this.$refs.ruleForm.validateField("checkPass");
+                }
+                callback();
+            }
+        };
+        var validatePass2 = (rule, value, callback) => {
+            if (value === "") {
+                callback(new Error("Please Enter Password Again"));
+            } else if (value !== this.ruleForm.new) {
+                callback(new Error("Two Paossword Not Match!"));
+            } else {
+                callback();
+            }
+        };
         return {
             uid: this.$store.state.info.id,
             userName: this.$store.state.info.name,
-            user: {
+            ruleForm: {
                 old: "",
-                new: ""
+                new: "",
+                checkPass: ""
+            },
+            rules: {
+                old: [
+                    {
+                        required: true,
+                        message: "Please Enter Your Password",
+                        trigger: "blur"
+                    }
+                ],
+                new: [{ validator: validatePass, trigger: "blur" }],
+                checkPass: [{ validator: validatePass2, trigger: "blur" }]
             }
         };
     },
@@ -97,6 +154,37 @@ export default {
         }
     },
     methods: {
+        submitForm(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    axios
+                        .put(`/api/user/password/${this.uid}`, {
+                            oldpass: this.ruleForm.old,
+                            newpass: this.ruleForm.new
+                        })
+                        .then(res => {
+                            if (res.data.result === false) {
+                                this.$notify.error({
+                                    title: "抱歉",
+                                    message: res.data.msg
+                                });
+                            } else {
+                                this.$notify({
+                                    title: "Success",
+                                    message: "Change Your Password !",
+                                    type: "success"
+                                });
+                                this.ruleForm.old = "";
+                                this.ruleForm.new = "";
+                                this.ruleForm.checkPass = "";
+                            }
+                        });
+                } else {
+                    console.log("error submit!!");
+                    return false;
+                }
+            });
+        },
         changePassword() {
             axios
                 .put(`/api/user/password/${this.uid}`, {
@@ -104,7 +192,7 @@ export default {
                     newpass: this.user.new
                 })
                 .then(res => {
-                    if(res.data.result === false){
+                    if (res.data.result === false) {
                         this.$notify.error({
                             title: "抱歉",
                             message: res.data.msg
@@ -114,9 +202,26 @@ export default {
                             message: "恭喜您！密碼修改成功",
                             type: "success"
                         });
-                        this.user.old = '';
-                        this.user.new = '';
+                        this.user.old = "";
+                        this.user.new = "";
                     }
+                });
+        },
+        signout() {
+            let uid = this.$store.state.info.id;
+            axios
+                .put("/api/user/logout", {
+                    user: uid
+                })
+                .then(res => {
+                    if (res.data.result === true) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("isLogin");
+                        this.$router.push("/login");
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
                 });
         }
     }
@@ -138,6 +243,16 @@ export default {
         font-family: "IM Fell Great Primer SC";
         font-weight: 700;
     }
+    a{
+        color: #2d2d2d;
+        text-decoration: none;
+    }
+}
+.fa-sign-out-alt {
+    transform: scalex(-1);
+}
+.pointer {
+    cursor: pointer;
 }
 .wrapper {
     width: 55%;
@@ -186,7 +301,8 @@ export default {
             margin-top: 5px;
             align-items: center;
             color: #2d2d2d;
-            .far,.fas {
+            .far,
+            .fas {
                 padding: 20px;
             }
             h5 {
@@ -197,7 +313,7 @@ export default {
     }
     .right {
         width: 640px;
-        height: 850px;
+        height: 700px;
         background: #fff;
         margin-left: 20px;
         .fa-lock {
@@ -210,11 +326,12 @@ export default {
             padding-left: 20px;
         }
         h4 {
+            width: 95%;
             font-size: 20px;
             padding-left: 20px;
         }
         form {
-            width: 350px;
+            width: 500px;
             margin: auto;
             margin: 50px;
             label {
@@ -230,17 +347,7 @@ export default {
             }
             .btn {
                 margin-top: 40px;
-                width: 80%;
                 margin: auto;
-                color: #2d2d2d;
-                color: #fff;
-                border: none;
-                &:hover {
-                    background: #aaa;
-                }
-            }
-            .form-check {
-                margin: 20px;
             }
         }
     }

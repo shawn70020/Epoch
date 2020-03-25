@@ -29,56 +29,61 @@
         <div class="container">
             <div class="ad">
                 <div class="title">The Y2K trend</div>
-                <a href="#">
+                <router-link to="/women" class="">
                     <div class="shop-link">
                         shop now
                     </div>
-                </a>
+                </router-link>
             </div>
             <div class="row mt-5">
                 <div class="col-6">
                     <img src="../assets/image/1.jpg" alt="" />
                     <h4>NEW-SEASON STYLES</h4>
                     <h5>Looks you haven't met yet</h5>
-                    <a href="#">
+                    <router-link to="/men" class="">
                         <div class="shop-link">
                             SHOP NOW
                         </div>
-                    </a>
+                    </router-link>
                 </div>
                 <div class="col-6">
                     <img src="../assets/image/2.jpg" alt="" />
                     <h4>VARSITY VIBES</h4>
                     <h5>Campus it up</h5>
-                    <a href="#">
+                    <router-link to="/men" class="">
                         <div class="shop-link">
                             SHOP THE BRAND
                         </div>
-                    </a>
+                    </router-link>
                 </div>
                 <div class="col-6">
                     <img src="../assets/image/3.jpg" alt="" />
                     <h4>FRESH CO-ORDS</h4>
                     <h5>What a match!</h5>
-                    <a href="#">
+                    <router-link to="/men" class="">
                         <div class="shop-link">
                             SHOP NOW
                         </div>
-                    </a>
+                    </router-link>
                 </div>
                 <div class="col-6">
                     <img src="../assets/image/4.jpg" alt="" />
                     <h4>NEW COLLUSION</h4>
                     <h5>Oversized, graphic goodness</h5>
-                    <a href="#">
+                    <router-link to="/women" class="">
                         <div class="shop-link">
                             SHOP THE BRAND
                         </div>
-                    </a>
+                    </router-link>
                 </div>
             </div>
         </div>
-        <Carousel></Carousel>
+        <div class="block">
+            <el-carousel trigger="click" height="580px">
+                <el-carousel-item v-for="item in 4" :key="item">
+                </el-carousel-item>
+            </el-carousel>
+        </div>
         <div class="social">
             <ul>
                 <li>
@@ -143,8 +148,7 @@
                 <div class="item">
                     <h4>SHOPPING FROM:</h4>
                     <h5>
-                        You're in <i class="fab fa-canadian-maple-leaf"></i>|
-                        Change
+                        You're in <i class="fas fa-globe-americas"></i>| Change
                     </h5>
                 </div>
             </div>
@@ -161,13 +165,12 @@
 
 <script>
 import Navbar from "../components/Navbar";
-import Carousel from "../components/Carousel";
+// import Carousel from "../components/Carousel";
 import { mapState, mapActions } from "vuex";
 export default {
     name: "Index",
     components: {
-        Navbar,
-        Carousel
+        Navbar
     },
     computed: mapState({
         user: state => state.users
@@ -352,9 +355,29 @@ $color: #7f033b;
         }
     }
 }
+.el-carousel__item:nth-child(2n) {
+    background-image: url(../assets/image/hi6.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.el-carousel__item:nth-child(2n + 1) {
+    background-image: url(../assets/image/hi5.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.el-carousel__item:nth-child(5) {
+    background-image: url(../assets/image/hi8.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.el-carousel__item:nth-child(6) {
+    background-image: url(../assets/image/hi10.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 .social {
     height: 60px;
-    margin-top: 60px;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     ul {

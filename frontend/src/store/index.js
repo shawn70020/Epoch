@@ -18,6 +18,7 @@ export default new Vuex.Store({
                 const res = await axios.get(`/api/getuserinfo/${token}`);
                 state.info = res.data.info;
                 state.cart = res.data.cart;
+                console.log(state.cart.length);
                 if (state.cart.length > 0) {
                     state.isEmpty = true;
                 }

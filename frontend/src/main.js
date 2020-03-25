@@ -39,25 +39,7 @@ import 'echarts/lib/component/tooltip'
 import 'echarts/lib/component/polar'
 import 'echarts/lib/component/legend'
 import 'echarts/lib/component/title.js'
-import {
-    ValidationProvider,
-    ValidationObserver,
-    extend
-} from 'vee-validate';
-import {
-    required,email
-} from 'vee-validate/dist/rules';
-extend('required', {
-    ...required,
-    message: 'is required'
-});
-extend('email', {
-    ...email,
-    message: 'is not right'
-});
 
-Vue.component('ValidationObserver', ValidationObserver);
-Vue.component('ValidationProvider', ValidationProvider);
 // 欄位檢驗
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate);

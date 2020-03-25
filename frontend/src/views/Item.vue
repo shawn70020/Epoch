@@ -16,10 +16,10 @@
         </div>
         <div class="navs">
             <ol class="bread">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Men</a></li>
-                <li><a href="#">New In</a></li>
-                <li><a href="#">New In: Clothing</a></li>
+                <li><router-link to="/">Home</router-link></li>
+                <li v-if="products.sex === 'M'"><router-link to="/men">Men</router-link></li>
+                <li v-if="products.sex === 'W'"><router-link to="/women">Women</router-link></li>
+                <li>{{products.name}}</li>
             </ol>
         </div>
         <div class="container">
@@ -56,9 +56,17 @@
                             </h5>
                         </div>
                     </div>
-                    <button type="button" class="btn" @click="addCart">
-                        ADD TO BAG
-                    </button>
+                    <div class="item-btn">
+                        <button type="button" class="btn" @click="addCart">
+                            ADD TO BAG
+                        </button>
+                        <div class="heart" @click="saveItem(pid)">
+                            <i
+                                class="fa-heart"
+                                :class="{ fas: isCheck, far: noCheck }"
+                            ></i>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="bottom">
@@ -79,7 +87,6 @@
                 </div>
             </div>
         </div>
-        <Carousel></Carousel>
         <div class="social">
             <ul>
                 <li>
@@ -163,12 +170,13 @@
 <script>
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import Carousel from "../components/Carousel";
 export default {
     name: "Item",
     data() {
         return {
             showError: 0,
+            isCheck: false,
+            noCheck: true,
             pid: this.$route.params.pid,
             products: [],
             options: [
@@ -197,8 +205,7 @@ export default {
         };
     },
     components: {
-        Navbar,
-        Carousel
+        Navbar
     },
     created() {
         this.getProduct(this.pid);
@@ -226,31 +233,32 @@ export default {
                     .then(res => {
                         console.log(res);
                         this.$store.commit("updateCart", parseInt(this.pid));
+                        this.$notify({
+                            title: "Success !",
+                            message: "Add To Cart",
+                            type: "success"
+                        });
                     })
                     .catch(err => {
                         console.log(err);
                     });
             }
         },
-        getUserCart() {
-            let aCart = this.$store.state.cart;
-            let i;
-            let arr = [];
-            for (i = 0; i < aCart.length; i++) {
-                arr.push(aCart[i].pid);
-            }
+        saveItem(id) {
             axios
-                .post("/api/user/getusercart", {
-                    post: arr
+                .post("/api/user/saved/item", {
+                    uid: this.$store.state.info.id,
+                    pid: id
                 })
                 .then(res => {
-                    this.carts = res.data.data;
-                    for (i = 0; i < aCart.length; i++) {
-                        this.carts[i].item = this.cart[i].num;
-                        this.items = aCart.length;
-                        this.total =
-                            this.total +
-                            this.carts[i].item * this.carts[i].price;
+                    if (res.data.result === true) {
+                        this.isCheck = true;
+                        this.noCheck = false;
+                        this.$notify({
+                            title: "Success !",
+                            message: "ADD TO SAVED ITEMS",
+                            type: "success"
+                        });
                     }
                 })
                 .catch(err => {
@@ -270,7 +278,7 @@ $color1: #1ca753;
 .banner {
     display: flex;
     height: 50px;
-    background: rgb(187, 167, 249);
+    background: rgb(255, 251, 0);
     align-items: center;
     justify-content: space-around;
     font-family: "Sriracha";
@@ -317,9 +325,7 @@ $color1: #1ca753;
                 color: #999;
                 margin-right: 15px;
             }
-            a {
                 color: #999;
-            }
         }
     }
     li + li {
@@ -364,15 +370,6 @@ $color1: #1ca753;
             .el-select {
                 margin-top: 20px;
             }
-            .btn {
-                margin-top: 30px;
-                width: 240px;
-                height: 45px;
-                background: darken($color1, 10%);
-                padding-top: 10px;
-                color: #fff;
-                font-size: 18px;
-            }
             .error {
                 width: 330px;
                 height: 60px;
@@ -383,6 +380,39 @@ $color1: #1ca753;
                     font-size: 16px;
                     padding-left: 15px;
                     padding-right: 5px;
+                }
+            }
+            .item-btn {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                margin-top: 20px;
+                .heart {
+                    width: 36px;
+                    height: 36px;
+                    text-align: center;
+                    background: #eee;
+                    border-radius: 50%;
+                    .far {
+                        line-height: 36px;
+                        width: 20px;
+                        height: 18px;
+                        color: #2d2d2d;
+                    }
+                    .fas {
+                        line-height: 36px;
+                        width: 20px;
+                        height: 18px;
+                        color: #2d2d2d;
+                    }
+                }
+                .btn {
+                    width: 240px;
+                    height: 45px;
+                    background: darken($color1, 10%);
+                    padding-top: 10px;
+                    color: #fff;
+                    font-size: 18px;
                 }
             }
         }

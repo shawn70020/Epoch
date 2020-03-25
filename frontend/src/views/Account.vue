@@ -1,7 +1,9 @@
 <template>
     <div class="body">
         <div class="title">
+            <router-link to="/">
             <h4>EPOCH</h4>
+            </router-link>
         </div>
         <div class="wrapper">
             <div class="left-nav">
@@ -26,7 +28,7 @@
                         <h5>My details</h5>
                     </div>
                 </router-link>
-                 <router-link to="/mypassword">
+                <router-link to="/mypassword">
                     <div class="item">
                         <i class="fas fa-lock"></i>
                         <h5>Change password</h5>
@@ -38,6 +40,10 @@
                         <h5>My orders</h5>
                     </div>
                 </router-link>
+                     <div class="item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <h5 @click="signout" class="pointer">Sign out</h5>
+                    </div>
             </div>
             <div class="right">
                 <div class="slogan">
@@ -55,6 +61,7 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
     name: "Account",
     data() {
@@ -71,7 +78,24 @@ export default {
     methods: {
         test() {
             this.show = true;
-        }
+        },
+         signout() {
+            let uid = this.$store.state.info.id;
+            axios
+                .put("/api/user/logout", {
+                    user: uid
+                })
+                .then(res => {
+                    if (res.data.result === true) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("isLogin");
+                        this.$router.push("/login");
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
     }
 };
 </script>
@@ -91,6 +115,16 @@ export default {
         font-family: "IM Fell Great Primer SC";
         font-weight: 700;
     }
+    a{
+        color: #2d2d2d;
+        text-decoration: none;
+    }
+}
+.fa-sign-out-alt {
+    transform: scalex(-1);
+}
+.pointer{
+    cursor: pointer;
 }
 .wrapper {
     width: 55%;
@@ -99,6 +133,9 @@ export default {
     display: flex;
     justify-content: center;
     .left-nav {
+        a{
+            color: #2d2d2d;
+        }
         .user {
             width: 300px;
             height: 170px;
@@ -139,7 +176,8 @@ export default {
             margin-top: 5px;
             align-items: center;
             color: #2d2d2d;
-            .far,.fas {
+            .far,
+            .fas {
                 padding: 20px;
             }
             h5 {
@@ -151,7 +189,7 @@ export default {
     .right {
         margin-left: 20px;
         width: 620px;
-        height: 970px;
+        height: 820px;
         background-image: url(../assets/image/camera.jpg);
         background-repeat: no-repeat;
         background-size: cover;
@@ -178,10 +216,10 @@ export default {
     width: 100%;
     height: 62px;
     background: #fff;
-    h5{
+    h5 {
         font-size: 22px;
         margin-right: 2rem;
-        &:last-child{
+        &:last-child {
             margin-left: 5rem;
         }
     }

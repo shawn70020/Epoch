@@ -36,7 +36,7 @@
                     <el-form-item label="Email" prop="email">
                         <el-input v-model="ruleForm.email"></el-input>
                     </el-form-item>
-                    <el-form-item label="password" prop="password">
+                    <el-form-item label="Password" prop="password">
                         <el-input
                             type="password"
                             v-model="ruleForm.password"
@@ -47,7 +47,7 @@
                         <el-button
                             type="primary"
                             @click="submitForm('ruleForm')"
-                            >JOIN</el-button
+                            >SIGN IN</el-button
                         >
                         <el-button @click="resetForm('ruleForm')"
                             >RESET</el-button

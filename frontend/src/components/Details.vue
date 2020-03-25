@@ -1,7 +1,9 @@
 <template>
     <div class="body">
         <div class="title">
-            <h4>EPOCH</h4>
+            <router-link to="/">
+                <h4>EPOCH</h4>
+            </router-link>
         </div>
         <div class="wrapper">
             <div class="left-nav">
@@ -38,6 +40,10 @@
                         <h5>My orders</h5>
                     </div>
                 </router-link>
+                <div class="item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <h5 @click="signout" class="pointer">Sign out</h5>
+                </div>
             </div>
             <div class="right">
                 <i class="far fa-address-card"></i>
@@ -46,7 +52,54 @@
                     Feel free to edit any of your details below so your EPOCH
                     account is totally up to date.
                 </h4>
-                <form class="form-signin" @submit.prevent="changeInfo">
+                <el-form
+                    :model="ruleForm"
+                    :rules="rules"
+                    ref="ruleForm"
+                    label-width="150px"
+                    class="demo-ruleForm form"
+                    status-icon="true"
+                >
+                    <el-form-item label="Email :" prop="email">
+                        <el-input v-model="ruleForm.email"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Name :" prop="name">
+                        <el-input
+                            type="text"
+                            v-model="ruleForm.name"
+                            autocomplete="off"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item label="DATE OF BIRTH :" required>
+                        <el-col>
+                            <el-form-item prop="birthday">
+                                <el-date-picker
+                                    type="date"
+                                    placeholder="Choose Date"
+                                    v-model="ruleForm.birthday"
+                                    style="width: 100%;"
+                                ></el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-form-item>
+                    <el-form-item label="INTERESTED IN :" prop="sex">
+                        <el-radio-group v-model="ruleForm.sex">
+                            <el-radio label="F">Womenswear</el-radio>
+                            <el-radio label="M">Menswear</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item class="btn">
+                        <el-button
+                            type="primary"
+                            @click="submitForm('ruleForm')"
+                            >SAVE</el-button
+                        >
+                        <el-button @click="resetForm('ruleForm')"
+                            >RESET</el-button
+                        >
+                    </el-form-item>
+                </el-form>
+                <!-- <form class="form-signin" @submit.prevent="changeInfo">
                     <label for="inputEmail">EMAIL ADDRESS:</label>
                     <input
                         type="email"
@@ -99,7 +152,7 @@
                     <button class="btn btn-sm btn-dark btn-block" type="submit">
                         SAVE CHANGE
                     </button>
-                </form>
+                </form> -->
             </div>
         </div>
         <div class="footer">
@@ -120,7 +173,35 @@ export default {
         return {
             uid: this.$store.state.info.id,
             userName: this.$store.state.info.name,
-            user: {}
+            ruleForm: {},
+            rules: {
+                email: [
+                    {
+                        required: true,
+                        message: "Please Enter Your Email",
+                        trigger: "blur"
+                    },
+                    {
+                        type: "email",
+                        message: "Your Email Type is not correct",
+                        trigger: ["blur", "change"]
+                    }
+                ],
+                name: [
+                    {
+                        required: true,
+                        message: "Please Enter Your Name",
+                        trigger: "change"
+                    }
+                ],
+                sex: [
+                    {
+                        required: true,
+                        message: "Please Choose A Option",
+                        trigger: "change"
+                    }
+                ]
+            }
         };
     },
     computed: {
@@ -132,9 +213,44 @@ export default {
         this.getInfo(this.uid);
     },
     methods: {
+        submitForm(formName) {
+            console.log(1);
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    console.log(123);
+                    axios
+                        .put(`/api/user/changeinfo/${this.uid}`, {
+                            email: this.ruleForm.email,
+                            name: this.ruleForm.name,
+                            birthday: this.ruleForm.birthday,
+                            sex: this.ruleForm.sex
+                        })
+                        .then(res => {
+                            if (res.data.result === false) {
+                                this.$notify.error({
+                                    title: "Sorry !",
+                                    message: res.data.msg
+                                });
+                            } else {
+                                this.$notify({
+                                    title: "Success !",
+                                    message: "Change Your Details",
+                                    type: "success"
+                                });
+                            }
+                        });
+                } else {
+                    console.log("error submit!!");
+                    return false;
+                }
+            });
+        },
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        },
         getInfo(id) {
             axios.get(`/api/user/info/${id}`).then(res => {
-                this.user = res.data.data;
+                this.ruleForm = res.data.data[0];
             });
         },
         changeInfo() {
@@ -146,7 +262,7 @@ export default {
                     sex: this.user[0].sex
                 })
                 .then(res => {
-                    if(res.data.result === false){
+                    if (res.data.result === false) {
                         this.$notify.error({
                             title: "抱歉",
                             message: res.data.msg
@@ -157,6 +273,23 @@ export default {
                             type: "success"
                         });
                     }
+                });
+        },
+        signout() {
+            let uid = this.$store.state.info.id;
+            axios
+                .put("/api/user/logout", {
+                    user: uid
+                })
+                .then(res => {
+                    if (res.data.result === true) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("isLogin");
+                        this.$router.push("/login");
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
                 });
         }
     }
@@ -171,6 +304,10 @@ export default {
     height: 110px;
     margin: auto;
     text-align: center;
+    a {
+        color: #2d2d2d;
+        text-decoration: none;
+    }
     h4 {
         line-height: 110px;
         margin-right: 130px;
@@ -178,6 +315,12 @@ export default {
         font-family: "IM Fell Great Primer SC";
         font-weight: 700;
     }
+}
+.fa-sign-out-alt {
+    transform: scalex(-1);
+}
+.pointer{
+    cursor: pointer;
 }
 .wrapper {
     width: 55%;
@@ -226,7 +369,8 @@ export default {
             margin-top: 5px;
             align-items: center;
             color: #2d2d2d;
-            .far,.fas {
+            .far,
+            .fas {
                 padding: 20px;
             }
             h5 {
@@ -237,7 +381,7 @@ export default {
     }
     .right {
         width: 640px;
-        height: 850px;
+        height: 750px;
         background: #fff;
         margin-left: 20px;
         .fa-address-card {
@@ -254,9 +398,10 @@ export default {
             padding-left: 20px;
         }
         form {
-            width: 350px;
+            width: 500px;
             margin: auto;
             margin: 50px;
+            padding-top: 30px;
             label {
                 color: #666;
                 font-size: 14px;
@@ -272,12 +417,6 @@ export default {
                 margin-top: 40px;
                 width: 80%;
                 margin: auto;
-                color: #2d2d2d;
-                color: #fff;
-                border: none;
-                &:hover {
-                    background: #aaa;
-                }
             }
             .form-check {
                 margin: 20px;

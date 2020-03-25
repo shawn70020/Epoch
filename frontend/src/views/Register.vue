@@ -24,10 +24,10 @@
                     class="demo-ruleForm form"
                     status-icon="true"
                 >
-                    <el-form-item label="Email" prop="email" >
+                    <el-form-item label="Email" prop="email">
                         <el-input v-model="ruleForm.email"></el-input>
                     </el-form-item>
-                    <el-form-item label="password" prop="password">
+                    <el-form-item label="Password" prop="password">
                         <el-input
                             type="password"
                             v-model="ruleForm.password"
@@ -176,50 +176,50 @@ export default {
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();
-        }
-    },
-    success() {
-        this.$notify({
-            title: "成功",
-            message: "註冊會員",
-            type: "success"
-        });
-    },
-    error() {
-        this.$notify.error({
-            title: "抱歉",
-            message: "註冊失敗！請重新嘗試"
-        });
-    },
-    signin() {
-        const vm = this;
-        axios
-            .post("/api/signin", {
-                email: vm.user.email,
-                password: vm.user.password,
-                name: vm.user.username,
-                date: vm.user.time,
-                sex: vm.user.sex
-            })
-            .then(res => {
-                if (res.data.result === true) {
-                    this.$message({
-                        message: "恭喜您！註冊會員成功",
-                        type: "success"
-                    });
-                    setTimeout(() => {
-                        vm.$router.push("/login");
-                    }, 1500);
-                } else {
-                    this.$notify.error({
-                        title: "抱歉",
-                        message: res.data.msg
-                    });
-                }
-            })
-            .catch(err => {
-                console.log(err);
+        },
+        success() {
+            this.$notify({
+                title: "成功",
+                message: "註冊會員",
+                type: "success"
             });
+        },
+        error() {
+            this.$notify.error({
+                title: "抱歉",
+                message: "註冊失敗！請重新嘗試"
+            });
+        },
+        signin() {
+            const vm = this;
+            axios
+                .post("/api/signin", {
+                    email: vm.user.email,
+                    password: vm.user.password,
+                    name: vm.user.username,
+                    date: vm.user.time,
+                    sex: vm.user.sex
+                })
+                .then(res => {
+                    if (res.data.result === true) {
+                        this.$message({
+                            message: "恭喜您！註冊會員成功",
+                            type: "success"
+                        });
+                        setTimeout(() => {
+                            vm.$router.push("/login");
+                        }, 1500);
+                    } else {
+                        this.$notify.error({
+                            title: "抱歉",
+                            message: res.data.msg
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     }
 };
 </script>

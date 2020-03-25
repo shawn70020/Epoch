@@ -68,7 +68,7 @@
                         :src="'data:image/png;base64,' + item.image"
                         class="img-fluid"
                     />
-                    <div class="heart"><i class="far fa-heart"></i></div>
+                    <!-- <div class="heart"><i class="fa-heart" :class="{'fas':isCheck, 'far':noCheck}" @click="save"></i></div> -->
                     <div class="item-txt">
                         <h5>{{ item.name }}</h5>
                         <h4>NT {{ item.price | currency }}</h4>
@@ -260,6 +260,15 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        save(){
+            if(this.isCheck === false){
+                this.isCheck === true;
+                this.noCheck === false;
+            }else{
+                this.isCheck === false;
+                this.noCheck === true;
+            }
         }
     }
 };
@@ -387,16 +396,16 @@ $color: #fa81e4;
             border-radius: 50%;
             bottom: 100px;
             right: 20px;
-            .far {
-                line-height: 36px;
-                width: 20px;
-                height: 18px;
+            .fa-heart{
                 color: #2d2d2d;
+                line-height: 36px;
             }
         }
         .item-txt {
+            width: 100%;
             margin-top: 10px;
             h5 {
+                width: 96%;
                 font-size: 16px;
                 color: #000000;
             }

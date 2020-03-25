@@ -1,97 +1,124 @@
 <template>
-    <div class="body">
-        <div class="title">
-            <h4>EPOCH</h4>
-        </div>
-        <div class="wrapper">
-            <div class="left-nav">
-                <div class="user">
-                    <div class="circle">
-                        <h5>{{ splitName }}</h5>
-                    </div>
-                    <div class="name">
-                        <h5>Hi,</h5>
-                        <h5>{{ userName }}</h5>
-                    </div>
-                </div>
-                <router-link to="/account">
-                    <div class="item">
-                        <i class="far fa-user"></i>
-                        <h5>Account overview</h5>
-                    </div>
-                </router-link>
-                <router-link to="/mydetails">
-                    <div class="item">
-                        <i class="far fa-address-card"></i>
-                        <h5>My details</h5>
-                    </div>
-                </router-link>
-                <router-link to="/mypassword">
-                    <div class="item">
-                        <i class="fas fa-lock"></i>
-                        <h5>Change password</h5>
-                    </div>
-                </router-link>
-                <router-link to="/myorder">
-                    <div class="item line">
-                        <i class="fas fa-list-alt"></i>
-                        <h5>My orders</h5>
-                    </div>
+    <div>
+        <div class="body">
+            <div class="title">
+                <router-link to="/">
+                    <h4>EPOCH</h4>
                 </router-link>
             </div>
-            <div class="right">
-                <div class="top">
-                    <h3>Order DETAILS</h3>
-                    <h5>Thanks for the order! Check out the details below.</h5>
-                </div>
-                <div class="step">
-                    <div class="title">
-                        <i class="fas fa-long-arrow-alt-left">Back</i>
-                        <h5>Order No.{{ oid }}</h5>
-                    </div>
-                    <el-steps :active="order.status + 1" align-center>
-                        <el-step
-                            title="Order Established"
-                            :description="order.addDate"
-                        ></el-step>
-                        <el-step
-                            title="Order Shipped"
-                            :description="order.shipDate"
-                        ></el-step>
-                        <el-step
-                            title="Order Done"
-                            :description="order.doneDate"
-                        ></el-step>
-                    </el-steps>
-                </div>
-                <div class="address">
-                    <h5>Receiver： {{ info.name }}</h5>
-                    <h5>Mobile :{{ info.phone }}</h5>
-                    <h5>Address :{{ info.address }}</h5>
-                    <h5 v-if="info.note">Order Note: {{ info.note }}</h5>
-                    <h5 v-if="!info.note">Order Note: Nothing Here</h5>
-                </div>
-                <div class="info">
-                    <div class="detail">
-                        <div
-                            class="item"
-                            v-for="(item, index) in item"
-                            :key="index"
-                        >
-                            <img
-                                :src="'data:image/png;base64,' + item.image"
-                                class="img-fluid"
-                            />
-                            <h5>{{ item.name }}</h5>
-                            <h5>X{{ num[index].num }}</h5>
-                            <h5>${{ item.price }}</h5>
+            <div class="wrappere">
+                <div class="left-nav">
+                    <div class="user">
+                        <div class="circle">
+                            <h5>{{ splitName }}</h5>
+                        </div>
+                        <div class="name">
+                            <h5>Hi,</h5>
+                            <h5>{{ userName }}</h5>
                         </div>
                     </div>
-                    <div class="total">
-                        <h5 v-if="order.delivery === 'S'">DELIVERY: $100</h5>
-                        <h5 v-if="order.delivery === 'E'">DELIVERY: $300</h5>
-                        <h5>TOTAL : ${{ order.total }}</h5>
-                        <h5>PAYMENT : {{ info.payment }}</h5>
+                    <router-link to="/account">
+                        <div class="item">
+                            <i class="far fa-user"></i>
+                            <h5>Account overview</h5>
+                        </div>
+                    </router-link>
+                    <router-link to="/mydetails">
+                        <div class="item">
+                            <i class="far fa-address-card"></i>
+                            <h5>My details</h5>
+                        </div>
+                    </router-link>
+                    <router-link to="/mypassword">
+                        <div class="item">
+                            <i class="fas fa-lock"></i>
+                            <h5>Change password</h5>
+                        </div>
+                    </router-link>
+                    <router-link to="/myorder">
+                        <div class="item line">
+                            <i class="fas fa-list-alt"></i>
+                            <h5>My orders</h5>
+                        </div>
+                    </router-link>
+                </div>
+                <div class="right">
+                    <div class="top">
+                        <h3>Order Details</h3>
+                        <h5>
+                            Thanks for the order! Check out the details below.
+                        </h5>
+                    </div>
+                    <div class="step">
+                        <div class="title">
+                            <i
+                                class="fas fa-long-arrow-alt-left"
+                                @click="backPage"
+                            >
+                                Back</i
+                            >
+                            <h5>Order No.{{ oid }}</h5>
+                        </div>
+                        <el-steps :active="order.status + 1" align-center>
+                            <el-step
+                                title="Order Established"
+                                :description="order.addDate"
+                            ></el-step>
+                            <el-step
+                                title="Order Shipped"
+                                :description="order.shipDate"
+                            ></el-step>
+                            <el-step
+                                title="Order Done"
+                                :description="order.doneDate"
+                            ></el-step>
+                        </el-steps>
+                    </div>
+                    <div class="address">
+                        <h4>Bill Information</h4>
+                        <h5>Receiver： {{ info.name }}</h5>
+                        <h5>Mobile :{{ info.phone }}</h5>
+                        <h5>Address :{{ info.address }}</h5>
+                        <h5 v-if="info.note">Order Note: {{ info.note }}</h5>
+                        <h5 v-if="!info.note">Order Note: Nothing Here</h5>
+                    </div>
+                    <div class="info">
+                        <h3>Product Detail</h3>
+                        <div class="detail">
+                            <div
+                                class="item"
+                                v-for="(item, index) in item"
+                                :key="index"
+                            >
+                                <img
+                                    :src="'data:image/png;base64,' + item.image"
+                                    class="img-fluid"
+                                />
+                                <div class="num">
+                                    <h5>{{ item.name }}</h5>
+                                    <h5>X{{ num[index].num }}</h5>
+                                </div>
+                                <h4>{{ item.price | currency }}</h4>
+                            </div>
+                        </div>
+                        <div class="total">
+                            <h5>
+                                <i class="far fa-calendar-check"></i> PAYMENT :
+                                {{ info.payment }}
+                            </h5>
+                            <h5 v-if="order.delivery === 'S'">
+                                <i class="fas fa-people-carry"></i> DELIVERY:
+                                $100
+                            </h5>
+                            <h5 v-if="order.delivery === 'E'">
+                                <i class="fas fa-people-carry"></i> DELIVERY:
+                                $300
+                            </h5>
+                            <h5>
+                                <i class="fas fa-wallet"></i> TOTAL :
+                                {{ order.total | currency }}
+                            </h5>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -144,6 +171,9 @@ export default {
                     this.isEmpty = false;
                 }
             });
+        },
+        backPage() {
+            this.$router.go(-1);
         }
     }
 };
@@ -151,6 +181,7 @@ export default {
 <style lang="scss" scoped>
 .body {
     background: #eee;
+    width: 100%;
 }
 .title {
     width: 55%;
@@ -165,9 +196,8 @@ export default {
         font-weight: 700;
     }
 }
-.wrapper {
+.wrappere {
     width: 55%;
-    height: 100vh;
     margin: auto;
     display: flex;
     justify-content: center;
@@ -229,6 +259,7 @@ export default {
             width: 100%;
             height: 140px;
             background: #fff;
+            padding-top: 20px;
             .fa-list-alt {
                 padding: 20px;
                 font-size: 28px;
@@ -237,6 +268,9 @@ export default {
                 padding-left: 20px;
                 font-weight: bold;
             }
+            h5 {
+                padding-left: 20px;
+            }
         }
         .step {
             margin-top: 20px;
@@ -244,48 +278,87 @@ export default {
             height: 260px;
             background: #fff;
             .title {
-                width: 90%;
-                padding-top: 30px;
+                width: 92%;
+                padding-top: 20px;
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-start;
+                .fa-long-arrow-alt-left {
+                    cursor: pointer;
+                }
             }
         }
         .address {
             width: 100%;
-            height: 150px;
             background: #fff;
             margin-top: 20px;
-            padding-left: 30px;
-            padding-top: 10px;
-            h5 {
-                font-size: 20px;
-            }
-        }
-        .info{
-            margin-top: 20px;
-            width: 100%;
-            height: 400px;
-            background: #fff;
-            .detail{
-                .item{
-                    display: flex;
-                    justify-content: space-around;
-                    padding-top: 15px;
-                    img {
-                            width: 90px;
-                            height: 120px;
-                            margin-left: 15px;
-                        }
-                        h5{
-                            font-size: 20px;
-                        }
+            padding: 20px;
+            h4 {
+                font-size: 28px;
+                &::after {
+                    content: "";
+                    width: 100%;
+                    height: 1px;
+                    background: #999;
+                    display: block;
+                    margin: auto;
+                    margin-top: 20px;
                 }
             }
-            .total{
+            h5 {
+                font-size: 20px;
+                color: lighten(#2d2d2d, 5%);
+            }
+        }
+        .info {
+            margin-top: 20px;
+            width: 100%;
+            background: #fff;
+            margin-bottom: 30px;
+            h3 {
+                font-size: 28px;
+                padding: 15px;
+                &::after {
+                    content: "";
+                    width: 100%;
+                    height: 1px;
+                    background: #999;
+                    display: block;
+                    margin: auto;
+                    margin-top: 20px;
+                }
+            }
+            .detail {
+                .item {
+                    display: flex;
+                    padding-top: 10px;
+                    img {
+                        width: 90px;
+                        height: 120px;
+                        margin-left: 45px;
+                    }
+                    .num {
+                        margin-left: 50px;
+                        width: 300px;
+                        overflow-x: scroll;
+                    }
+                    h4,
+                    h5 {
+                        font-size: 20px;
+                    }
+                    h4 {
+                        margin-left: 30px;
+                    }
+                }
+            }
+            .total {
+                margin-top: 10px;
                 text-align: right;
-                h5{
-                    font-size: 20px;
+                padding-right: 20px;
+                padding-bottom: 10px;
+                color: #2d2d2d;
+                h5 {
+                    font-size: 22px;
                 }
             }
         }
@@ -298,7 +371,6 @@ export default {
     width: 100%;
     height: 62px;
     background: #fff;
-    margin-top: 30px;
     h5 {
         font-size: 22px;
         margin-right: 2rem;

@@ -21,17 +21,12 @@
                             v-for="item in items"
                             :key="item.id"
                         >
-                            <img src="../assets/image/b.jpg" />
+                            <img
+                        :src="'data:image/png;base64,' + item.image"
+                        class="img-fluid"
+                    />
                             <div class="card-carousel--card--footer">
                                 <p>{{ item.name }}</p>
-                                <p
-                                    class="tag"
-                                    v-for="(tag, index) in item.tag"
-                                    :key="index"
-                                    :class="index &gt; 0 ? 'secondary' : ''"
-                                >
-                                    {{ tag }}
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -46,6 +41,7 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
     name: "Carousel",
     data() {
@@ -53,19 +49,24 @@ export default {
             currentOffset: 0,
             windowSize: 3,
             paginationFactor: 220,
-            items: [
-                { id: 'a.jpg', name: "Kin Khao", tag: ["Thai"] },
-                { id: 'b.jpg', name: "Jū-Ni", tag: ["Sushi", "Japanese", "$$$$"] },
-                { id: 'c.jpg', name: "Delfina", tag: ["Pizza", "Casual"] },
-                { id: 'd.jpg', name: "San Tung", tag: ["Chinese", "$$"] },
-                {
-                    id: 'e.jpg',
-                    name: "Anchor",
-                    tag: ["Seafood", "Cioppino"]
-                },
-                { id: 'f.jpg', name: "Locanda", tag: ["Italian"] },
-                { id: 'g.jpg', name: "Garden Creamery", tag: ["Ice cream"] }
-            ]
+            items:[]
+            // items: [
+            //     { id: "a.jpg", name: "Kin Khao", tag: ["Thai"] },
+            //     {
+            //         id: "b.jpg",
+            //         name: "Jū-Ni",
+            //         tag: ["Sushi", "Japanese", "$$$$"]
+            //     },
+            //     { id: "c.jpg", name: "Delfina", tag: ["Pizza", "Casual"] },
+            //     { id: "d.jpg", name: "San Tung", tag: ["Chinese", "$$"] },
+            //     {
+            //         id: "e.jpg",
+            //         name: "Anchor",
+            //         tag: ["Seafood", "Cioppino"]
+            //     },
+            //     { id: "f.jpg", name: "Locanda", tag: ["Italian"] },
+            //     { id: "g.jpg", name: "Garden Creamery", tag: ["Ice cream"] }
+            // ]
         };
     },
     computed: {
@@ -81,6 +82,9 @@ export default {
             return this.currentOffset === 0;
         }
     },
+    created() {
+        this.getCarousel();
+    },
     methods: {
         moveCarousel(direction) {
             // Find a more elegant way to express the :style. consider using props to make it truly generic
@@ -89,6 +93,16 @@ export default {
             } else if (direction === -1 && !this.atHeadOfList) {
                 this.currentOffset += this.paginationFactor;
             }
+        },
+        getCarousel() {
+            axios
+                .get("/api/carousel/item/")
+                .then(res => {
+                    this.items = res.data.data
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }
 };
@@ -103,7 +117,7 @@ $gray: #666a73;
 $light-gray: #f8f8f8;
 
 .footer {
-    background: #1ca753;
+    background: #fff;
     height: 460px;
     .card-carousel-wrapper {
         display: flex;

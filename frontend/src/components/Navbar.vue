@@ -104,7 +104,10 @@
                     <router-link to="/user/bag">
                         <button class="bt btn-bag">VIEW BAG</button>
                     </router-link>
+                    <router-link to="/user/checkout"
+                            >
                     <button class="bt btn-check">CHECKOUT</button>
+                    </router-link>
                 </div>
             </div>
         </div>

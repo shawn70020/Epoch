@@ -1,7 +1,9 @@
 <template>
     <div class="body">
         <div class="title">
-            <h4>EPOCH</h4>
+            <router-link to="/">
+                <h4>EPOCH</h4>
+            </router-link>
         </div>
         <div class="wrapper">
             <div class="left-nav">
@@ -38,6 +40,10 @@
                         <h5>My orders</h5>
                     </div>
                 </router-link>
+                <div class="item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <h5 @click="signout" class="pointer">Sign out</h5>
+                </div>
             </div>
             <div class="right">
                 <div class="top">
@@ -97,14 +103,6 @@
                                 }"
                                 ><button>VIEW ORDER</button></router-link
                             >
-                            <router-link
-                                :to="{
-                                    name: 'Ordertrack',
-                                    params: { oid: item.id }
-                                }"
-                            >
-                                <button>TRACK ORDER</button></router-link
-                            >
                         </div>
                     </div>
                 </div>
@@ -161,6 +159,23 @@ export default {
                     this.isEmpty = false;
                 }
             });
+        },
+        signout() {
+            let uid = this.$store.state.info.id;
+            axios
+                .put("/api/user/logout", {
+                    user: uid
+                })
+                .then(res => {
+                    if (res.data.result === true) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("isLogin");
+                        this.$router.push("/login");
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }
 };
@@ -174,6 +189,7 @@ export default {
     height: 110px;
     margin: auto;
     text-align: center;
+
     h4 {
         line-height: 110px;
         margin-right: 130px;
@@ -181,6 +197,16 @@ export default {
         font-family: "IM Fell Great Primer SC";
         font-weight: 700;
     }
+    a {
+        color: #2d2d2d;
+        text-decoration: none;
+    }
+}
+.fa-sign-out-alt {
+    transform: scalex(-1);
+}
+.pointer {
+    cursor: pointer;
 }
 .wrapper {
     width: 55%;
@@ -303,7 +329,15 @@ export default {
             .title {
                 width: 100%;
                 padding-top: 30px;
-                border-bottom: 1px solid #000;
+                &::after {
+                    content: "";
+                    display: block;
+                    width: 88%;
+                    height: 1px;
+                    background: #999;
+                    margin: auto;
+                    margin-top: 15px;
+                }
                 h5 {
                     font-size: 18px;
                 }
@@ -325,7 +359,7 @@ export default {
                 .image-wrap {
                     display: flex;
                     width: 50%;
-                    padding-left: 10px;
+                    padding-left: 20px;
                     .image {
                         img {
                             width: 90px;
@@ -335,6 +369,7 @@ export default {
                     }
                 }
                 .btn-order {
+                    padding-top: 30px;
                     width: 45%;
                     padding-right: 50px;
                     button {

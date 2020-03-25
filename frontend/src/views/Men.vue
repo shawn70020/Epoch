@@ -68,7 +68,7 @@
                         :src="'data:image/png;base64,' + item.image"
                         class="img-fluid"
                     />
-                    <div class="heart"><i class="far fa-heart"></i></div>
+                    <!-- <div class="heart"><i class="far fa-heart"></i></div> -->
                     <div class="item-txt">
                         <h5>{{ item.name }}</h5>
                         <h4>NT {{ item.price | currency }}</h4>

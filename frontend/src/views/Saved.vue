@@ -17,7 +17,18 @@
         <div class="title">
             <h5>Saved Items</h5>
         </div>
-        <div class="product">
+        <div class="empty" :style="{ display: isA }">
+            <div class="box">
+                <i class="far fa-heart"></i>
+                <h4>You have no Saved Items</h4>
+                <h5>
+                    Start saving as you shop by selecting the little heart.
+                    We'll sync your items across all your devices. Easy.
+                </h5>
+                <button>START SHOPPING</button>
+            </div>
+        </div>
+        <div class="product" :style="{ display: isB }">
             <div v-for="item in products" :key="item.id" class="item">
                 <img
                     :src="'data:image/png;base64,' + item.image"
@@ -32,26 +43,6 @@
                     MOVE TO BAG
                 </button>
             </div>
-        </div>
-        <div class="page">
-            <h5>You've viewed {{ nowNum }} of {{ allNum }} products</h5>
-            <div class="progress" style="height: 2.5px;">
-                <div
-                    class="progress-bar"
-                    role="progressbar"
-                    :style="{ width: bar }"
-                    aria-valuenow="20"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                ></div>
-            </div>
-            <button
-                class="load"
-                :style="{ display: loadBtn }"
-                @click="changePage"
-            >
-                LOAD MORE
-            </button>
         </div>
         <div class="social">
             <ul>
@@ -140,13 +131,9 @@ export default {
     data() {
         return {
             uid: this.$store.state.info.id,
-            show: "none",
+            isA: "none",
+            isB: "flex",
             products: [],
-            nowNum: 12,
-            allNum: 1,
-            bar: "1%",
-            page: 2,
-            loadBtn: "block"
         };
     },
     components: {
@@ -160,18 +147,12 @@ export default {
             axios
                 .get(`/api/user/saved/${id}`)
                 .then(res => {
-                    this.products = res.data.data;
+                    if(res.data.result === true){
+                       this.products = res.data.data;
                     this.allNum = res.data.total;
-                    let barWidth;
-                    barWidth = (
-                        this.products.length *
-                        (100 / this.allNum)
-                    ).toString();
-                    this.bar = barWidth + "%";
-                    if (this.nowNum === this.allNum) {
-                        this.loadBtn = "none";
                     } else {
-                        this.loadBtn = "block";
+                        this.isA = 'block';
+                        this.isB = 'none';
                     }
                 })
                 .catch(err => {
@@ -183,34 +164,8 @@ export default {
                 .put(`/api/saved/moveback/${this.uid}/${id}`)
                 .then(res => {
                     console.log(res);
+                    this.$store.commit("updateCart", parseInt(id));
                     this.getSavedItems(this.uid);
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        },
-        changePage() {
-            axios
-                .get(`/api/products/men/page=${this.page}`)
-                .then(res => {
-                    let newData = res.data.data;
-                    console.log(newData[0]);
-                    for (let i = 0; i < newData.length; i++) {
-                        this.products.push(newData[i]);
-                    }
-                    this.nowNum = this.products.length;
-                    this.page = this.page + 1;
-                    let barWidth;
-                    barWidth = (
-                        this.products.length *
-                        (100 / this.allNum)
-                    ).toString();
-                    this.bar = barWidth + "%";
-                    if (this.nowNum === this.allNum) {
-                        this.loadBtn = "none";
-                    } else {
-                        this.loadBtn = "block";
-                    }
                 })
                 .catch(err => {
                     console.log(err);
@@ -221,11 +176,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$color: #1010c4;
+$color: #232323;
 .banner {
     display: flex;
     height: 50px;
-    background: rgb(187, 167, 249);
+    background: #20c891;
     align-items: center;
     justify-content: space-around;
     font-family: "Sriracha";
@@ -261,12 +216,41 @@ $color: #1010c4;
         font-weight: bold;
     }
 }
+.empty {
+    width: 100%;
+    height: 400px;
+    text-align: center;
+    .box {
+        width: 300px;
+        margin: auto;
+        margin-top: 160px;
+        h4 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        h5 {
+            width: 320px;
+            font-size: 15px;
+        }
+        button {
+            width: 100%;
+            height: 45px;
+            color: #fff;
+            background: #2d2d2d;
+            margin: 8px 0px 0px;
+            padding: 1px 7px 2px;
+            font-size: 16px;
+        }
+    }
+}
 .product {
     width: 1300px;
     display: flex;
     flex-wrap: wrap;
     margin: auto;
-
+    margin-top: 15px;
     .item {
         position: relative;
         padding: 10px;
@@ -345,7 +329,7 @@ $color: #1010c4;
 }
 .social {
     height: 60px;
-    margin-top: 30px;
+    margin-top: 50px;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     ul {

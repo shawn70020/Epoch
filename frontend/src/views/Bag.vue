@@ -73,7 +73,10 @@
                                         >
                                         </el-option>
                                     </el-select>
-                                    <i class="fas fa-times"></i>
+                                    <i
+                                        class="fas fa-times"
+                                        @click="deleteCart(item.id)"
+                                    ></i>
                                 </div>
                             </div>
                         </div>
@@ -121,6 +124,17 @@
                                 CHECKOUT
                             </button></router-link
                         >
+                        <div class="payment">
+                            <h5>WE ACCEPT:</h5>
+                            <i class="fab fa-cc-visa"></i>
+                            <i class="fas fa-wallet"> </i
+                            ><i class="fab fa-cc-paypal"> </i>
+                        </div>
+                        <div class="coupon">
+                            <h5>
+                                Got a discount code? Add it in the next step.
+                            </h5>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -214,6 +228,7 @@ export default {
         return {
             carts: [],
             isLoading: false,
+            uid: this.$store.state.info.id,
             isA: "none",
             isB: "block",
             total: 0,
@@ -325,17 +340,23 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        deleteCart(id) {
+            axios.delete(`/api/cart/${this.uid}/${id}`).then(res => {
+                console.log(res);
+                this.$store.commit("deleteCart", parseInt(id));
+            });
         }
     }
 };
 </script>
 <style lang="scss" scoped>
-$color: #1010c4;
+$color: #f2f2fa;
 $color1: #1ca753;
 .banner {
     display: flex;
     height: 50px;
-    background: rgb(187, 167, 249);
+    background: rgb(252, 59, 53);
     align-items: center;
     justify-content: space-around;
     font-family: "Sriracha";
@@ -406,9 +427,11 @@ $color1: #1ca753;
 }
 .bag {
     width: 100%;
-    height: 100%;
+    // height: 100vh;
     font-family: "PT Serif", serif;
     background: #eee;
+    padding-bottom: 30px;
+    padding-top: 28px;
     .bag-top {
         width: 960px;
         display: flex;
@@ -605,13 +628,27 @@ $color1: #1ca753;
                         background: darken($color1, 10%);
                     }
                 }
+                .payment {
+                    margin-top: 20px;
+                    h5 {
+                        font-size: 18px;
+                        font-weight: bold;
+                    }
+                    i + i {
+                        margin-left: 10px;
+                    }
+                }
+                .coupon {
+                    h5 {
+                        font-size: 20px;
+                    }
+                }
             }
         }
     }
 }
 .social {
     height: 60px;
-    margin-top: 60px;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     ul {
