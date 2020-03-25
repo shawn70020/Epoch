@@ -54,6 +54,9 @@ export default new Vuex.Store({
                 state.isEmpty = false;
             }
         },
+        async checkoutCart(state) {
+            state.isEmpty = false;
+        },
     },
     modules: {
         user

@@ -56,7 +56,7 @@
                     </router-link>
                 </div>
                 <div class="order">
-                    <router-link to="/women" class="user-order">
+                    <router-link to="/myorder" class="user-order">
                         <i class="fas fa-home"></i>
                         <h5>My Orders</h5>
                     </router-link>
@@ -354,7 +354,7 @@ $color1: #1ca753;
         display: flex;
         .wrap {
             width: 70%;
-            height: 330px;
+            height: 260px;
             background: #fff;
             margin: auto;
             text-align: center;
@@ -489,7 +489,7 @@ $color1: #1ca753;
         width: 100%;
         height: 45px;
         background: lighten(#999, 28%);
-        font-family: "Lato";
+        font-family: "Sriracha";
         position: relative;
         h5 {
             margin-right: 10px;
@@ -517,7 +517,7 @@ $color1: #1ca753;
             width: 100%;
             height: 45px;
             border-bottom: 1px solid lighten(#666666, 40%);
-            font-family: "Lato";
+            font-family: "Sriracha";
             .user-account {
                 display: flex;
                 color: #2d2d2d;
@@ -533,7 +533,7 @@ $color1: #1ca753;
         .order {
             width: 100%;
             height: 45px;
-            font-family: "Lato";
+            font-family: "Sriracha";
             .user-order {
                 display: flex;
                 color: #2d2d2d;

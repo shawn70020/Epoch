@@ -1,7 +1,26 @@
 <template>
     <div class="wrap">
-        <div class="top">
-            <div class="title"><h3>訂單管理</h3></div>
+        <div class="title">
+            <h3>
+                訂單管理<span class="outside"
+                    >(以下列出<span class="inside" @click="getOrders">今日</span>訂單)</span
+                >
+            </h3>
+            <div class="block">
+                <el-date-picker
+                    v-model="value2"
+                    type="daterange"
+                    align="right"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="開始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="pickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    @change="getDateOrder"
+                >
+                </el-date-picker>
+            </div>
         </div>
         <el-select
             v-model="value"
@@ -51,10 +70,6 @@
                 </tbody>
             </table>
         </div>
-        <div class="page-arrow">
-            <i class="fas fa-arrow-left" @click="previousPage"></i>
-            <i class="fas fa-arrow-right" @click="nextPage"></i>
-        </div>
     </div>
 </template>
 
@@ -97,7 +112,45 @@ export default {
                     label: "取消"
                 }
             ],
-            value: ""
+            value: "",
+            pickerOptions: {
+                shortcuts: [
+                    {
+                        text: "最近一周",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(
+                                start.getTime() - 3600 * 1000 * 24 * 7
+                            );
+                            picker.$emit("pick", [start, end]);
+                        }
+                    },
+                    {
+                        text: "最近一個月",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(
+                                start.getTime() - 3600 * 1000 * 24 * 30
+                            );
+                            picker.$emit("pick", [start, end]);
+                        }
+                    },
+                    {
+                        text: "最近三個月",
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(
+                                start.getTime() - 3600 * 1000 * 24 * 90
+                            );
+                            picker.$emit("pick", [start, end]);
+                        }
+                    }
+                ]
+            },
+            value2: ""
         };
     },
     created() {
@@ -105,52 +158,11 @@ export default {
     },
     methods: {
         getOrders() {
-            axios.get(`/api/admin/orders/page=${this.page}`).then(res => {
+            axios.get("/api/admin/orders").then(res => {
                 this.orders = res.data.data;
                 this.array = res.data.data;
                 this.total = res.data.total;
             });
-        },
-        previousPage() {
-            let page = this.page - 1;
-            if (page > 0) {
-                axios
-                    .get(`/api/admin/orders/page=${page}`)
-                    .then(res => {
-                        this.orders = res.data.data;
-                this.array = res.data.data;
-                        this.page = page;
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
-            } else {
-                this.$notify.info({
-                    title: "提醒",
-                    message: "這已是第一頁！(`・ω・´)"
-                });
-            }
-        },
-        nextPage() {
-            let page = this.page + 1;
-            if (page <= this.total) {
-                console.log('hi');
-                axios
-                    .get(`/api/admin/orders/page=${page}`)
-                    .then(res => {
-                        this.orders = res.data.data;
-                this.array = res.data.data;
-                        this.page = page;
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
-            } else {
-                this.$notify.info({
-                    title: "提醒",
-                    message: "這已是最後一頁！(`・ω・´)"
-                });
-            }
         },
         selectItem() {
             this.orders = this.array;
@@ -177,6 +189,19 @@ export default {
                     return item.status === 3;
                 });
             }
+        },
+        getDateOrder() {
+            axios
+                .post("/api/orders/datepick", {
+                    date: this.value2
+                })
+                .then(res => {
+                    this.orders = res.data.data;
+                    this.array = res.data.data;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }
 };
@@ -186,17 +211,17 @@ export default {
     background: #eee;
     display: flex;
     flex-direction: column;
-    .top {
-        display: flex;
-        width: 100%;
-        height: 100px;
-        justify-content: space-between;
-        align-items: flex-end;
-        .title {
-            margin-left: 50px;
-        }
-        .open-modal {
-            margin-right: 50px;
+    .title {
+        margin-left: 50px;
+        margin-top: 50px;
+        h3{
+            .outside,.inside{
+                font-size: 24px;
+            }
+            .inside{
+                color: #db2c00;
+                cursor: pointer;
+            }
         }
     }
     .selectBox {

@@ -2,6 +2,9 @@
     <div class="body">
         <div class="top">
             <div class="info">
+                <i class="fas fa-long-arrow-alt-left" @click="backPage">
+                    返回 |</i
+                >
                 <h4>會員 # {{ uid }}</h4>
                 <i class="fas fa-angle-double-right"></i>
                 <h5>加入時間：{{ info.addDate }}</h5>
@@ -10,8 +13,8 @@
                 <h5 v-if="info.token === ''" >
                     會員未上線<div :class="{ grey: true }"></div>
                 </h5>
-                <h5 v-if="info.token === !''" :class="{ green: true }">
-                    會員上線中
+                <h5 v-if="info.token !== ''" >
+                    會員上線中<div :class="{ green: true }"></div>
                 </h5>
             </div>
         </div>
@@ -216,6 +219,9 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        backPage() {
+            this.$router.go(-1);
         }
     }
 };
@@ -237,8 +243,13 @@ $color: #2d2d2d;
     .info {
         display: flex;
         color: $color;
+        .fa-long-arrow-alt-left{
+            margin-left: 10px;
+            margin-top: 8px;
+            cursor: pointer;
+        }
         h4 {
-            margin-left: 30px;
+            margin-left: 10px;
         }
         .fa-angle-double-right {
             margin-top: 8px;
@@ -316,7 +327,7 @@ $color: #2d2d2d;
                 width: 90px;
                 height: 90px;
                 border-radius: 50%;
-                background-image: url(../assets/image/Woman.png);
+                background-image: url(../assets/image/me.png);
                 background-repeat: no-repeat;
                 background-size: cover;
                 margin: auto;
@@ -371,6 +382,7 @@ $color: #2d2d2d;
                     top: 10px;
                     padding-left: 10px;
                     border-left: 2.2px solid #666;
+                    cursor: pointer;
                 }
             }
             table {

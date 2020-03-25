@@ -188,6 +188,10 @@ export default {
     height: 110px;
     margin: auto;
     text-align: center;
+    a{
+        color: #2d2d2d;
+        text-decoration: none;
+    }
     h4 {
         line-height: 110px;
         margin-right: 130px;

@@ -12,6 +12,7 @@
             <table class="table table-borderless">
                 <thead>
                     <tr>
+                        <th scope="col">＃編號</th>
                         <th scope="col">分類</th>
                         <th scope="col">名稱</th>
                         <th scope="col">售價</th>
@@ -22,6 +23,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="item in products" :key="item.id">
+                        <th>{{ item.id }}</th>
                         <th>{{ item.class }}</th>
                         <td>{{ item.name }}</td>
                         <td>{{ item.price }}</td>
@@ -30,9 +32,11 @@
                         <td v-if="item.enable === 0">未啟用</td>
                         <td class="operate-btn">
                             <button @click="openModal(false, item)">
-                                編輯
+                                <i class="fas fa-edit"></i>
                             </button>
-                            <button>刪除</button>
+                            <button @click="delProduct(item.id)">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -69,18 +73,8 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label for="image">輸入圖片網址</label>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        id="image"
-                                        v-model="tempProduct.imageUrl"
-                                        placeholder="請輸入圖片連結"
-                                    />
-                                </div>
-                                <div class="form-group">
                                     <label for="customFile"
-                                        >或 上傳圖片
+                                        >請上傳圖片
                                         <i
                                             class="fas fa-spinner fa-spin"
                                             v-if="status.fileUploading"
@@ -125,32 +119,38 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label for="category">大分類</label>
-                                        <input
-                                            class="form-control"
-                                            type="radio"
-                                            name="inlineRadioOptions"
-                                            id="category"
-                                            value="W"
-                                            v-model="tempProduct.sex"
-                                        />
-                                        <label
-                                            class="form-check-label"
-                                            for="category"
-                                            >女裝</label
-                                        >
-                                        <input
-                                            class="form-control"
-                                            type="radio"
-                                            name="inlineRadioOptions"
-                                            id="category"
-                                            value="M"
-                                            v-model="tempProduct.sex"
-                                        />
-                                        <label
-                                            class="form-check-label"
-                                            for="inlineRadio2"
-                                            >男裝</label
-                                        >
+                                        <div class="class">
+                                            <div class="left">
+                                                <input
+                                                    class="form-control"
+                                                    type="radio"
+                                                    name="inlineRadioOptions"
+                                                    id="category"
+                                                    value="W"
+                                                    v-model="tempProduct.sex"
+                                                />
+                                                <label
+                                                    class="form-check-label"
+                                                    for="category"
+                                                    >女裝</label
+                                                >
+                                            </div>
+                                            <div>
+                                                <input
+                                                    class="form-control"
+                                                    type="radio"
+                                                    name="inlineRadioOptions"
+                                                    id="category"
+                                                    value="M"
+                                                    v-model="tempProduct.sex"
+                                                />
+                                                <label
+                                                    class="form-check-label"
+                                                    for="inlineRadio2"
+                                                    >男裝</label
+                                                >
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="category">細分類</label>
@@ -238,62 +238,12 @@
                 </div>
             </div>
         </div>
-        <div
-            class="modal fade"
-            id="delProductModal"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog" role="document">
-                <div class="modal-content border-0">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="exampleModalLabel">
-                            <span>刪除產品</span>
-                        </h5>
-                        <button
-                            type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close"
-                        >
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        是否刪除
-                        <strong class="text-danger">{{
-                            tempProduct.title
-                        }}</strong>
-                        商品(刪除後將無法恢復)。
-                    </div>
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-outline-secondary"
-                            data-dismiss="modal"
-                        >
-                            取消
-                        </button>
-                        <button
-                            type="button"
-                            class="btn btn-danger"
-                            @click="delProduct"
-                        >
-                            確認刪除
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 
 <script>
 import axios from "axios";
 import $ from "jquery";
-// import Pagination from '../components/Pagination';
 
 export default {
     name: "Products",
@@ -310,9 +260,6 @@ export default {
                 fileUploading: false
             }
         };
-    },
-    components: {
-        // Pagination,
     },
     created() {
         this.getProducts();
@@ -404,11 +351,16 @@ export default {
                         if (res.data.result === true) {
                             this.$notify({
                                 title: "成功",
-                                message: "已編輯一筆商品",
+                                message: "已新增一筆商品",
                                 type: "success"
                             });
                             $("#productModal").modal("hide");
                             this.getProducts();
+                        } else {
+                            this.$notify.error({
+                                title: "抱歉",
+                                message: "請確認所有欄位都填寫"
+                            });
                         }
                     })
                     .catch(err => {
@@ -420,16 +372,6 @@ export default {
             const vm = this;
             $("#delProductModal").modal("show");
             vm.tempProduct = Object.assign({}, item);
-        },
-        delProduct() {
-            const vm = this;
-            const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product/${vm.tempProduct.id}`;
-            this.$http.delete(url).then(response => {
-                console.log(response, vm.tempProduct);
-                $("#delProductModal").modal("hide");
-                vm.isLoading = false;
-                this.getProducts();
-            });
         },
         uploadFile() {
             const uploadedFile = this.$refs.files.files[0];
@@ -453,6 +395,42 @@ export default {
                 })
                 .catch(err => {
                     console.log(err);
+                });
+        },
+        delProduct(id) {
+            this.$confirm("此操作將永久刪除此商品, 是否繼續?", "提示", {
+                confirmButtonText: "確定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    console.log(id);
+                    axios
+                        .delete(`/api/products/delete/${id}`)
+                        .then(res => {
+                            if (res.data.result === true) {
+                                this.$notify({
+                                    title: "成功",
+                                    message: "已成功刪除此商品",
+                                    type: "success"
+                                });
+                                this.getProducts();
+                            } else {
+                                this.$notify.error({
+                                    title: "錯誤",
+                                    message: "查無此商品"
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                })
+                .catch(() => {
+                    this.$notify.info({
+                        title: "提醒",
+                        message: "已取消刪除動作"
+                    });
                 });
         }
     }
@@ -498,6 +476,12 @@ export default {
         .fas {
             margin: 0 20px;
         }
+    }
+}
+.class {
+    display: flex;
+    .left {
+        margin-right: 40px;
     }
 }
 </style>

@@ -2,6 +2,9 @@
     <div>
         <div class="top">
             <div class="info">
+                <i class="fas fa-long-arrow-alt-left" @click="backPage">
+                    返回 |</i
+                >
                 <h4>訂單 # {{ oid }}</h4>
                 <i class="fas fa-angle-double-right"></i>
                 <h5>成立時間：{{ info.addDate }}</h5>
@@ -221,8 +224,7 @@ export default {
             subTotal: 0,
             group: [],
             cash: "尚未收到款項",
-            ship: [],
-            other:[]
+            ship: []
         };
     },
     created() {
@@ -325,7 +327,6 @@ export default {
                     let j;
                     this.info = res.data.info;
                     this.products = res.data.item;
-                    this.other = res.data.other;
                     this.details = res.data.data;
                     this.ship = this.details.filter(function(item) {
                         return item.ship === 0;
@@ -378,6 +379,9 @@ export default {
                         console.log(err);
                     });
             }
+        },
+        backPage() {
+            this.$router.go(-1);
         }
     }
 };
@@ -395,8 +399,13 @@ $color: #2d2d2d;
     .info {
         display: flex;
         color: $color;
+        .fa-long-arrow-alt-left {
+            margin-left: 10px;
+            margin-top: 8px;
+            cursor: pointer;
+        }
         h4 {
-            margin-left: 30px;
+            margin-left: 10px;
         }
         .fa-angle-double-right {
             margin-top: 8px;
@@ -463,6 +472,7 @@ $color: #2d2d2d;
                     top: 10px;
                     padding-left: 10px;
                     border-left: 2.2px solid #666;
+                    cursor: pointer;
                 }
             }
             table {

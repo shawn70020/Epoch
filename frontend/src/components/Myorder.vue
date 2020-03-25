@@ -60,24 +60,25 @@
                 >
                     <div class="title">
                         <div class="label">
-                            <h5 v-if="item.shipDate !== ''">WE'VE SENT IT!</h5>
-                            <h5 v-if="item.shipDate === ''">
+                            <h5 v-if="item.shipDate !== null">WE'VE SENT IT!</h5>
+                            <h5 v-if="item.shipDate === null">
                                 WE'RE WORKING ON IT!
                             </h5>
                             <h5>ORDER NO.</h5>
                             <h5>SHIPPED DATE.</h5>
                         </div>
                         <div class="input">
-                            <h5 v-if="item.shipDate !== ''">
+                            <h5 v-if="item.shipDate !== null">
                                 {{
                                     moment(item.shipDate)
                                         .add(3, "days")
                                         .calendar()
                                 }}
                             </h5>
-                            <h5 v-if="item.shipDate === ''"></h5>
+                            <h5 v-if="item.shipDate === null">Thanks for orders</h5>
                             <h5>{{ item.id }}</h5>
-                            <h5>{{ moment(item.shipDate).calendar() }}</h5>
+                            <h5 v-if="item.shipDate !== null">{{ moment(item.shipDate).calendar() }}</h5>
+                            <h5 v-if="item.shipDate === null">{{ moment().add(1, 'days').calendar() }}</h5>
                         </div>
                     </div>
                     <div class="bottom">

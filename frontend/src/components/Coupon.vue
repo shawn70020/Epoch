@@ -1,10 +1,10 @@
 <template>
     <div class="wrap">
         <div class="top">
-            <div class="title"><h3>商品管理</h3></div>
+            <div class="title"><h3>優惠券管理</h3></div>
             <div class="open-modal">
                 <button class="btn btn-primary" @click="openModal(true)">
-                    建立新商品
+                    建立優惠券
                 </button>
             </div>
         </div>
@@ -27,10 +27,12 @@
                         <td v-if="item.enable === 1">啟用</td>
                         <td v-if="item.enable === 0">未啟用</td>
                         <td class="operate-btn">
-                            <button @click="openModal(false, item)">
-                                編輯
+                             <button @click="openModal(false, item)">
+                                <i class="fas fa-edit"></i>
                             </button>
-                            <button>刪除</button>
+                            <button @click="delCoupon(item.id)">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -52,7 +54,7 @@
                 <div class="modal-content border-0">
                     <div class="modal-header bg-dark text-white">
                         <h5 class="modal-title" id="exampleModalLabel">
-                            <span>商品管理</span>
+                            <span>優惠券管理</span>
                         </h5>
                         <button
                             type="button"
@@ -148,55 +150,6 @@
                             @click="updateProduct"
                         >
                             確認
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div
-            class="modal fade"
-            id="delProductModal"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog" role="document">
-                <div class="modal-content border-0">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="exampleModalLabel">
-                            <span>刪除產品</span>
-                        </h5>
-                        <button
-                            type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close"
-                        >
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        是否刪除
-                        <strong class="text-danger">{{
-                            tempProduct.title
-                        }}</strong>
-                        商品(刪除後將無法恢復)。
-                    </div>
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-outline-secondary"
-                            data-dismiss="modal"
-                        >
-                            取消
-                        </button>
-                        <button
-                            type="button"
-                            class="btn btn-danger"
-                            @click="delProduct"
-                        >
-                            確認刪除
                         </button>
                     </div>
                 </div>
@@ -330,38 +283,40 @@ export default {
             $("#delProductModal").modal("show");
             vm.tempProduct = Object.assign({}, item);
         },
-        delProduct() {
-            const vm = this;
-            const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product/${vm.tempProduct.id}`;
-            this.$http.delete(url).then(response => {
-                console.log(response, vm.tempProduct);
-                $("#delProductModal").modal("hide");
-                vm.isLoading = false;
-                this.getProducts();
-            });
-        },
-        uploadFile() {
-            const uploadedFile = this.$refs.files.files[0];
-            const formData = new FormData();
-            formData.append("file-to-upload", uploadedFile);
-            const config = {
-                headers: { "Content-Type": "multipart/form-data" }
-            };
-            this.status.fileUploading = true;
-            axios
-                .post("/api/products/imageupload", formData, config)
-                .then(res => {
-                    this.status.fileUploading = false;
-                    if (res.data.result === true) {
-                        this.imageUrl = URL.createObjectURL(uploadedFile);
-                        this.tempProduct.image = res.data.data;
-                    } else {
-                        this.imageUrl = null;
-                        this.tempProduct.image = "";
-                    }
+ delCoupon(id) {
+            this.$confirm("此操作將永久刪除此優惠券, 是否繼續?", "提示", {
+                confirmButtonText: "確定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    console.log(id);
+                    axios
+                        .delete(`/api/coupons/delete/${id}`)
+                        .then(res => {
+                            if (res.data.result === true) {
+                                this.$notify({
+                                    title: "成功",
+                                    message: "已成功刪除此優惠券",
+                                    type: "success"
+                                });
+                                this.getCoupons();
+                            } else {
+                                this.$notify.error({
+                                    title: "錯誤",
+                                    message: "查無此優惠券"
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
                 })
-                .catch(err => {
-                    console.log(err);
+                .catch(() => {
+                    this.$notify.info({
+                        title: "提醒",
+                        message: "已取消刪除動作"
+                    });
                 });
         }
     }

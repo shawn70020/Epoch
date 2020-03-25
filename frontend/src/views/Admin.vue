@@ -3,34 +3,43 @@
         <div class="wrap">
             <div class="side-bar">
                 <div class="top">
-                    <h5>EPOCH</h5>
+                    <router-link to="/">
+                        <h5>EPOCH</h5>
+                    </router-link>
                     <div class="head"></div>
                 </div>
                 <div class="side-nav">
                     <h5>Levi</h5>
                     <h5>管理員</h5>
                     <div class="side-item">
-                      <router-link to="/admin/dashboard">
-                        <div class="item"><i class="fas fa-cog"></i>總覽</div>
-                      </router-link>
+                        <router-link to="/admin/dashboard">
+                            <div class="item">
+                                <i class="fas fa-cog"></i>總覽
+                            </div>
+                        </router-link>
                         <router-link to="/admin/products">
                             <div class="item">
                                 <i class="fas fa-box-open"></i>商品
                             </div>
                         </router-link>
                         <router-link to="/admin/orders">
-                        <div class="item">
-                            <i class="far fa-list-alt"></i>訂單
-                        </div>
+                            <div class="item">
+                                <i class="far fa-list-alt"></i>訂單
+                            </div>
                         </router-link>
                         <router-link to="/admin/coupon">
-                        <div class="item">
-                            <i class="fas fa-ticket-alt"></i>優惠券
-                        </div>
+                            <div class="item">
+                                <i class="fas fa-ticket-alt"></i>優惠券
+                            </div>
                         </router-link>
                         <router-link to="/admin/member">
-                        <div class="item"><i class="fas fa-users"></i>會員</div>
+                            <div class="item">
+                                <i class="fas fa-users"></i>會員
+                            </div>
                         </router-link>
+                        <div class="item pointer" @click="signout">
+                            <i class="fas fa-sign-out-alt"></i>登出
+                        </div>
                     </div>
                 </div>
             </div>
@@ -40,14 +49,40 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
-    name: "Admin"
+    name: "Admin",
+      methods: {
+         signout() {
+            let uid = this.$store.state.info.id;
+            axios
+                .put("/api/user/logout", {
+                    user: uid
+                })
+                .then(res => {
+                    if (res.data.result === true) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("isLogin");
+                        this.$router.push("/login");
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+    }
 };
 </script>
 
 <style lang="scss" scoped>
 .wrap {
     display: flex;
+    .fa-sign-out-alt {
+        transform: scalex(-1);
+    }
+    .pointer {
+        cursor: pointer;
+    }
     .side-bar {
         width: 17%;
         height: 100vh;
@@ -58,6 +93,10 @@ export default {
             background: darken(#333, 7%);
             color: #fff;
             text-align: center;
+            a {
+                color: #fff;
+                text-decoration: none;
+            }
             h5 {
                 font-size: 30px;
                 padding-top: 30px;

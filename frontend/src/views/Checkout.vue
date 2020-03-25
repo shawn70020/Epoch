@@ -150,17 +150,17 @@
                     <div class="billing-info">
                         <h3>PAYMENT</h3>
                         <h4>BILLING ADDRESS</h4>
-                        <h5 v-if="ruleForm.name !==''">
+                        <h5 v-if="ruleForm.name !== ''">
                             <i class="fas fa-user-circle">
                                 {{ ruleForm.name }}</i
                             >
                         </h5>
-                        <h5 v-if="ruleForm.address !==''">
+                        <h5 v-if="ruleForm.address !== ''">
                             <i class="fas fa-map-marker-alt">
                                 {{ ruleForm.address }}</i
                             >
                         </h5>
-                        <h5 v-if="ruleForm.phone !==''">
+                        <h5 v-if="ruleForm.phone !== ''">
                             <i class="fas fa-phone-square">
                                 {{ ruleForm.phone }}</i
                             >
@@ -221,13 +221,16 @@
                         </div>
                         <div class="cost">
                             <h4>NT {{ subtotal | currency }}</h4>
-                            <h4 v-if="delivery === 'S'">
+                            <h4 v-if="ruleForm.delivery === 'S'">
                                 NT {{ 100 | currency }}
                             </h4>
-                            <h4 v-if="delivery === 'E'">
+                            <h4 v-if="ruleForm.delivery === 'E'">
                                 NT {{ 300 | currency }}
                             </h4>
-                            <h4>NT {{ discount | currency }}</h4>
+                            <h4>
+                                <span class="cut">-</span>NT
+                                {{ discount | currency }}
+                            </h4>
                             <h4>NT {{ total | currency }}</h4>
                         </div>
                     </div>
@@ -299,7 +302,7 @@ export default {
             return this.$store.state.cart;
         },
         total() {
-            if (this.delivery === "S") {
+            if (this.ruleForm.delivery === "S") {
                 return this.subtotal + 100 - this.discount;
             } else {
                 return this.subtotal + 300 - this.discount;
@@ -358,13 +361,16 @@ export default {
                         })
                         .then(res => {
                             if (res.data.result === true) {
-                                this.$message({
-                                    message: "恭喜您！訂單發送成功",
+                                this.$notify({
+                                    title: "Success",
+                                    message: "Your Order is Send",
                                     type: "success"
                                 });
+                                 this.$store.commit("checkoutCart");
+                                this.$router.push("/myorder");
                             } else {
                                 this.$notify.error({
-                                    title: "抱歉",
+                                    title: "Sorry",
                                     message: res.data.msg
                                 });
                             }
@@ -540,6 +546,7 @@ $color: #2d2d2d;
                     position: absolute;
                     top: 26px;
                     right: 30px;
+                    cursor: pointer;
                 }
             }
             .coupon-wrap {
@@ -695,6 +702,10 @@ $color: #2d2d2d;
         width: 35%;
         height: 650px;
         background: #fff;
+        .cut {
+            position: relative;
+            right: 10px;
+        }
         .top {
             display: flex;
             justify-content: space-between;
