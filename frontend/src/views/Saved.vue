@@ -162,8 +162,7 @@ export default {
         moveToBag(id) {
             axios
                 .put(`/api/saved/moveback/${this.uid}/${id}`)
-                .then(res => {
-                    console.log(res);
+                .then(() => {
                     this.$store.commit("updateCart", parseInt(id));
                     this.getSavedItems(this.uid);
                 })

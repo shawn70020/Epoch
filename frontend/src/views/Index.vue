@@ -165,24 +165,11 @@
 
 <script>
 import Navbar from "../components/Navbar";
-// import Carousel from "../components/Carousel";
-import { mapState, mapActions } from "vuex";
 export default {
     name: "Index",
     components: {
         Navbar
     },
-    computed: mapState({
-        user: state => state.users
-    }),
-    created() {
-        this.getUser();
-        // console.log(this.$store.state);
-    },
-    methods: {
-        // 映射 vuex 对象上的方法
-        ...mapActions(["getUser"])
-    }
 };
 </script>
 <style lang="scss" scoped>

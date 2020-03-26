@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\models\Product;
+use App\models\Coupon;
 
 class ProductsController extends Controller
 {
@@ -86,6 +87,18 @@ class ProductsController extends Controller
 
         return response()->json(['result' => true, 'data' => $aResult]);
     }
+
+    /**
+    * 跑馬燈商品取得
+    * @return json
+    */
+    public function getCarouselItem()
+    {
+        $i = rand(1, 18);
+        $aResult = Product::skip($i)->take(6)->get();
+        return response()->json(['result' => true, 'data' => $aResult]);
+    }
+
     /**
     * 圖片上傳確認
     * @return json
@@ -120,16 +133,30 @@ class ProductsController extends Controller
      */
     public function createProducts(Request $_oRequest)
     {
+        ## 參數初始化
+        $name = $_oRequest->input('name');
+        $sex = $_oRequest->input('sex');
+        $class = $_oRequest->input('class');
+        $price = $_oRequest->input('price');
+        $content = $_oRequest->input('content');
+        $detail = $_oRequest->input('detail');
+        $image = $_oRequest->input('image');
+        $enable = $_oRequest->input('enable');
+
+        ## 為空值返回
+        if (is_null($name)||is_null($sex)||is_null($class)||is_null($price)||is_null($content)||is_null($detail)||is_null($image)||is_null($enable)) {
+            return response()->json(['result' => false]);
+        }
         ## 新增商品
         $aParam = [
-            'name' => $_oRequest->input('name'),
-            'sex' => $_oRequest->input('sex'),
-            'class' => $_oRequest->input('class'),
-            'price' => $_oRequest->input('price'),
-            'content' => $_oRequest->input('content'),
-            'detail' => $_oRequest->input('detail'),
-            'image'  => $_oRequest->input('image'),
-            'enable'  => $_oRequest->input('enable'),
+            'name' => $name,
+            'sex' => $sex,
+            'class' => $class,
+            'price' => $price,
+            'content' => $content,
+            'detail' => $detail,
+            'image'  => $image,
+            'enable'  => $enable,
         ];
         Product::create($aParam);
         return response()->json(['result' => true]);
@@ -165,6 +192,43 @@ class ProductsController extends Controller
         $product->save();
 
         return response()->json(['result' => true]);
+    }
 
+    public function deleteProduct($_iPid)
+    {
+        $product = Product::find($_iPid);
+
+        ## 查無此商品
+        if (collect($product)->isEmpty()) {
+            return response()->json(['result' => false]);
+        };
+
+        ## 刪除商品
+        $product->delete();
+        return response()->json(['result' => true]);
+    }
+
+    public function deleteCoupon($_iPid)
+    {
+        $coupon = Coupon::find($_iPid);
+
+        ## 查無此優惠券
+        if (collect($coupon)->isEmpty()) {
+            return response()->json(['result' => false]);
+        };
+
+        ## 刪除優惠券
+        $coupon->delete();
+        return response()->json(['result' => true]);
+    }
+
+    public function checkProduct($_iPid)
+    {
+        $product = Product::find($_iPid);
+
+        ## 查無此商品
+        if (collect($product)->isEmpty()) {
+            return response()->json(['result' => false]);
+        };
     }
 }

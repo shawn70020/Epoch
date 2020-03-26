@@ -9,7 +9,7 @@
             <div class="left-nav">
                 <div class="user">
                     <div class="circle">
-                        <h5>{{ splitName }}</h5>
+                        <h5>{{ spiltName }}</h5>
                     </div>
                     <div class="name">
                         <h5>Hi,</h5>
@@ -60,7 +60,9 @@
                 >
                     <div class="title">
                         <div class="label">
-                            <h5 v-if="item.shipDate !== null">WE'VE SENT IT!</h5>
+                            <h5 v-if="item.shipDate !== null">
+                                WE'VE SENT IT!
+                            </h5>
                             <h5 v-if="item.shipDate === null">
                                 WE'RE WORKING ON IT!
                             </h5>
@@ -75,10 +77,20 @@
                                         .calendar()
                                 }}
                             </h5>
-                            <h5 v-if="item.shipDate === null">Thanks for orders</h5>
+                            <h5 v-if="item.shipDate === null">
+                                Thanks for orders
+                            </h5>
                             <h5>{{ item.id }}</h5>
-                            <h5 v-if="item.shipDate !== null">{{ moment(item.shipDate).calendar() }}</h5>
-                            <h5 v-if="item.shipDate === null">{{ moment().add(1, 'days').calendar() }}</h5>
+                            <h5 v-if="item.shipDate !== null">
+                                {{ moment(item.shipDate).calendar() }}
+                            </h5>
+                            <h5 v-if="item.shipDate === null">
+                                {{
+                                    moment()
+                                        .add(1, "days")
+                                        .calendar()
+                                }}
+                            </h5>
                         </div>
                     </div>
                     <div class="bottom">
@@ -139,16 +151,25 @@ export default {
             userName: this.$store.state.info.name,
             order: [],
             image: [],
-            isEmpty: true
+            isEmpty: true,
+            spiltName: ""
         };
     },
     computed: {
-        splitName: function() {
-            return this.userName.split("")[0].toUpperCase();
+        userInfo() {
+            return this.$store.state.info;
         }
     },
-    created() {
-        this.getMyOrders(this.uid);
+    watch: {
+        userInfo: {
+            handler(aInfo) {
+                this.userName = aInfo.name;
+                this.spiltName = aInfo.name.split("")[0].toUpperCase();
+                this.uid = aInfo.id;
+                this.getMyOrders(this.uid);
+            },
+            immediate: true,
+        }
     },
     methods: {
         getMyOrders(id) {

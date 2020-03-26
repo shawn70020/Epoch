@@ -41,6 +41,10 @@
                             <h5>My orders</h5>
                         </div>
                     </router-link>
+                    <div class="item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <h5 @click="signout" class="pointer">Sign out</h5>
+                    </div>
                 </div>
                 <div class="right">
                     <div class="top">
@@ -80,7 +84,7 @@
                         <h5>Mobile :{{ info.phone }}</h5>
                         <h5>Address :{{ info.address }}</h5>
                         <h5 v-if="info.note">Order Note: {{ info.note }}</h5>
-                        <h5 v-if="!info.note">Order Note: Nothing Here</h5>
+                        <h5 v-if="!info.note">Order Note: None</h5>
                     </div>
                     <div class="info">
                         <h3>Product Detail</h3>
@@ -174,6 +178,23 @@ export default {
         },
         backPage() {
             this.$router.go(-1);
+        },
+        signout() {
+            let uid = this.$store.state.info.id;
+            axios
+                .put("/api/user/logout", {
+                    user: uid
+                })
+                .then(res => {
+                    if (res.data.result === true) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("isLogin");
+                        this.$router.push("/login");
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }
 };
@@ -188,7 +209,7 @@ export default {
     height: 110px;
     margin: auto;
     text-align: center;
-    a{
+    a {
         color: #2d2d2d;
         text-decoration: none;
     }
@@ -199,6 +220,12 @@ export default {
         font-family: "IM Fell Great Primer SC";
         font-weight: 700;
     }
+}
+.fa-sign-out-alt {
+    transform: scalex(-1);
+}
+.pointer {
+    cursor: pointer;
 }
 .wrappere {
     width: 55%;

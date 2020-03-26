@@ -342,8 +342,7 @@ export default {
                 });
         },
         deleteCart(id) {
-            axios.delete(`/api/cart/${this.uid}/${id}`).then(res => {
-                console.log(res);
+            axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {
                 this.$store.commit("deleteCart", parseInt(id));
             });
         }

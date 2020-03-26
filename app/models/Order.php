@@ -11,13 +11,14 @@ class Order extends Model
 {
     public $timestamps = false;
     protected $guarded = ['id'];
-    protected $fillable = ['uid'];
+    protected $fillable = ['uid', 'total', 'delivery','status','shipDate','doneDate','closeDate'];
 
-    public function addOrder($_iUid, $_aCart,$_iTotal)
+    public function addOrder($_iUid, $_aCart, $_iTotal, $_sDelivery)
     {
         $iOid = new Order;
         $iOid->uid = $_iUid;
         $iOid->total = $_iTotal;
+        $iOid->delivery = $_sDelivery;
         $iOid->save();
         $aLastOid = Order::where('uid', $_iUid)->latest('addDate')->first();
 
@@ -33,5 +34,6 @@ class Order extends Model
             $updateNum->save();
         }
         Cart::where('uid', $_iUid)->delete();
+        return (int) $aLastOid['id'];
     }
 }

@@ -2,14 +2,14 @@
     <div class="body">
         <div class="title">
             <router-link to="/">
-            <h4>EPOCH</h4>
+                <h4>EPOCH</h4>
             </router-link>
         </div>
         <div class="wrapper">
             <div class="left-nav">
                 <div class="user">
                     <div class="circle">
-                        <h5>{{ splitName }}</h5>
+                        <h5>{{ spiltName }}</h5>
                     </div>
                     <div class="name">
                         <h5>Hi,</h5>
@@ -40,10 +40,10 @@
                         <h5>My orders</h5>
                     </div>
                 </router-link>
-                     <div class="item">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <h5 @click="signout" class="pointer">Sign out</h5>
-                    </div>
+                <div class="item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <h5 @click="signout" class="pointer">Sign out</h5>
+                </div>
             </div>
             <div class="right">
                 <div class="slogan">
@@ -67,19 +67,17 @@ export default {
     data() {
         return {
             userName: this.$store.state.info.name,
-            show: false
+            spiltName:"",
         };
     },
-    computed: {
-        splitName: function() {
-            return this.userName.split("")[0].toUpperCase();
-        }
+        created() {
+        this.splitName();
     },
     methods: {
-        test() {
-            this.show = true;
+        splitName(){
+            this.spiltName = this.userName.split("")[0].toUpperCase();
         },
-         signout() {
+        signout() {
             let uid = this.$store.state.info.id;
             axios
                 .put("/api/user/logout", {
@@ -95,7 +93,7 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
-        },
+        }
     }
 };
 </script>
@@ -115,7 +113,7 @@ export default {
         font-family: "IM Fell Great Primer SC";
         font-weight: 700;
     }
-    a{
+    a {
         color: #2d2d2d;
         text-decoration: none;
     }
@@ -123,7 +121,7 @@ export default {
 .fa-sign-out-alt {
     transform: scalex(-1);
 }
-.pointer{
+.pointer {
     cursor: pointer;
 }
 .wrapper {
@@ -133,7 +131,7 @@ export default {
     display: flex;
     justify-content: center;
     .left-nav {
-        a{
+        a {
             color: #2d2d2d;
         }
         .user {

@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\models\User;
 use App\models\Cart;
+use App\models\Order;
+use App\models\Orderdetail;
+use App\models\Orderinfo;
 use App\models\Product;
-use App\Http\Resources\Article as ArticleResources;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 
 class UserController extends Controller
 {
@@ -57,12 +59,18 @@ class UserController extends Controller
             return response()->json(['result' => false]);
         };
 
-        ## 給予Token並且設置在資料庫
+        ## 會員狀態禁止
+        if ($aResult[0]['status'] === 1) {
+            return response()->json(['result' => false]);
+        }
+        ## 給予Token並且設置在資料庫及更改上次登入時間
         $iUid  = $aResult[0]['id'];
         $sToken = $this->generateKey();
-        $setToken = User::find($iUid);
-        $setToken->token = "$sToken";
-        $setToken->save();
+        $dNowDate = (string) Carbon::now('Asia/Taipei');
+        $User = User::find($iUid);
+        $User->token = "$sToken";
+        $User->lastDate = $dNowDate;
+        $User->save();
 
         ## 判斷身份導路由並給予使用者相關資訊
         $iLevel  = $aResult[0]['level'];
@@ -110,9 +118,19 @@ class UserController extends Controller
     {
         $aResult = User::select('id', 'name')->where('token', $sToken)->firstorFail();
         $iUid = $aResult['id'];
-        $aCart = Cart::select('pid', 'num')->where('uid', $iUid)->where('delete_at', null)->get();
+        $aCart = Cart::select('pid', 'num')->where('uid', $iUid)->where('delete_at', null)->orWhere('delete_at', 2)->get();
         return response()->json(['result' => true, 'info'=> $aResult,'cart' => $aCart]);
     }
+
+    /**
+     * 取得使用者基本資訊及購物車資料
+     * @return json
+     */
+    // public function checkoutCart($_iUid)
+    // {
+    //     $aCart = Cart::select('pid', 'num')->where('uid', $_iUid)->where('delete_at', null)->orWhere('delete_at', 2)->get();
+    //     return response()->json(['result' => true,'cart' => $aCart]);
+    // }
 
     /**
      * 取得使用者基本資訊
@@ -202,13 +220,136 @@ class UserController extends Controller
     public function getUserSaved($_iUid)
     {
         ## 取得使用者保留商品資料
-        $aResult = Cart::select('pid')->where('uid', $_iUid)->where('delete_at', 1)->get();
-        // print_r($aResult);
+        $aResult = Cart::select('pid')->where('uid', $_iUid)->Where('delete_at', 1)->orWhere('delete_at', 2)->get();
+
+        ## 為空回傳
+        if (collect($aResult)->isEmpty()) {
+            return response()->json(['result' => false]);
+        }
+
+        ## 不為空
         $arr = [];
         for ($i = 0;$i < count($aResult); $i++) {
             $aData = Product::find($aResult[$i]['pid']);
             array_push($arr, $aData);
         }
         return response()->json(['result' => true, 'data' => $arr]);
+    }
+
+    /**
+    * 取得該頁會員資料
+    * @return json
+    */
+    public function changeUserPage($num)
+    {
+        $aResult = User::all();
+        $iTotalPage =  floor(count($aResult)/10) + 1;
+
+        ##取得抓取筆數
+        $nowNum = ($num- 1) * 10;
+
+        ## 取得單一商品資料
+        $aResult = User::skip($nowNum)->take(10)->get();
+
+        return response()->json(['result' => true, 'data' => $aResult,'total' => $iTotalPage]);
+    }
+
+    /**
+     * 取得該會員所需資料
+     * @return json
+     */
+    public function getMemberDetails($uid)
+    {
+        ## 該會員基本資料
+        $aResult = User::find($uid);
+
+        ## 該會員訂單資料
+        $aOrder = Order::select('id', 'status', 'addDate')->where('uid', $uid)->get();
+
+        return response()->json(['result' => true, 'data' => $aResult,'order' => $aOrder]);
+    }
+
+    /**
+     * 更改此會員狀態
+     * @return json
+     */
+    public function changeUserStatus($uid, $status)
+    {
+        $User = User::find($uid);
+        $User->status = $status;
+        $User->save();
+        return response()->json(['result' => true]);
+    }
+
+    /**
+     * 取得該會員前兩筆訂單
+     * @return json
+     */
+    public function getMyOrders($_iUid)
+    {
+        ## 取得前兩筆訂單id
+        $aResult = Order::select('id', 'shipDate')->where('uid', $_iUid)->orderBy('addDate', 'DESC')->take(2)->get();
+
+        if (collect($aResult)->isEmpty()) {
+            return response()->json(['result' => false]);
+        }
+        ## 取得訂單詳細明細
+        $orderinfo = [];
+        for ($i = 0;$i < count($aResult); $i++) {
+            $aData = Orderdetail::select('pid')->where('oid', $aResult[$i]['id'])->get();
+            array_push($orderinfo, $aData);
+        }
+
+        ## 取得訂單商品圖
+        $aImage = [];
+        for ($i = 0;$i < count($orderinfo); $i++) {
+            $arr = [];
+            for ($j =0;$j<count($orderinfo[$i]); $j++) {
+                $aProduct = Product::select('id', 'image')->where('id', $orderinfo[$i][$j]['pid'])->get();
+                array_push($arr, $aProduct[0]);
+            }
+            array_push($aImage, $arr);
+        }
+
+        return response()->json(['result' => true, 'data' => $aResult,'image'=>$aImage]);
+    }
+
+    /**
+     * 取得該會員特定訂單資料
+     * @return json
+     */
+    public function getMyOrderdetail($_iOid)
+    {
+        ## 取得該訂單基本資訊
+        $aResult = Order::select('total', 'delivery', 'status', 'addDate', 'shipDate', 'doneDate')->where('id', $_iOid)->get();
+        $aNum = Orderdetail::select('pid', 'num')->where('oid', $_iOid)->get();
+
+        ## 取得訂單細項
+        $arr = [];
+        for ($i = 0;$i<count($aNum);$i++) {
+            $aProduct = Product::select('name', 'image', 'price')->where('id', $aNum[$i]['pid'])->get();
+            array_push($arr, $aProduct[0]);
+        }
+
+        ## 取得訂單收件人資訊
+        $aInfo = Orderinfo::select('name', 'phone', 'address', 'note', 'payment')->where('oid', $_iOid)->get();
+
+        return response()->json(['result' => true, 'data' => $aResult[0],'num'=>$aNum,'item'=>$arr,'info'=>$aInfo[0]]);
+    }
+
+    public function checkStatus($_sToken)
+    {
+        $aResult = User::select('level')->where('token', $_sToken)->get();
+        if ($aResult[0]['level'] !== 1) {
+            return response()->json(['result' => false]);
+        }
+    }
+
+    public function checkAllMember($_iUid)
+    {
+        $aResult = User::where('id', $_iUid)->get();
+        if (collect($aResult)->isEmpty()) {
+            return response()->json(['result' => false]);
+        };
     }
 }

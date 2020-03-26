@@ -8,24 +8,32 @@ use App\models\User;
 use App\models\Order;
 use App\models\Product;
 use App\models\Coupon;
+use App\models\Orderinfo;
 use Illuminate\Support\Carbon;
 
 class CartController extends Controller
 {
     /**
-     * 刪除時間超過1天的購物車
+     * 時間超過1小時及1天的購物車
      */
     public function __construct()
     {
         ## 取得當下時間
         $dNowDate = (string) Carbon::now('Asia/Taipei');
 
+        ## 往前推1小時
+        $dBeforeHour = (string) Carbon::parse($dNowDate)->subHours(1)->toDateTimeString();
+
+        ## 時間超過1小時移到喜愛項目
+        Cart::where('addtime', '<=', $dBeforeHour)
+             ->update(['delete_at' => 1]);
+
         ## 往前推1天
-        $dBeforeDate = (string) Carbon::parse($dNowDate)->subHours(1)->toDateTimeString();
+        $dBeforeDate = (string) Carbon::parse($dNowDate)->subDays(1)->toDateTimeString();
 
         ## 砍掉超過1天的購物車
         Cart::where('addtime', '<=', $dBeforeDate)
-             ->update(['delete_at' => 1]);
+             ->delete();
     }
 
     /**
@@ -52,6 +60,7 @@ class CartController extends Controller
             $iId = $aResult[0]['id'];
             $post = Cart::find($iId);
             $post->num = $iNum +1;
+            $post->delete_at = null;
             $post->save();
         }
         return response()->json(['result' => true]);
@@ -128,6 +137,31 @@ class CartController extends Controller
         return response()->json(['result' => true]);
     }
 
+    public function saveItem(Request $_oRequest)
+    {
+        ## 參數初始化
+        $iUid = (int)$_oRequest->input('uid');
+        $iPid = (int)$_oRequest->input('pid');
+        $aResult = Cart::where('uid', $iUid)->where('pid', $iPid)->get();
+
+        ## 購物車不存在該商品即新增
+        if ($aResult->isEmpty()) {
+            $aArray = [
+            'uid' => $iUid,
+            'pid' =>  $iPid,
+            'num' => 1,
+            'delete_at' => 1
+        ];
+            Cart::create($aArray);
+        } else {
+            $iId = $aResult[0]['id'];
+            $post = Cart::find($iId);
+            $post->delete_at = 2;
+            $post->save();
+        }
+        return response()->json(['result' => true]);
+    }
+
     /**
     * 使用優惠券
     * @return json
@@ -163,7 +197,11 @@ class CartController extends Controller
         ## 參數初始化
         $aCart = $_oRequest->input('cart');
         $aUser = $_oRequest->input('user');
+        $aAddress = $_oRequest->input('detail');
+        // $sDelivery = $_oRequest->input('delivery');
+        // $sPayment = $_oRequest->input('payment');
         $iTotal = $_oRequest->input('total');
+
         $cartNum = count($aCart);
 
         ## 檢查會員是否存在
@@ -203,9 +241,14 @@ class CartController extends Controller
             }
         }
 
-        ## 結帳
+        ## 生成訂單
         $post = new Order();
-        $post->addOrder($iUid, $aCart, $iTotal);
+        $iOid = $post->addOrder($iUid, $aCart, $iTotal, $aAddress['delivery']);
+
+        ## 完成訂單細節
+        $details = new Orderinfo();
+        $details->insertDetail($iOid, $aAddress);
+
         return response()->json(['result' => true]);
     }
 }

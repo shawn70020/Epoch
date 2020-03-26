@@ -17,9 +17,13 @@
         <div class="navs">
             <ol class="bread">
                 <li><router-link to="/">Home</router-link></li>
-                <li v-if="products.sex === 'M'"><router-link to="/men">Men</router-link></li>
-                <li v-if="products.sex === 'W'"><router-link to="/women">Women</router-link></li>
-                <li>{{products.name}}</li>
+                <li v-if="products.sex === 'M'">
+                    <router-link to="/men">Men</router-link>
+                </li>
+                <li v-if="products.sex === 'W'">
+                    <router-link to="/women">Women</router-link>
+                </li>
+                <li>{{ products.name }}</li>
             </ol>
         </div>
         <div class="container">
@@ -224,14 +228,19 @@ export default {
         addCart() {
             if (this.value == "") {
                 this.showError = 1;
+            } else if (!this.$store.state.isLogin) {
+                this.$notify({
+                    title: "Sorry !",
+                    message: "Please Sign In",
+                    type: "warning"
+                });
             } else {
                 axios
                     .post("/api/user/addcart", {
                         uid: this.$store.state.info.id,
                         pid: this.pid
                     })
-                    .then(res => {
-                        console.log(res);
+                    .then(() => {
                         this.$store.commit("updateCart", parseInt(this.pid));
                         this.$notify({
                             title: "Success !",
@@ -245,25 +254,33 @@ export default {
             }
         },
         saveItem(id) {
-            axios
-                .post("/api/user/saved/item", {
-                    uid: this.$store.state.info.id,
-                    pid: id
-                })
-                .then(res => {
-                    if (res.data.result === true) {
-                        this.isCheck = true;
-                        this.noCheck = false;
-                        this.$notify({
-                            title: "Success !",
-                            message: "ADD TO SAVED ITEMS",
-                            type: "success"
-                        });
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
+            if (!this.$store.state.isLogin) {
+                this.$notify({
+                    title: "Sorry !",
+                    message: "Please Sign In First",
+                    type: "warning"
                 });
+            } else {
+                axios
+                    .post("/api/user/saved/item", {
+                        uid: this.$store.state.info.id,
+                        pid: id
+                    })
+                    .then(res => {
+                        if (res.data.result === true) {
+                            this.isCheck = true;
+                            this.noCheck = false;
+                            this.$notify({
+                                title: "Success !",
+                                message: "ADD TO SAVED ITEMS",
+                                type: "success"
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
         }
     }
 };
@@ -325,7 +342,7 @@ $color1: #1ca753;
                 color: #999;
                 margin-right: 15px;
             }
-                color: #999;
+            color: #999;
         }
     }
     li + li {

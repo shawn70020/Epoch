@@ -214,10 +214,8 @@ export default {
     },
     methods: {
         submitForm(formName) {
-            console.log(1);
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    console.log(123);
                     axios
                         .put(`/api/user/changeinfo/${this.uid}`, {
                             email: this.ruleForm.email,

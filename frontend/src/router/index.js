@@ -17,13 +17,14 @@ import Details from "../components/Details"
 import Password from "../components/Password"
 import Myorder from "../components/Myorder"
 import Myorderdetail from "../components/Myorderdetail"
-import Ordertrack from "../components/Ordertrack"
 import Coupon from "../components/Coupon"
 import Orders from "../components/Orders"
 import Orderdetails from "../views/Orderdetails"
 import Member from "../views/Member"
 import Memberdetails from "../views/Memberdetails"
 
+import store from '../store'
+import axios from "axios";
 Vue.use(VueRouter)
 
 const routes = [{
@@ -52,24 +53,78 @@ const routes = [{
         path: '/men',
         name: 'Men',
         component: Men,
-        meta: {
-            requiresAuth: true
-        }
+        beforeEnter: (to, from, next) => {
+            let token = localStorage.getItem('token');
+            let isLogin = localStorage.getItem('isLogin');
+            if (store.state.isLogin && !isLogin) {
+                //將local狀態改變
+                localStorage.setItem('isLogin', store.state.isLogin);
+                //使用local的token給vuex取得該使用者資訊
+                store.commit('getUserInfo', token);
+                next();
+            } else if (isLogin) {
+                store.state.isLogin = true;
+                store.commit('getUserInfo', token);
+                next();
+            } else {
+                next();
+            }
+        },
     },
     {
         path: '/women',
         name: 'Women',
         component: Women,
-        meta: {
-            requiresAuth: true
-        }
+        beforeEnter: (to, from, next) => {
+            let token = localStorage.getItem('token');
+            let isLogin = localStorage.getItem('isLogin');
+            if (store.state.isLogin && !isLogin) {
+                //將local狀態改變
+                localStorage.setItem('isLogin', store.state.isLogin);
+                //使用local的token給vuex取得該使用者資訊
+                store.commit('getUserInfo', token);
+                next();
+            } else if (isLogin) {
+                store.state.isLogin = true;
+                store.commit('getUserInfo', token);
+                next();
+            } else {
+                next();
+            }
+        },
     },
     {
         path: '/item/:pid',
         name: 'Item',
         component: Item,
-        meta: {
-            requiresAuth: true
+        beforeEnter: (to, from, next) => {
+            let pid = to.params.pid;
+            let token = localStorage.getItem('token');
+            let isLogin = localStorage.getItem('isLogin');
+            axios
+                .get(`/api/products/${pid}`)
+                .then(res => {
+                    if (res.data.result === false) {
+                        next({
+                            path: '/login',
+                        });
+                    }
+                })
+
+            if (store.state.isLogin && !isLogin) {
+                //將local狀態改變
+                localStorage.setItem('isLogin', store.state.isLogin);
+                //使用local的token給vuex取得該使用者資訊
+                store.commit('getUserInfo', token);
+                next();
+            } else if (isLogin) {
+                store.state.isLogin = true;
+                store.commit('getUserInfo', token);
+                next();
+            } else {
+                next();
+            }
+
         },
     },
     {
@@ -132,16 +187,44 @@ const routes = [{
         path: '/myorderdetail/:oid',
         name: 'Myorderdetail',
         component: Myorderdetail,
-        meta: {
-            requiresAuth: true
-        },
-    },
-    {
-        path: '/ordertrack/:oid',
-        name: 'Ordertrack',
-        component: Ordertrack,
-        meta: {
-            requiresAuth: true
+        beforeEnter: (to, from, next) => {
+            let login;
+            let oid = to.params.oid;
+            let token = localStorage.getItem('token');
+            let isLogin = localStorage.getItem('isLogin');
+
+            if (store.state.isLogin && !isLogin) {
+                //將local狀態改變
+                localStorage.setItem('isLogin', store.state.isLogin);
+                //使用local的token給vuex取得該使用者資訊
+                store.commit('getUserInfo', token);
+                login = true;
+            } else if (isLogin) {
+                store.state.isLogin = true;
+                store.commit('getUserInfo', token);
+                login = true;
+            } else {
+                next({
+                    path: '/login',
+                });
+            }
+            setTimeout(() => {
+                if (login === true) {
+                    let uid = store.state.info.id
+                    axios
+                        .get(`/api/orders/${oid}/${uid}`)
+                        .then(res => {
+                            if (res.data.result === false) {
+                                next({
+                                    path: '/myorder',
+                                });
+                            } else {
+                                next();
+                            }
+                        })
+                }
+            }, 100);
+
         },
     },
     {
@@ -152,56 +235,268 @@ const routes = [{
                 path: 'dashboard',
                 name: 'dashboard',
                 component: Dashboard,
-                meta: {
-                    requiresAuth: true
+                beforeEnter: (to, from, next) => {
+                    let login;
+                    let token = localStorage.getItem('token');
+                    let isLogin = localStorage.getItem('isLogin');
+                    if (store.state.isLogin && !isLogin) {
+                        //將local狀態改變
+                        localStorage.setItem('isLogin', store.state.isLogin);
+                        //使用local的token給vuex取得該使用者資訊
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else if (isLogin) {
+                        store.state.isLogin = true;
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else {
+                        next({
+                            path: '/login',
+                        });
+                    }
+                    if (login === true) {
+                        axios.get(`/api/user/status/${token}`).then(res => {
+                            if (res.data.result === false) {
+                                next({
+                                    path: '/login',
+                                });
+                            } else {
+                                next();
+                            }
+                        })
+                    }
                 },
             },
             {
                 path: 'products',
                 name: 'Products',
                 component: Products,
-                meta: {
-                    requiresAuth: true
+                beforeEnter: (to, from, next) => {
+                    let login;
+                    let token = localStorage.getItem('token');
+                    let isLogin = localStorage.getItem('isLogin');
+                    if (store.state.isLogin && !isLogin) {
+                        //將local狀態改變
+                        localStorage.setItem('isLogin', store.state.isLogin);
+                        //使用local的token給vuex取得該使用者資訊
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else if (isLogin) {
+                        store.state.isLogin = true;
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else {
+                        next({
+                            path: '/login',
+                        });
+                    }
+                    if (login === true) {
+                        axios.get(`/api/user/status/${token}`).then(res => {
+                            if (res.data.result === false) {
+                                next({
+                                    path: '/login',
+                                });
+                            } else {
+                                next();
+                            }
+                        })
+                    }
                 },
             },
             {
                 path: 'orders',
                 name: 'Orders',
                 component: Orders,
-                meta: {
-                    requiresAuth: true
+                beforeEnter: (to, from, next) => {
+                    let login;
+                    let token = localStorage.getItem('token');
+                    let isLogin = localStorage.getItem('isLogin');
+                    if (store.state.isLogin && !isLogin) {
+                        //將local狀態改變
+                        localStorage.setItem('isLogin', store.state.isLogin);
+                        //使用local的token給vuex取得該使用者資訊
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else if (isLogin) {
+                        store.state.isLogin = true;
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else {
+                        next({
+                            path: '/login',
+                        });
+                    }
+                    if (login === true) {
+                        axios.get(`/api/user/status/${token}`).then(res => {
+                            if (res.data.result === false) {
+                                next({
+                                    path: '/login',
+                                });
+                            } else {
+                                next();
+                            }
+                        })
+                    }
                 },
             },
             {
                 path: 'orderdetails/:oid',
                 name: 'Orderdetails',
                 component: Orderdetails,
-                meta: {
-                    requiresAuth: true
+                beforeEnter: (to, from, next) => {
+                    let login;
+                    let oid = to.params.oid;
+                    let token = localStorage.getItem('token');
+                    let isLogin = localStorage.getItem('isLogin');
+                    if (store.state.isLogin && !isLogin) {
+                        //將local狀態改變
+                        localStorage.setItem('isLogin', store.state.isLogin);
+                        //使用local的token給vuex取得該使用者資訊
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else if (isLogin) {
+                        store.state.isLogin = true;
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else {
+                        next({
+                            path: '/login',
+                        });
+                    }
+                    if (login === true) {
+                        axios.get(`/api/user/status/${token}`).then(res => {
+                            if (res.data.result === false) {
+                                next({
+                                    path: '/login',
+                                });
+                            }
+                            axios.get(`/api/admin/order/${oid}`).then(res => {
+                                if (res.data.result === false) {
+                                    next({
+                                        path: '/login',
+                                    });
+                                } else {
+                                    next();
+                                }
+                            })
+                        })
+                    }
                 },
             },
             {
                 path: 'coupon',
                 name: 'Coupon',
                 component: Coupon,
-                meta: {
-                    requiresAuth: true
+                beforeEnter: (to, from, next) => {
+                    let login;
+                    let token = localStorage.getItem('token');
+                    let isLogin = localStorage.getItem('isLogin');
+                    if (store.state.isLogin && !isLogin) {
+                        //將local狀態改變
+                        localStorage.setItem('isLogin', store.state.isLogin);
+                        //使用local的token給vuex取得該使用者資訊
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else if (isLogin) {
+                        store.state.isLogin = true;
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else {
+                        next({
+                            path: '/login',
+                        });
+                    }
+                    if (login === true) {
+                        axios.get(`/api/user/status/${token}`).then(res => {
+                            if (res.data.result === false) {
+                                next({
+                                    path: '/login',
+                                });
+                            } else {
+                                next();
+                            }
+                        })
+                    }
                 },
             },
             {
                 path: 'member',
                 name: 'Member',
                 component: Member,
-                meta: {
-                    requiresAuth: true
+                beforeEnter: (to, from, next) => {
+                    let login;
+                    let token = localStorage.getItem('token');
+                    let isLogin = localStorage.getItem('isLogin');
+                    if (store.state.isLogin && !isLogin) {
+                        //將local狀態改變
+                        localStorage.setItem('isLogin', store.state.isLogin);
+                        //使用local的token給vuex取得該使用者資訊
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else if (isLogin) {
+                        store.state.isLogin = true;
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else {
+                        next({
+                            path: '/login',
+                        });
+                    }
+                    if (login === true) {
+                        axios.get(`/api/user/status/${token}`).then(res => {
+                            if (res.data.result === false) {
+                                next({
+                                    path: '/login',
+                                });
+                            } else {
+                                next();
+                            }
+                        })
+                    }
                 },
             },
             {
                 path: 'memberdetails/:uid',
                 name: 'Memberdetails',
                 component: Memberdetails,
-                meta: {
-                    requiresAuth: true
+                beforeEnter: (to, from, next) => {
+                    let login;
+                    let uid = to.params.uid;
+                    let token = localStorage.getItem('token');
+                    let isLogin = localStorage.getItem('isLogin');
+                    if (store.state.isLogin && !isLogin) {
+                        //將local狀態改變
+                        localStorage.setItem('isLogin', store.state.isLogin);
+                        //使用local的token給vuex取得該使用者資訊
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else if (isLogin) {
+                        store.state.isLogin = true;
+                        store.commit('getUserInfo', token);
+                        login = true;
+                    } else {
+                        next({
+                            path: '/login',
+                        });
+                    }
+                    if (login === true) {
+                        axios.get(`/api/user/status/${token}`).then(res => {
+                            if (res.data.result === false) {
+                                next({
+                                    path: '/login',
+                                });
+                            }
+                            axios.get(`/api/admin/member/${uid}`).then(res => {
+                                if (res.data.result === false) {
+                                    next({
+                                        path: '/login',
+                                    });
+                                } else {
+                                    next();
+                                }
+                            })
+                        })
+                    }
                 },
             },
         ],

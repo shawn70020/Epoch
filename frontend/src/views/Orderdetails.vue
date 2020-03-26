@@ -320,6 +320,7 @@ export default {
             }
         },
         getOrderdetails(id) {
+            console.log(id);
             axios
                 .get(`/api/orders/detail/${id}`)
                 .then(res => {
@@ -358,8 +359,7 @@ export default {
                     .post(`/api/orders/${this.oid}/ship`, {
                         group: this.group
                     })
-                    .then(res => {
-                        console.log(res);
+                    .then(() => {
                         let i;
                         let j;
                         for (i = 0; i < this.ship.length; i++) {

@@ -40,9 +40,6 @@ import 'echarts/lib/component/polar'
 import 'echarts/lib/component/legend'
 import 'echarts/lib/component/title.js'
 
-// 欄位檢驗
-import Vuelidate from 'vuelidate'
-Vue.use(Vuelidate);
 
 Vue.component('chart', ECharts)
 Vue.use(Vuex);
@@ -58,8 +55,10 @@ Vue.config.productionTip = false
 router.beforeEach((to, from, next) => {
     let isLogin = localStorage.getItem('isLogin');
     let token = localStorage.getItem('token');
-    if (to.meta.requiresAuth) { // 判斷是否有許可權
-        if (!store.state.isLogin && !isLogin && to.path !== '/login') { // store和localStorage中登入狀態都為false並且跳轉到 不是登入的頁面時 都強行跳轉到登入頁面
+    if (to.meta.requiresAuth) {
+        // 判斷是否有許可權
+        if (!store.state.isLogin && !isLogin && to.path !== '/login') {
+            // store和localStorage中登入狀態都為false並且跳轉到 不是登入的頁面時 都強行跳轉到登入頁面
             next({
                 path: '/login',
             });
@@ -70,6 +69,7 @@ router.beforeEach((to, from, next) => {
             store.commit('getUserInfo', token);
             next();
         } else if (isLogin && to.path !== '/login') {
+            store.state.isLogin = true;
             //使用local的token給vuex取得該使用者資訊
             store.commit('getUserInfo', token);
             //使用local的isLogin給vuex重新設置isLogin

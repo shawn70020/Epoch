@@ -239,7 +239,6 @@ export default {
                 .get(`/api/products/women/page=${this.page}`)
                 .then(res => {
                     let newData = res.data.data;
-                    console.log(newData[0]);
                     for (let i = 0; i < newData.length; i++) {
                         this.products.push(newData[i]);
                     }

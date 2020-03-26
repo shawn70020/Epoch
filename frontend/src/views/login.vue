@@ -31,7 +31,7 @@
                     ref="ruleForm"
                     label-width="120px"
                     class="demo-ruleForm form"
-                    status-icon="true"
+                    status-icon
                 >
                     <el-form-item label="Email" prop="email">
                         <el-input v-model="ruleForm.email"></el-input>
@@ -41,6 +41,7 @@
                             type="password"
                             v-model="ruleForm.password"
                             autocomplete="off"
+                            @keyup.enter.native="submitForm('ruleForm')"
                         ></el-input>
                     </el-form-item>
                     <el-form-item class="btn">
@@ -107,43 +108,47 @@ export default {
         submitForm(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                       const vm = this;
-            vm.isLoading = true;
-            axios
-                .post("/api/login", {
-                    email: vm.ruleForm.email,
-                    password: vm.ruleForm.password
-                })
-                .then(res => {
-                    vm.isLoading = false;
-                    if (res.data.result === true) {
-                        localStorage.setItem("token", res.data.token);
-                        this.$store.state.isLogin = true;
-                        if (res.data.level === "member") {
-                            if (res.data.sex === "M") {
-                                vm.$router.push("/men");
+                    const vm = this;
+                    vm.isLoading = true;
+                    axios
+                        .post("/api/login", {
+                            email: vm.ruleForm.email,
+                            password: vm.ruleForm.password
+                        })
+                        .then(res => {
+                            vm.isLoading = false;
+                            if (res.data.result === true) {
+                                localStorage.setItem("token", res.data.token);
+                                this.$store.state.isLogin = true;
+                                if (res.data.level === "member") {
+                                    if (res.data.sex === "M") {
+                                        vm.$router.push("/men");
+                                    } else {
+                                        vm.$router.push("/women");
+                                    }
+                                } else {
+                                    vm.$router.push("/admin/dashboard");
+                                }
                             } else {
-                                vm.$router.push("/women");
+                                this.$notify.error({
+                                    title: "(ಠ益ಠ)Error",
+                                    message: "This Account Has Been Frozen"
+                                });
+                                vm.showError = 1;
                             }
-                        } else {
-                            vm.$router.push("/admin/dashboard");
-                        }
-                    } else {
-                        vm.showError = 1;
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
                 } else {
                     console.log("error submit!!");
                     return false;
                 }
             });
         },
-          resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        },
         login() {
             const vm = this;
             vm.isLoading = true;
@@ -182,6 +187,9 @@ export default {
                 this.type = "password";
                 this.btnText = "SHOW";
             }
+        },
+        test(){
+            console.log(123)
         }
     }
 };
