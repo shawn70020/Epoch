@@ -16,16 +16,16 @@
                     <div class="title">
                         <h5>今日訂單</h5>
                         <div class="badge">
-                            <el-badge :value="12" class="item">
+                            <el-badge :value="deal" class="item">
                                 <el-button size="small">處理中</el-button>
                             </el-badge>
-                            <el-badge :value="3" class="item" type="warning">
+                            <el-badge :value="ship" class="item" type="warning">
                                 <el-button size="small">已出貨</el-button>
                             </el-badge>
-                            <el-badge :value="1" class="item" type="primary">
+                            <el-badge :value="done" class="item" type="primary">
                                 <el-button size="small">完成</el-button>
                             </el-badge>
-                            <el-badge :value="2" class="item" type="info">
+                            <el-badge :value="cancel" class="item" type="info">
                                 <el-button size="small">取消</el-button>
                             </el-badge>
                         </div>
@@ -40,9 +40,9 @@
                 </div>
                 <div class="right">
                     <h5>公司名稱：EPOCH</h5>
-                    <h5>總會員數 ： 1000 人</h5>
-                    <h5>總商品數 ： 1000 項</h5>
-                    <h5>總營業額 ： 100000</h5>
+                    <h5>總會員數 ： {{ allData.member }} 人</h5>
+                    <h5>總商品數 ： {{ allData.product }} 項</h5>
+                    <h5>總營業額 ： NT {{ allData.alltotal | currency }}</h5>
                     <h5>成立時間 ： 2020/01/01</h5>
                 </div>
             </div>
@@ -53,25 +53,25 @@
                         <div class="icon icon-member">
                             <i class="fas fa-user-clock"></i>
                         </div>
-                        <h4>100</h4>
+                        <h4>{{ allData.online }}</h4>
                     </div>
                 </div>
                 <div class="member-box">
-                    <h5>目前訂單量</h5>
+                    <h5>今日訂單量</h5>
                     <div class="info">
                         <div class="icon icon-order">
                             <i class="fas fa-calendar-week"></i>
                         </div>
-                        <h4>100</h4>
+                        <h4>{{ today.length }}</h4>
                     </div>
                 </div>
                 <div class="product-box">
-                    <h5>目前營業額</h5>
+                    <h5>今日營業額</h5>
                     <div class="info">
                         <div class="icon icon-cash">
                             <i class="fas fa-dollar-sign"></i>
                         </div>
-                        <h4>100</h4>
+                        <h4>NT {{ allData.total | currency }}</h4>
                     </div>
                 </div>
             </div>
@@ -79,6 +79,7 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 var moment = require("moment");
 moment.locale("zh-tw");
 export default {
@@ -86,7 +87,13 @@ export default {
     data() {
         return {
             moment: moment,
-            orgOptions: {}
+            orgOptions: {},
+            allData: [],
+            today: [],
+            deal: 0,
+            ship: 0,
+            done: 0,
+            cancel: 0
         };
     },
     mounted() {
@@ -125,14 +132,41 @@ export default {
                         }
                     },
                     data: [
-                        { value: 12, name: "處理中" },
-                        { value: 3, name: "已出貨" },
-                        { value: 1, name: "完成" },
-                        { value: 2, name: "取消" }
+                        { value: 0, name: "處理中" },
+                        { value: 0, name: "已出貨" },
+                        { value: 0, name: "完成" },
+                        { value: 0, name: "取消" }
                     ]
                 }
             ]
         };
+    },
+    created() {
+        this.getOverview();
+    },
+    methods: {
+        getOverview() {
+            axios.get("/api/admin/overview").then(res => {
+                this.allData = res.data.data;
+                this.today = res.data.today;
+                let data = this.today;
+                data.forEach(item => {
+                    if (item.status === 0) {
+                        this.deal++;
+                    } else if (item.status === 1) {
+                        this.ship++;
+                    } else if (item.status === 2) {
+                        this.done++;
+                    } else if (item.status === 3) {
+                        this.cancel++;
+                    }
+                });
+                this.orgOptions.series[0].data[0].value = this.deal;
+                this.orgOptions.series[0].data[1].value = this.ship;
+                this.orgOptions.series[0].data[2].value = this.done;
+                this.orgOptions.series[0].data[3].value = this.cancel;
+            });
+        }
     }
 };
 </script>
@@ -201,6 +235,15 @@ $color: #2d2d2d;
                 margin: auto;
                 margin-left: 30px;
                 margin-top: 30px;
+            }
+        }
+        .right{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 15px;
+            h5{
+                padding: 15px;
             }
         }
     }

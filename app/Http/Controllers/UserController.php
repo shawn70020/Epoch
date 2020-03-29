@@ -104,7 +104,7 @@ class UserController extends Controller
         $iUid =  $_oRequest->input('user');
         ## 登出解除cookie及資料庫token
         $aUser =  User::find($iUid);
-        $aUser->token = '';
+        $aUser->token = null;
         $aUser->save();
 
         return response()->json(['result' => true]);

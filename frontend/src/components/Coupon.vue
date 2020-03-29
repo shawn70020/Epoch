@@ -75,7 +75,7 @@
                                         class="form-control"
                                         id="title"
                                         v-model="tempProduct.name"
-                                        placeholder="請輸入商品名稱"
+                                        placeholder="請輸入券名"
                                     />
                                 </div>
                                 <div class="form-row">
@@ -86,7 +86,7 @@
                                             class="form-control"
                                             id="category"
                                             v-model="tempProduct.code"
-                                            placeholder="請輸入折扣法"
+                                            placeholder="請輸入折扣碼"
                                         />
                                     </div>
                                 </div>
@@ -94,14 +94,14 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-8">
                                         <label for="origin_price"
-                                            >折扣百分比</label
+                                            >百分比</label
                                         >
                                         <input
                                             type="number"
                                             class="form-control"
                                             id="origin_price"
                                             v-model="tempProduct.discount"
-                                            placeholder="請輸入百分比"
+                                            placeholder="請輸入折扣百分比"
                                         />
                                     </div>
                                 </div>
@@ -271,6 +271,11 @@ export default {
                             });
                             $("#productModal").modal("hide");
                             this.getCoupons();
+                        } else {
+                             this.$notify.error({
+                                    title: "錯誤",
+                                    message: "請確定所有欄位輸入"
+                                });
                         }
                     })
                     .catch(err => {
@@ -361,6 +366,7 @@ export default {
         margin: auto;
         .fas {
             margin: 0 20px;
+            cursor: pointer;
         }
     }
 }

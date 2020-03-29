@@ -155,6 +155,7 @@ export default {
         margin: auto;
         .fas {
             margin: 0 20px;
+            cursor: pointer;
         }
     }
 }

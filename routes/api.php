@@ -63,3 +63,4 @@ Route::get('/orders/{oid}/{uid}', 'OrderController@checkOrder');
 Route::get('/user/status/{token}', 'UserController@checkStatus');
 Route::get('/admin/order/{oid}', 'OrderController@checkAllOrder');
 Route::get('/admin/member/{uid}', 'UserController@checkAllMember');
+Route::get('/admin/overview', 'OrderController@getOverview');

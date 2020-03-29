@@ -137,14 +137,26 @@ class OrderController extends Controller
      */
     public function createCoupons(Request $_oRequest)
     {
+        ## 參數初始化
+        $name = $_oRequest->input('name');
+        $code = $_oRequest->input('code');
+        $discount = $_oRequest->input('discount');
+        $expiry_date = $_oRequest->input('expiry_date');
+        $enable = $_oRequest->input('enable');
+
+        ## 為空值返回
+        if (is_null($name)||is_null($code)||is_null($discount)||is_null($expiry_date)||is_null($enable)) {
+            return response()->json(['result' => false]);
+        }
+
         ## 新增優惠券
         $aParam = [
-            'name' => $_oRequest->input('name'),
-            'code' => $_oRequest->input('code'),
-            'discount' => $_oRequest->input('discount'),
-            'expiry_date' => $_oRequest->input('expiry_date'),
-            'enable'  => $_oRequest->input('enable'),
-        ];
+           'name' => $name,
+           'code' => $code,
+           'discount' => $discount,
+           'expiry_date' => $expiry_date,
+           'enable'  => $enable,
+       ];
 
         Coupon::create($aParam);
         return response()->json(['result' => true]);
@@ -215,5 +227,32 @@ class OrderController extends Controller
         $aResult = Order::whereBetween('addDate', [$aDate[0],$aDate[1]])->get();
 
         return response()->json(['result' => true,'data'=>$aResult]);
+    }
+
+    public function getOverview()
+    {
+        ## 取得今日訂單資料
+        $today = Carbon::today('Asia/Taipei');
+        $tomorrow = Carbon::tomorrow('Asia/Taipei');
+        $aResult = Order::whereBetween('addDate', [$today,$tomorrow])->get();
+        $iTotal = $aResult->sum('total');
+        ## 取得會員及商品總數資料
+        $iUserTotal = count(User::all());
+        $iProductTotal = count(Product::all());
+
+        ## 取得總營業額
+        $aAllTotal = Order::select('total')->get();
+        $iAllTotal = $aAllTotal->sum('total');
+        ## 取得線上上線會員數
+        $iNowUser = count(User::where('token', '<>', null)->get());
+
+        $aAllData = [
+            'member' => $iUserTotal,
+            'product' => $iProductTotal,
+            'alltotal' => $iAllTotal,
+            'online' => $iNowUser,
+            'total' => $iTotal
+        ];
+        return response()->json(['result' => true, 'data' => $aAllData,'today' => $aResult]);
     }
 }
