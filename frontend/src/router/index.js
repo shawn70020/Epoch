@@ -35,6 +35,23 @@ const routes = [{
         path: '/',
         name: 'Index',
         component: Index,
+        beforeEnter: (to, from, next) => {
+            let token = localStorage.getItem('token');
+            let isLogin = localStorage.getItem('isLogin');
+            if (store.state.isLogin && !isLogin) {
+                //將local狀態改變
+                localStorage.setItem('isLogin', store.state.isLogin);
+                //使用local的token給vuex取得該使用者資訊
+                store.commit('getUserInfo', token);
+                next();
+            } else if (isLogin) {
+                store.state.isLogin = true;
+                store.commit('getUserInfo', token);
+                next();
+            } else {
+                next();
+            }
+        },
     },
     {
         path: '/login',

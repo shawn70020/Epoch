@@ -87,13 +87,21 @@
                     aria-valuemax="100"
                 ></div>
             </div>
-            <button
-                class="load"
-                :style="{ display: loadBtn }"
-                @click="changePage"
-            >
-                LOAD MORE
-            </button>
+            <div class="loading">
+                <loading
+                    loader="bars"
+                    :active.sync="isLoading"
+                    :is-full-page="false"
+                    :opacity="1"
+                ></loading>
+                <button
+                    class="load"
+                    :style="{ display: loadBtn }"
+                    @click="changePage"
+                >
+                    LOAD MORE
+                </button>
+            </div>
         </div>
         <div class="social">
             <ul>
@@ -180,10 +188,11 @@ import Navbar from "../components/Navbar";
 export default {
     data() {
         return {
+            isLoading: false,
             show: "none",
             products: [],
-            nowNum: '',
-            allNum: '',
+            nowNum: "",
+            allNum: "",
             bar: "1%",
             page: 2,
             loadBtn: "block"
@@ -233,31 +242,35 @@ export default {
                 });
         },
         changePage() {
-            axios
-                .get(`/api/products/men/page=${this.page}`)
-                .then(res => {
-                    let newData = res.data.data;
-                    console.log(newData[0]);
-                    for (let i = 0; i < newData.length; i++) {
-                        this.products.push(newData[i]);
-                    }
-                    this.nowNum = this.products.length;
-                    this.page = this.page + 1;
-                    let barWidth;
-                    barWidth = (
-                        this.products.length *
-                        (100 / this.allNum)
-                    ).toString();
-                    this.bar = barWidth + "%";
-                    if (this.nowNum === this.allNum) {
-                        this.loadBtn = "none";
-                    } else {
-                        this.loadBtn = "block";
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+            this.isLoading = true;
+            setTimeout(() => {
+                axios
+                    .get(`/api/products/men/page=${this.page}`)
+                    .then(res => {
+                        let newData = res.data.data;
+                        console.log(newData[0]);
+                        for (let i = 0; i < newData.length; i++) {
+                            this.products.push(newData[i]);
+                        }
+                        this.nowNum = this.products.length;
+                        this.page = this.page + 1;
+                        let barWidth;
+                        barWidth = (
+                            this.products.length *
+                            (100 / this.allNum)
+                        ).toString();
+                        this.bar = barWidth + "%";
+                        if (this.nowNum === this.allNum) {
+                            this.loadBtn = "none";
+                        } else {
+                            this.loadBtn = "block";
+                        }
+                        this.isLoading = false;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }, 1000);
         }
     }
 };
@@ -420,16 +433,21 @@ $color: #1010c4;
         margin: auto;
         margin-top: 20px;
     }
-    .load {
-        margin: auto;
-        width: 300px;
-        height: 55px;
-        color: #fff;
-        line-height: 55px;
-        font-size: 18px;
-        margin-top: 25px;
-        font-weight: bold;
-        background: #0f4c81;
+    .loading {
+        position: relative;
+        .load {
+            margin: auto;
+            width: 300px;
+            height: 55px;
+            color: #fff;
+            line-height: 55px;
+            font-size: 18px;
+            margin-top: 25px;
+            font-weight: bold;
+            background: #0f4c81;
+            border: none;
+            outline: none;
+        }
     }
 }
 .social {

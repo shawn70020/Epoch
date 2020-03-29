@@ -40,12 +40,14 @@
             <div class="top">
                 <h5 v-if="userName !== undefined">Hi {{ userName }}</h5>
                 <router-link to="/login" class="user-account">
-                <h5 v-if="userName == undefined">Sign In |</h5>
+                    <h5 v-if="userName == undefined">Sign In |</h5>
                 </router-link>
                 <router-link to="/register" class="user-account">
-                <h5 v-if="userName == undefined">Join</h5>
+                    <h5 v-if="userName == undefined">Join</h5>
                 </router-link>
-                <a href="#" v-if="userName !== undefined" @click="signout">Sign Out</a>
+                <a href="#" v-if="userName !== undefined" @click="signout"
+                    >Sign Out</a
+                >
                 <i class="fas fa-times" @click="closeItem"></i>
             </div>
             <div class="info">
@@ -104,9 +106,8 @@
                     <router-link to="/user/bag">
                         <button class="bt btn-bag">VIEW BAG</button>
                     </router-link>
-                    <router-link to="/user/checkout"
-                            >
-                    <button class="bt btn-check">CHECKOUT</button>
+                    <router-link to="/user/checkout">
+                        <button class="bt btn-check">CHECKOUT</button>
                     </router-link>
                 </div>
             </div>
@@ -357,7 +358,7 @@ $color1: #1ca753;
             background: #fff;
             margin: auto;
             text-align: center;
-            padding: 10px;
+            padding-top: 35px;
             font-family: "Sriracha";
             h4 {
                 margin-top: 10px;
@@ -401,6 +402,7 @@ $color1: #1ca753;
         .fa-times {
             font-size: 24px;
             padding-right: 10px;
+            cursor: pointer;
         }
     }
     .cart-item {
@@ -433,6 +435,9 @@ $color1: #1ca753;
                     h4 {
                         font-size: 14px;
                         color: #2d2d2d;
+                    }
+                    .fa-trash-alt {
+                        cursor: pointer;
                     }
                 }
             }
@@ -509,6 +514,7 @@ $color1: #1ca753;
         .fa-times {
             position: absolute;
             right: 10px;
+            cursor: pointer;
         }
     }
     .info {

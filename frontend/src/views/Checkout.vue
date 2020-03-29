@@ -30,6 +30,7 @@
                                 class="code"
                                 placeholder="折價券"
                                 v-model="coupon"
+                                @keyup.enter="useCoupon"
                             />
                             <button class="coupon-btn" @click="useCoupon">
                                 APPLY CODE
@@ -98,6 +99,9 @@
                         <div class="delivery-radio">
                             <el-form-item label="Delivery :" prop="delivery">
                                 <el-radio-group v-model="ruleForm.delivery">
+                                    <el-radio label="S"
+                                        >Standard Delivery</el-radio
+                                    >
                                     <h5>
                                         NT $100 Delivered on or before
                                         {{
@@ -106,8 +110,9 @@
                                                 .calendar()
                                         }}
                                     </h5>
-                                    <el-radio label="S"
-                                        >Standard Delivery</el-radio
+
+                                    <el-radio label="E"
+                                        >Express Delivery</el-radio
                                     >
                                     <h5>
                                         NT $300 Delivered on or before
@@ -117,9 +122,6 @@
                                                 .calendar()
                                         }}
                                     </h5>
-                                    <el-radio label="E"
-                                        >Express Delivery</el-radio
-                                    >
                                 </el-radio-group>
                             </el-form-item>
                         </div>
@@ -132,7 +134,7 @@
                                         </i></el-radio
                                     >
                                     <el-radio label="Cash"
-                                        ><i class="fas fa-wallet">
+                                        ><i class="fas fa-people-arrows">
                                             CASH ON DELIVERY
                                         </i></el-radio
                                     >
@@ -227,6 +229,9 @@
                             <h4 v-if="ruleForm.delivery === 'E'">
                                 NT {{ 300 | currency }}
                             </h4>
+                            <h4 v-if="ruleForm.delivery === ''">
+                                NT {{ 0 | currency }}
+                            </h4>
                             <h4>
                                 <span class="cut">-</span>NT
                                 {{ discount | currency }}
@@ -304,8 +309,10 @@ export default {
         total() {
             if (this.ruleForm.delivery === "S") {
                 return this.subtotal + 100 - this.discount;
-            } else {
+            } else if (this.ruleForm.delivery === "E") {
                 return this.subtotal + 300 - this.discount;
+            } else {
+                return this.subtotal + 0 - this.discount;
             }
         }
     },
@@ -366,7 +373,7 @@ export default {
                                     message: "Your Order is Send",
                                     type: "success"
                                 });
-                                 this.$store.commit("checkoutCart");
+                                this.$store.commit("checkoutCart");
                                 this.$router.push("/myorder");
                             } else {
                                 this.$notify.error({
@@ -386,15 +393,15 @@ export default {
         },
         success() {
             this.$notify({
-                title: "成功",
-                message: "已兌換優惠券",
+                title: "Success",
+                message: "Use The Coupon",
                 type: "success"
             });
         },
         error() {
             this.$notify.error({
-                title: "抱歉",
-                message: "此優惠券不存在"
+                title: "Sorry",
+                message: "This Coupon Is Not Exist"
             });
         },
         toggle() {

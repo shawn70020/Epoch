@@ -68,7 +68,6 @@
                         :src="'data:image/png;base64,' + item.image"
                         class="img-fluid"
                     />
-                    <!-- <div class="heart"><i class="fa-heart" :class="{'fas':isCheck, 'far':noCheck}" @click="save"></i></div> -->
                     <div class="item-txt">
                         <h5>{{ item.name }}</h5>
                         <h4>NT {{ item.price | currency }}</h4>
@@ -88,13 +87,21 @@
                     aria-valuemax="100"
                 ></div>
             </div>
-            <button
-                class="load"
-                :style="{ display: loadBtn }"
-                @click="changePage"
-            >
-                LOAD MORE
-            </button>
+            <div class="loading">
+                <loading
+                    loader="bars"
+                    :active.sync="isLoading"
+                    :is-full-page="false"
+                    :opacity="1"
+                ></loading>
+                <button
+                    class="load"
+                    :style="{ display: loadBtn }"
+                    @click="changePage"
+                >
+                    LOAD MORE
+                </button>
+            </div>
         </div>
         <div class="social">
             <ul>
@@ -182,11 +189,12 @@ export default {
     name: "Women",
     data() {
         return {
+            isLoading: false,
             show: "none",
             page: 2,
             products: [],
-            nowNum: '',
-            allNum: '',
+            nowNum: "",
+            allNum: "",
             bar: "1%",
             loadBtn: "block"
         };
@@ -235,36 +243,40 @@ export default {
                 });
         },
         changePage() {
-            axios
-                .get(`/api/products/women/page=${this.page}`)
-                .then(res => {
-                    let newData = res.data.data;
-                    for (let i = 0; i < newData.length; i++) {
-                        this.products.push(newData[i]);
-                    }
-                    this.nowNum = this.products.length;
-                    this.page = this.page + 1;
-                    let barWidth;
-                    barWidth = (
-                        this.products.length *
-                        (100 / this.allNum)
-                    ).toString();
-                    this.bar = barWidth + "%";
-                    if (this.nowNum === this.allNum) {
-                        this.loadBtn = "none";
-                    } else {
-                        this.loadBtn = "block";
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+            this.isLoading = true;
+            setTimeout(() => {
+                axios
+                    .get(`/api/products/women/page=${this.page}`)
+                    .then(res => {
+                        let newData = res.data.data;
+                        for (let i = 0; i < newData.length; i++) {
+                            this.products.push(newData[i]);
+                        }
+                        this.nowNum = this.products.length;
+                        this.page = this.page + 1;
+                        let barWidth;
+                        barWidth = (
+                            this.products.length *
+                            (100 / this.allNum)
+                        ).toString();
+                        this.bar = barWidth + "%";
+                        if (this.nowNum === this.allNum) {
+                            this.loadBtn = "none";
+                        } else {
+                            this.loadBtn = "block";
+                        }
+                        this.isLoading = false;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }, 1000);
         },
-        save(){
-            if(this.isCheck === false){
+        save() {
+            if (this.isCheck === false) {
                 this.isCheck === true;
                 this.noCheck === false;
-            }else{
+            } else {
                 this.isCheck === false;
                 this.noCheck === true;
             }
@@ -395,7 +407,7 @@ $color: #fa81e4;
             border-radius: 50%;
             bottom: 100px;
             right: 20px;
-            .fa-heart{
+            .fa-heart {
                 color: #2d2d2d;
                 line-height: 36px;
             }
@@ -430,16 +442,21 @@ $color: #fa81e4;
         margin: auto;
         margin-top: 20px;
     }
-    .load {
-        margin: auto;
-        width: 300px;
-        height: 55px;
-        color: #fff;
-        line-height: 55px;
-        font-size: 18px;
-        margin-top: 25px;
-        font-weight: bold;
-        background: #0f4c81;
+    .loading {
+        position: relative;
+        .load {
+            margin: auto;
+            width: 300px;
+            height: 55px;
+            color: #fff;
+            line-height: 55px;
+            font-size: 18px;
+            margin-top: 25px;
+            font-weight: bold;
+            background: #0f4c81;
+            border: none;
+            outline: none;
+        }
     }
 }
 .social {

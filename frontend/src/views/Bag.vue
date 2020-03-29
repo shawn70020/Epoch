@@ -2,17 +2,17 @@
     <div>
         <Navbar></Navbar>
         <div class="banner">
-            <a href="#">
+            <router-link to="/women" class="">
                 <div class="shop-link">
                     WOMEN
                 </div>
-            </a>
+            </router-link>
             <h5>UP TO 30% OFF BETWEEN-SEASON STYLES</h5>
-            <a href="#">
+            <router-link to="/men" class="">
                 <div class="shop-link">
                     MENU
                 </div>
-            </a>
+            </router-link>
         </div>
         <div class="empty-bag" :style="{ display: isA }">
             <div class="wrap">
@@ -334,7 +334,7 @@ export default {
                         setTimeout(() => {
                             this.reload();
                             this.isLoading = false;
-                        }, 1200);
+                        }, 1000);
                     }
                 })
                 .catch(err => {
@@ -382,7 +382,7 @@ $color1: #1ca753;
 }
 .empty-bag {
     width: 100%;
-    height: 460px;
+    height: 480px;
     background: #fff;
     display: flex;
     .wrap {
@@ -515,6 +515,7 @@ $color1: #1ca753;
                             position: absolute;
                             top: 0;
                             right: 50px;
+                            cursor: pointer;
                         }
                     }
                 }
@@ -736,11 +737,12 @@ $color1: #1ca753;
 }
 .epoch {
     padding-left: 21%;
-    height: 45px;
+    width: 100%;
+    height: 40px;
     h5 {
         font-size: 30px;
         font-family: "IM Fell Great Primer SC";
-        line-height: 45px;
+        line-height: 40px;
     }
 }
 </style>

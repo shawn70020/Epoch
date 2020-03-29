@@ -25,7 +25,9 @@
                     Start saving as you shop by selecting the little heart.
                     We'll sync your items across all your devices. Easy.
                 </h5>
-                <button>START SHOPPING</button>
+                <router-link to="/" class="">
+                    <button>START SHOPPING</button>
+                </router-link>
             </div>
         </div>
         <div class="product" :style="{ display: isB }">
@@ -34,7 +36,12 @@
                     :src="'data:image/png;base64,' + item.image"
                     class="img-fluid"
                 />
-                <div class="heart"><i class="far fa-trash-alt"></i></div>
+                <div class="heart">
+                    <i
+                        class="far fa-trash-alt"
+                        @click="deleteCart(item.id)"
+                    ></i>
+                </div>
                 <div class="item-txt">
                     <h5>{{ item.name }}</h5>
                     <h4>NT {{ item.price | currency }}</h4>
@@ -133,26 +140,40 @@ export default {
             uid: this.$store.state.info.id,
             isA: "none",
             isB: "flex",
-            products: [],
+            products: []
         };
     },
     components: {
         Navbar
     },
-    created() {
-        this.getSavedItems(this.uid);
+    computed: {
+        userInfo() {
+            return this.$store.state.info;
+        }
+    },
+    watch: {
+        userInfo: {
+            handler(aInfo) {
+                this.userName = aInfo.name;
+                this.uid = aInfo.id;
+                this.getSavedItems(this.uid);
+            },
+            immediate: true
+        }
     },
     methods: {
         getSavedItems(id) {
             axios
                 .get(`/api/user/saved/${id}`)
                 .then(res => {
-                    if(res.data.result === true){
-                       this.products = res.data.data;
-                    this.allNum = res.data.total;
+                    if (res.data.result === true) {
+                        this.isA = "none";
+                        this.isB = "flex";
+                        this.products = res.data.data;
+                        this.allNum = res.data.total;
                     } else {
-                        this.isA = 'block';
-                        this.isB = 'none';
+                        this.isA = "block";
+                        this.isB = "none";
                     }
                 })
                 .catch(err => {
@@ -169,6 +190,12 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        deleteCart(id) {
+            axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {
+                this.$store.commit("deleteCart", parseInt(id));
+                this.getSavedItems(this.uid);
+            });
         }
     }
 };
@@ -268,13 +295,14 @@ $color: #232323;
             position: absolute;
             background: #fff;
             border-radius: 50%;
-            bottom: 110px;
+            bottom: 135px;
             right: 20px;
             .far {
                 line-height: 36px;
                 width: 20px;
                 height: 18px;
                 color: #2d2d2d;
+                cursor: pointer;
             }
         }
         .item-txt {

@@ -67,16 +67,26 @@ export default {
     data() {
         return {
             userName: this.$store.state.info.name,
-            spiltName:"",
+            spiltName: ""
         };
     },
-        created() {
-        this.splitName();
+    computed: {
+        userInfo() {
+            return this.$store.state.info;
+        }
+    },
+    watch: {
+        userInfo: {
+            handler(aInfo) {
+                this.userName = aInfo.name;
+                this.spiltName = aInfo.name.split("")[0].toUpperCase();
+                this.uid = aInfo.id;
+                this.getMyOrders(this.uid);
+            },
+            immediate: true
+        }
     },
     methods: {
-        splitName(){
-            this.spiltName = this.userName.split("")[0].toUpperCase();
-        },
         signout() {
             let uid = this.$store.state.info.id;
             axios
@@ -194,7 +204,7 @@ export default {
         position: relative;
         .slogan {
             position: absolute;
-            color: #2d2d2d;
+            color: #fff;
             top: 70px;
             left: 40px;
             h5 {

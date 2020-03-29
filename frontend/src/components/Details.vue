@@ -58,7 +58,7 @@
                     ref="ruleForm"
                     label-width="150px"
                     class="demo-ruleForm form"
-                    status-icon="true"
+                    status-icon
                 >
                     <el-form-item label="Email :" prop="email">
                         <el-input v-model="ruleForm.email"></el-input>
@@ -99,60 +99,6 @@
                         >
                     </el-form-item>
                 </el-form>
-                <!-- <form class="form-signin" @submit.prevent="changeInfo">
-                    <label for="inputEmail">EMAIL ADDRESS:</label>
-                    <input
-                        type="email"
-                        id="inputEmail"
-                        name="email"
-                        class="form-control"
-                        v-model="user[0].email"
-                    />
-                    <label for="inputName">NAME:</label>
-                    <input
-                        type="name"
-                        id="inputName"
-                        class="form-control"
-                        v-model="user[0].name"
-                    />
-                    <label for="inputPassword">DATE OF BIRTH:</label>
-                    <el-date-picker
-                        v-model="user[0].birthday"
-                        type="date"
-                        placeholder="Choose Date"
-                    >
-                    </el-date-picker>
-                    <label for="inputPassword">MOSTLY INTERESTED IN:</label>
-                    <div class="form-check form-check-inline">
-                        <input
-                            class="form-check-input"
-                            type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio1"
-                            value="F"
-                            v-model="user[0].sex"
-                        />
-                        <label class="form-check-label" for="inlineRadio1"
-                            >Womanswear</label
-                        >
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input
-                            class="form-check-input"
-                            type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio2"
-                            value="M"
-                            v-model="user[0].sex"
-                        />
-                        <label class="form-check-label" for="inlineRadio2"
-                            >Manswear</label
-                        >
-                    </div>
-                    <button class="btn btn-sm btn-dark btn-block" type="submit">
-                        SAVE CHANGE
-                    </button>
-                </form> -->
             </div>
         </div>
         <div class="footer">
@@ -173,6 +119,7 @@ export default {
         return {
             uid: this.$store.state.info.id,
             userName: this.$store.state.info.name,
+            splitName: "",
             ruleForm: {},
             rules: {
                 email: [
@@ -205,13 +152,23 @@ export default {
         };
     },
     computed: {
-        splitName: function() {
-            return this.userName.split("")[0].toUpperCase();
+        userInfo() {
+            return this.$store.state.info;
         }
     },
-    created() {
-        this.getInfo(this.uid);
+    watch: {
+        userInfo: {
+            handler(aInfo) {
+                this.userName = aInfo.name;
+                this.splitName = aInfo.name.split("")[0].toUpperCase();
+                this.uid = aInfo.id;
+                this.getInfo(this.uid);
+            },
+            immediate: true,
+            deep: true
+        }
     },
+
     methods: {
         submitForm(formName) {
             this.$refs[formName].validate(valid => {
@@ -230,11 +187,13 @@ export default {
                                     message: res.data.msg
                                 });
                             } else {
+                                let token = localStorage.getItem("token");
                                 this.$notify({
                                     title: "Success !",
-                                    message: "Change Your Details",
+                                    message: "Change Your Profiles",
                                     type: "success"
                                 });
+                                this.$store.commit("getUserInfo", token);
                             }
                         });
                 } else {
@@ -317,7 +276,7 @@ export default {
 .fa-sign-out-alt {
     transform: scalex(-1);
 }
-.pointer{
+.pointer {
     cursor: pointer;
 }
 .wrapper {

@@ -16,11 +16,11 @@
         </div>
         <div class="banner">
             <div class="banner-top">
-                <a href="#">
+                <router-link to="/women" class="">
                     <div class="solgan1">GET 20% OFF*</div>
                     <div class="solgan2">(HELLO, SAVED ITEMS)</div>
                     <div class="solgan3">With code: AMAZING20</div>
-                </a>
+                </router-link>
             </div>
             <div class="banner-bottom">
                 *Limited time only. Selected styles marked down on site
@@ -169,7 +169,7 @@ export default {
     name: "Index",
     components: {
         Navbar
-    },
+    }
 };
 </script>
 <style lang="scss" scoped>

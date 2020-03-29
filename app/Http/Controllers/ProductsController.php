@@ -19,6 +19,10 @@ class ProductsController extends Controller
         return response()->json(['result' => true, 'data' => $aResult]);
     }
 
+    /**
+     * 商品管理頁面切換
+     * @return json
+     */
     public function changeAdminPage($num)
     {
         $aResult = Product::all();
@@ -27,7 +31,7 @@ class ProductsController extends Controller
         ##取得抓取筆數
         $nowNum = ($num- 1) * 10;
         ## 取得單一商品資料
-        $aResult = Product::skip($nowNum)->take(10)->get();
+        $aResult = Product::orderBy('date', 'DESC')->skip($nowNum)->take(10)->get();
 
         return response()->json(['result' => true, 'data' => $aResult,'total' => $iTotalPage]);
     }
@@ -38,9 +42,9 @@ class ProductsController extends Controller
      */
     public function getMenProducts()
     {
-        ## 取得前12筆商品資料
-        $aTotal = Product::where('sex', 'M')->get();
-        $aResult = Product::where('sex', 'M')->skip(0)->take(12)->get();
+        ## 取得前12筆商品資料並且為啟用狀態
+        $aTotal = Product::where('sex', 'M')->where('enable', 1)->get();
+        $aResult = Product::where('sex', 'M')->where('enable', 1)->skip(0)->take(12)->get();
 
         return response()->json(['result' => true, 'data' => $aResult,'total' => count($aTotal)]);
     }
@@ -51,9 +55,9 @@ class ProductsController extends Controller
      */
     public function getWomenProducts()
     {
-        ## 取得前12筆商品資料
-        $aTotal = Product::where('sex', 'W')->get();
-        $aResult = Product::where('sex', 'W')->skip(0)->take(12)->get();
+        ## 取得前12筆商品資料並且為啟用狀態
+        $aTotal = Product::where('sex', 'W')->where('enable', 1)->get();
+        $aResult = Product::where('sex', 'W')->where('enable', 1)->skip(0)->take(12)->get();
 
         return response()->json(['result' => true, 'data' => $aResult,'total' => count($aTotal)]);
     }
@@ -75,27 +79,19 @@ class ProductsController extends Controller
     */
     public function changePage($sex, $num)
     {
+        ## 依照性別區分
         if ($sex === 'men') {
             $get ='M';
         } else {
             $get = 'W';
         }
+
         ##取得抓取筆數
         $nowNum = ($num- 1) * 12;
+
         ## 取得單一商品資料
         $aResult = Product::where('sex', $get)->skip($nowNum)->take(12)->get();
 
-        return response()->json(['result' => true, 'data' => $aResult]);
-    }
-
-    /**
-    * 跑馬燈商品取得
-    * @return json
-    */
-    public function getCarouselItem()
-    {
-        $i = rand(1, 18);
-        $aResult = Product::skip($i)->take(6)->get();
         return response()->json(['result' => true, 'data' => $aResult]);
     }
 
@@ -143,8 +139,8 @@ class ProductsController extends Controller
         $image = $_oRequest->input('image');
         $enable = $_oRequest->input('enable');
 
-        ## 為空值返回
-        if (is_null($name)||is_null($sex)||is_null($class)||is_null($price)||is_null($content)||is_null($detail)||is_null($image)||is_null($enable)) {
+        ## 任一為空值返回
+        if (is_null($name)||is_null($sex)||is_null($class)||is_null($price)||is_null($content)||is_null($detail)||is_null($image)) {
             return response()->json(['result' => false]);
         }
         ## 新增商品

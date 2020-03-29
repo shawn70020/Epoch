@@ -111,19 +111,19 @@ class CartController extends Controller
     public function updateUserCart(Request $_oRequest)
     {
         $aResponse = $_oRequest->input('post');
-        $aResult = Cart::where('uid', 11)->get();
+        $aResult = Cart::where('uid', 11)->where('delete_at', null)->orWhere('delete_at', 2)->get();
 
         for ($i = 0;$i < count($aResponse); $i++) {
             $post = Cart::find($aResult[$i]['id']);
             $post->num = $aResponse[$i];
             $post->save();
         }
-        $aCart = Cart::select('pid', 'num')->where('uid', 11)->where('delete_at', null)->get();
+        $aCart = Cart::select('pid', 'num')->where('uid', 11)->where('delete_at', null)->orWhere('delete_at', 2)->get();
         return response()->json(['result' => true,'data' => $aCart]);
     }
 
     /**
-    * 更新會員購物車
+    * 喜好項目移回購物車
     * @return json
     */
     public function moveToBag($_iUid, $_iPid)
@@ -137,6 +137,10 @@ class CartController extends Controller
         return response()->json(['result' => true]);
     }
 
+    /**
+    * 新增喜好項目
+    * @return json
+    */
     public function saveItem(Request $_oRequest)
     {
         ## 參數初始化
@@ -169,7 +173,7 @@ class CartController extends Controller
     public function useCoupon(Request $_oRequest)
     {
         $sCoupon = $_oRequest->input('coupon');
-        $aResult = Coupon::where('code', $sCoupon)->get();
+        $aResult = Coupon::where('code', $sCoupon)->where('enable', 1)->get();
 
         ## 優惠碼不存在
         if ($aResult->isEmpty()) {
@@ -198,8 +202,6 @@ class CartController extends Controller
         $aCart = $_oRequest->input('cart');
         $aUser = $_oRequest->input('user');
         $aAddress = $_oRequest->input('detail');
-        // $sDelivery = $_oRequest->input('delivery');
-        // $sPayment = $_oRequest->input('payment');
         $iTotal = $_oRequest->input('total');
 
         $cartNum = count($aCart);

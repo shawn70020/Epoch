@@ -38,6 +38,25 @@
                     <h3>{{ products.name }}</h3>
                     <h4>NT {{ products.price | currency }}</h4>
                     <h5>COLOUR: White</h5>
+                    <h5 v-if="products.num >= 150" class="sufficient">
+                        STOCK: SUFFICIENT
+                    </h5>
+                    <h5
+                        v-if="150 > products.num && products.num >= 50"
+                        class="enough"
+                    >
+                        STOCK: ENOUGH
+                    </h5>
+                    <h5
+                        v-if="50 > products.num && products.num > 0"
+                        class="few"
+                    >
+                        STOCK: ONLY FEW
+                    </h5>
+                    <h5 v-if="products.num === 0" class="out">
+                        <i class="fas fa-exclamation-circle"></i> STOCK: SELL
+                        OUT
+                    </h5>
                     <h5>SIZE : {{ value }}</h5>
                     <el-select
                         v-model="value"
@@ -61,7 +80,20 @@
                         </div>
                     </div>
                     <div class="item-btn">
-                        <button type="button" class="btn" @click="addCart">
+                        <button
+                            v-if="products.num > 0"
+                            type="button"
+                            class="btn"
+                            @click="addCart"
+                        >
+                            ADD TO BAG
+                        </button>
+                        <button
+                            v-if="products.num === 0"
+                            type="button"
+                            disabled="disabled"
+                            class="btn"
+                        >
                             ADD TO BAG
                         </button>
                         <div class="heart" @click="saveItem(pid)">
@@ -373,6 +405,18 @@ $color1: #1ca753;
             flex-direction: column;
             justify-content: flex-start;
             font-family: "Cormorant SC";
+            .sufficient {
+                color: #1ca753;
+            }
+            .enough {
+                color: #2d2d2d;
+            }
+            .few {
+                color: #ed3833;
+            }
+            .out {
+                color: #666;
+            }
             h3 {
                 font-size: 24px;
             }

@@ -159,11 +159,6 @@ class UserController extends Controller
             return response()->json(['result' => false,'msg' => '會員不存在']);
         }
 
-        ## 檢查會員是否有特殊符號
-        if (!preg_match("/^[A-Za-z0-9]+$/", $sUserName)) {
-            return response()->json(['result' => false,'msg' => '會員格式錯誤']);
-        }
-
         ##檢查信箱格式
         if (!preg_match("/([\w\-]+\@[\w\-]+\.[\w\-]+)/", $sEmail)) {
             return response()->json(['result' => false,'msg' => '信箱格式錯誤']);

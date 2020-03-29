@@ -312,7 +312,7 @@ export default {
         openModal(isNew, item) {
             if (isNew) {
                 this.tempProduct = {
-                    is_enabled: 0
+                    enable: 0
                 };
                 this.imageUrl = null;
                 $("#customFile").val("");
@@ -391,6 +391,11 @@ export default {
                     } else {
                         this.imageUrl = null;
                         this.tempProduct.image = "";
+                        $("#customFile").val("");
+                        this.$notify.error({
+                            title: "錯誤",
+                            message: "只接受圖片檔"
+                        });
                     }
                 })
                 .catch(err => {
@@ -475,6 +480,10 @@ export default {
         margin: auto;
         .fas {
             margin: 0 20px;
+        }
+        .fa-arrow-left,
+        .fa-arrow-right {
+            cursor: pointer;
         }
     }
 }
