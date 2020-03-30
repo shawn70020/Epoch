@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import user from './user'
 import axios from 'axios';
 
 Vue.use(Vuex)
@@ -13,17 +12,14 @@ export default new Vuex.Store({
         cart: {},
     },
     mutations: {
-        async getUserInfo(state, token) {
-            try {
-                const res = await axios.get(`/api/getuserinfo/${token}`);
+        getUserInfo(state, token) {
+            axios.get(`/api/getuserinfo/${token}`).then(res => {
                 state.info = res.data.info;
                 state.cart = res.data.cart;
                 if (state.cart.length > 0) {
                     state.isEmpty = true;
                 }
-            } catch (err) {
-                console.log(err);
-            }
+            })
         },
         updateCart(state, updatePid) {
             let i;
@@ -57,7 +53,4 @@ export default new Vuex.Store({
             state.isEmpty = false;
         },
     },
-    modules: {
-        user
-    }
 })

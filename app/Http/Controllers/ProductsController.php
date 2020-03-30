@@ -90,7 +90,7 @@ class ProductsController extends Controller
         $nowNum = ($num- 1) * 12;
 
         ## 取得單一商品資料
-        $aResult = Product::where('sex', $get)->skip($nowNum)->take(12)->get();
+        $aResult = Product::where('sex', $get)->where('enable', 1)->skip($nowNum)->take(12)->get();
 
         return response()->json(['result' => true, 'data' => $aResult]);
     }
