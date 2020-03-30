@@ -320,13 +320,15 @@ export default {
         updateNum() {
             this.isLoading = true;
             let i;
+            let uid = this.$store.state.info.id;
             for (i = 0; i < this.carts.length; i++) {
                 this.num[i] = this.carts[i].item;
             }
             this.total = 0;
             axios
                 .post("/api/user/updatecart", {
-                    post: this.num
+                    post: this.num,
+                    id: uid
                 })
                 .then(res => {
                     if (res.data.result === true) {

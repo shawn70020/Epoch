@@ -12,6 +12,13 @@
         </div>
         <div class="main-dash">
             <div class="box">
+                <div class="right">
+                    <h5>公司名稱：EPOCH</h5>
+                    <h5>總會員數 ： {{ allData.member }} 人</h5>
+                    <h5>總商品數 ： {{ allData.product }} 項</h5>
+                    <h5>總營業額 ： NT {{ allData.alltotal | currency }}</h5>
+                    <h5>成立時間 ： 2020/01/01</h5>
+                </div>
                 <div class="left">
                     <div class="title">
                         <h5>今日訂單</h5>
@@ -37,13 +44,6 @@
                             :auto-resize="true"
                         ></chart>
                     </div>
-                </div>
-                <div class="right">
-                    <h5>公司名稱：EPOCH</h5>
-                    <h5>總會員數 ： {{ allData.member }} 人</h5>
-                    <h5>總商品數 ： {{ allData.product }} 項</h5>
-                    <h5>總營業額 ： NT {{ allData.alltotal | currency }}</h5>
-                    <h5>成立時間 ： 2020/01/01</h5>
                 </div>
             </div>
             <div class="bottom">
@@ -249,26 +249,18 @@ $color: #2d2d2d;
     }
     .bottom {
         display: flex;
-        justify-content: space-around;
+        justify-content: center;
         width: 100%;
         .order-box,
         .member-box,
         .product-box {
-            width: 28%;
+            width: 26%;
             height: 300px;
             background: #fff;
             border-radius: 10px;
+            margin: 0px 1.8% 25px 1.8%;
             h5 {
                 margin: 15px;
-                // &::after{
-                //     content: '';
-                //     display: block;
-                //     height: 1px;
-                //     width: 92%;
-                //     margin: auto;
-                //     margin-top: 20px;
-                //     background: #2d2d2d;
-                // }
             }
             .info {
                 margin: auto;

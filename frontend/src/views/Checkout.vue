@@ -4,6 +4,15 @@
             <router-link to="/"><h2>EPOCH</h2></router-link>
         </div>
         <div class="wrap">
+            <loading
+                loader="bars"
+                :active.sync="isLoading"
+                :is-full-page="false"
+                :opacity="1"
+                background-color='#eee'
+            >
+                <template slot="before">SENDING </template></loading
+            >
             <div class="left-info">
                 <div class="email">
                     <h4>EMAIL ADDRESS</h4>
@@ -239,7 +248,7 @@
                             <h4>NT {{ total | currency }}</h4>
                         </div>
                     </div>
-                    <button class="btn-order" @click="submitForm('ruleForm')">
+                    <button class="btn-order" @click="open()">
                         PLACE ORDER
                     </button>
                 </div>
@@ -257,6 +266,7 @@ export default {
         return {
             moment: moment,
             isTrue: false,
+            isLoading: false,
             coupon: "",
             ruleForm: {
                 name: "",
@@ -347,6 +357,67 @@ export default {
         }
     },
     methods: {
+        open() {
+            this.$confirm(
+                "Pleace make sure all the details is correct , continue?",
+                "Point",
+                {
+                    confirmButtonText: "send",
+                    cancelButtonText: "cancel",
+                    type: "warning",
+                    center: true
+                }
+            ).then(() => {
+                this.$refs["ruleForm"].validate(valid => {
+                    if (valid) {
+                        this.isLoading = true;
+                        setTimeout(() => {
+                            let checkout = [];
+                            checkout = this.$store.state.cart;
+                            let info = this.$store.state.info;
+                            let finalTotal;
+                            if (this.ruleForm.delivery === "S") {
+                                finalTotal =
+                                    this.subtotal + 100 - this.discount;
+                            } else {
+                                finalTotal =
+                                    this.subtotal + 300 - this.discount;
+                            }
+                            axios
+                                .post("/api/user/checkout", {
+                                    cart: checkout,
+                                    user: info,
+                                    detail: this.ruleForm,
+                                    coupon: this.coupon,
+                                    total: finalTotal
+                                })
+                                .then(res => {
+                                    if (res.data.result === true) {
+                                        this.$notify({
+                                            title: "Success",
+                                            message: "Your Order is Send",
+                                            type: "success"
+                                        });
+                                        this.$store.commit("checkoutCart");
+                                        this.isLoading = false;
+                                        this.$router.push("/myorder");
+                                    } else {
+                                        this.$notify.error({
+                                            title: "Sorry",
+                                            message: res.data.msg
+                                        });
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                });
+                        }, 2300);
+                    } else {
+                        return false;
+                    }
+                });
+            });
+        },
         submitForm(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
@@ -364,6 +435,7 @@ export default {
                             cart: checkout,
                             user: info,
                             detail: this.ruleForm,
+                            coupon: this.coupon,
                             total: finalTotal
                         })
                         .then(res => {
@@ -425,42 +497,6 @@ export default {
                         this.error();
                     }
                 });
-        },
-        checkoutCart() {
-            let checkout = [];
-            checkout = this.$store.state.cart;
-            let info = this.$store.state.info;
-            let finalTotal;
-            if (this.delivery === "S") {
-                finalTotal = this.subtotal + 100 - this.discount;
-            } else {
-                finalTotal = this.subtotal + 300 - this.discount;
-            }
-            axios
-                .post("/api/user/checkout", {
-                    cart: checkout,
-                    user: info,
-                    address: this.user,
-                    delivery: this.delivery,
-                    payment: this.payment,
-                    total: finalTotal
-                })
-                .then(res => {
-                    if (res.data.result === true) {
-                        this.$message({
-                            message: "恭喜您！訂單發送成功",
-                            type: "success"
-                        });
-                    } else {
-                        this.$notify.error({
-                            title: "抱歉",
-                            message: res.data.msg
-                        });
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
         }
     }
 };
@@ -490,6 +526,8 @@ $color: #2d2d2d;
     width: 50%;
     margin: auto;
     display: flex;
+    position: relative;
+    background: #eee;
     .toggle {
         transform: scaley(-1);
     }

@@ -53,70 +53,93 @@
                 <div class="display">
                     <h5>Displaying {{ order.length }} orders</h5>
                 </div>
-                <div
-                    class="order-list"
-                    v-for="(item, index) in order"
-                    :key="item.id"
-                >
-                    <div class="title">
-                        <div class="label">
-                            <h5 v-if="item.shipDate !== null">
-                                WE'VE SENT IT!
-                            </h5>
-                            <h5 v-if="item.shipDate === null">
-                                WE'RE WORKING ON IT!
-                            </h5>
-                            <h5>ORDER NO.</h5>
-                            <h5>SHIPPED DATE.</h5>
-                        </div>
-                        <div class="input">
-                            <h5 v-if="item.shipDate !== null">
-                                {{
-                                    moment(item.shipDate)
-                                        .add(3, "days")
-                                        .calendar()
-                                }}
-                            </h5>
-                            <h5 v-if="item.shipDate === null">
-                                Thanks for orders
-                            </h5>
-                            <h5>{{ item.id }}</h5>
-                            <h5 v-if="item.shipDate !== null">
-                                {{ moment(item.shipDate).calendar() }}
-                            </h5>
-                            <h5 v-if="item.shipDate === null">
-                                {{
-                                    moment()
-                                        .add(1, "days")
-                                        .calendar()
-                                }}
-                            </h5>
-                        </div>
-                    </div>
-                    <div class="bottom">
-                        <div class="image-wrap">
-                            <div
-                                class="image"
-                                v-for="product in image[index]"
-                                :key="product.id"
-                            >
-                                <img
-                                    :src="
-                                        'data:image/png;base64,' + product.image
-                                    "
-                                    class="img-fluid"
-                                />
+                <div class="order">
+                    <div
+                        class="order-list"
+                        v-for="(item, index) in order"
+                        :key="item.id"
+                    >
+                        <div class="title">
+                            <div class="label">
+                                <h5 v-if="item.shipDate !== null">
+                                    WE'VE SENT IT!
+                                </h5>
+                                <h5 v-if="item.shipDate === null">
+                                    WE'RE WORKING ON IT!
+                                </h5>
+                                <h5>ORDER NO.</h5>
+                                <h5>SHIPPED DATE.</h5>
+                            </div>
+                            <div class="input">
+                                <h5 v-if="item.shipDate !== null">
+                                    {{
+                                        moment(item.shipDate)
+                                            .add(3, "days")
+                                            .calendar()
+                                    }}
+                                </h5>
+                                <h5 v-if="item.shipDate === null">
+                                    Thanks for orders
+                                </h5>
+                                <h5>{{ item.id }}</h5>
+                                <h5 v-if="item.shipDate !== null">
+                                    {{ moment(item.shipDate).calendar() }}
+                                </h5>
+                                <h5 v-if="item.shipDate === null">
+                                    {{
+                                        moment()
+                                            .add(1, "days")
+                                            .calendar()
+                                    }}
+                                </h5>
                             </div>
                         </div>
-                        <div class="btn-order">
-                            <router-link
-                                :to="{
-                                    name: 'Myorderdetail',
-                                    params: { oid: item.id }
-                                }"
-                                ><button>VIEW ORDER</button></router-link
-                            >
+                        <div class="bottom">
+                            <div class="image-wrap">
+                                <div
+                                    class="image"
+                                    v-for="product in image[index]"
+                                    :key="product.id"
+                                >
+                                    <img
+                                        :src="
+                                            'data:image/png;base64,' +
+                                                product.image
+                                        "
+                                        class="img-fluid"
+                                    />
+                                </div>
+                            </div>
+                            <div class="btn-order">
+                                <router-link
+                                    :to="{
+                                        name: 'Myorderdetail',
+                                        params: { oid: item.id }
+                                    }"
+                                    ><button>VIEW ORDER</button></router-link
+                                >
+                            </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="page">
+                    <h5>You've viewed {{ nowNum }} of {{ allNum }} Orders</h5>
+                    <div class="loading">
+                        <loading
+                            loader="dots"
+                            :active.sync="isLoading"
+                            :is-full-page="false"
+                            :opacity="1"
+                            background-color="#eee"
+                        ></loading>
+                        <button
+                            class="load"
+                            :style="{ display: loadBtn }"
+                            @click="changePage"
+                        >
+                            LOAD MORE
+                        </button>
                     </div>
                 </div>
                 <div class="empty" :class="{ show: isEmpty }">
@@ -146,13 +169,19 @@ export default {
 
     data() {
         return {
+            isLoading: false,
             moment: moment,
             uid: this.$store.state.info.id,
             userName: this.$store.state.info.name,
             order: [],
             image: [],
             isEmpty: true,
-            spiltName: ""
+            spiltName: "",
+            loadBtn: "block",
+            nowNum: "",
+            allNum: "",
+            bar: "10%",
+            page: 2
         };
     },
     computed: {
@@ -168,7 +197,7 @@ export default {
                 this.uid = aInfo.id;
                 this.getMyOrders(this.uid);
             },
-            immediate: true,
+            immediate: true
         }
     },
     methods: {
@@ -177,6 +206,8 @@ export default {
                 if (res.data.result === true) {
                     this.order = res.data.data;
                     this.image = res.data.image;
+                    this.nowNum = res.data.data.length;
+                    this.allNum = res.data.total;
                 } else {
                     this.isEmpty = false;
                 }
@@ -198,6 +229,39 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        changePage() {
+            this.isLoading = true;
+            let uid = this.$store.state.info.id;
+            setTimeout(() => {
+                axios
+                    .get(`/api/myorder/${uid}/page=${this.page}`)
+                    .then(res => {
+                        let newData = res.data.data;
+                        let newImage = res.data.image;
+                        for (let i = 0; i < newData.length; i++) {
+                            this.order.push(newData[i]);
+                            this.image.push(newImage[i]);
+                        }
+                        this.nowNum = this.order.length;
+                        this.page = this.page + 1;
+                        let barWidth;
+                        barWidth = (
+                            this.order.length *
+                            (100 / this.allNum)
+                        ).toString();
+                        this.bar = barWidth + "%";
+                        if (this.nowNum === this.allNum) {
+                            this.loadBtn = "none";
+                        } else {
+                            this.loadBtn = "block";
+                        }
+                        this.isLoading = false;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }, 1000);
         }
     }
 };
@@ -232,7 +296,6 @@ export default {
 }
 .wrapper {
     width: 55%;
-    height: 100vh;
     margin: auto;
     display: flex;
     justify-content: center;
@@ -306,43 +369,75 @@ export default {
         .show {
             display: none;
         }
-        .empty {
-            background: #fff;
-            width: 100%;
-            height: 300px;
-            margin-top: 15px;
+        .page {
+            margin: auto;
+            background: #eee;
             text-align: center;
-            .fa-hand-point-down {
-                margin: 40px 0;
-                font-size: 40px;
-            }
-            h4 {
-                font-weight: bold;
-            }
+            margin-top: 25px;
+            font-family: "Cormorant SC";
             h5 {
-                margin: 15px 0 25px 0;
-                font-size: 20px;
+                font-size: 18px;
+                color: #666666;
             }
-            .btn-shopping {
-                width: 330px;
-                height: 50px;
-                padding: 10px 28px;
-                background: #2d2d2d;
-                font-weight: bold;
-                color: #fff;
-                margin-bottom: 5px;
+            .loading {
+                position: relative;
+                margin-top: 20px;
+                margin-bottom: 30px;
+                .load {
+                    margin: auto;
+                    width: 300px;
+                    height: 55px;
+                    color: #fff;
+                    line-height: 55px;
+                    font-size: 18px;
+                    font-weight: bold;
+                    background: #0f4c81;
+                    border: none;
+                    outline: none;
+                }
             }
         }
-        .display {
-            width: 100%;
-            height: 70px;
-            color: #999;
-            h5 {
-                font-size: 20px;
-                line-height: 70px;
-                margin-left: 30px;
-            }
+    }
+    .empty {
+        background: #fff;
+        width: 100%;
+        height: 300px;
+        margin-top: 15px;
+        text-align: center;
+        .fa-hand-point-down {
+            margin: 40px 0;
+            font-size: 40px;
         }
+        h4 {
+            font-weight: bold;
+        }
+        h5 {
+            margin: 15px 0 25px 0;
+            font-size: 20px;
+        }
+        .btn-shopping {
+            width: 330px;
+            height: 50px;
+            padding: 10px 28px;
+            background: #2d2d2d;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+    }
+    .display {
+        width: 100%;
+        height: 70px;
+        color: #999;
+        h5 {
+            font-size: 20px;
+            line-height: 70px;
+            margin-left: 30px;
+        }
+    }
+    .order {
+        width: 100%;
+        background: #eee;
         .order-list {
             width: 100%;
             height: 300px;
@@ -408,6 +503,7 @@ export default {
         }
     }
 }
+
 .footer {
     display: flex;
     align-items: center;

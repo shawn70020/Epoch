@@ -282,8 +282,43 @@ class UserController extends Controller
      */
     public function getMyOrders($_iUid)
     {
+        ## 取得該會員訂單總數
+        $aResult = Order::where('uid', $_iUid)->get();
+        $iTotal = count($aResult);
+
         ## 取得前兩筆訂單id
         $aResult = Order::select('id', 'shipDate')->where('uid', $_iUid)->orderBy('addDate', 'DESC')->take(2)->get();
+
+        if (collect($aResult)->isEmpty()) {
+            return response()->json(['result' => false]);
+        }
+        ## 取得訂單詳細明細
+        $orderinfo = [];
+        for ($i = 0;$i < count($aResult); $i++) {
+            $aData = Orderdetail::select('pid')->where('oid', $aResult[$i]['id'])->get();
+            array_push($orderinfo, $aData);
+        }
+
+        ## 取得訂單商品圖
+        $aImage = [];
+        for ($i = 0;$i < count($orderinfo); $i++) {
+            $arr = [];
+            for ($j =0;$j<count($orderinfo[$i]); $j++) {
+                $aProduct = Product::select('id', 'image')->where('id', $orderinfo[$i][$j]['pid'])->get();
+                array_push($arr, $aProduct[0]);
+            }
+            array_push($aImage, $arr);
+        }
+
+        return response()->json(['result' => true, 'data' => $aResult,'image'=>$aImage, 'total' => $iTotal]);
+    }
+
+    public function changeOrderPage($_iUid, $num)
+    {
+        ##取得抓取筆數
+        $nowNum = ($num- 1) * 2;
+        ## 取得前兩筆訂單id
+        $aResult = Order::select('id', 'shipDate')->where('uid', $_iUid)->orderBy('addDate', 'DESC')->skip($nowNum)->take(2)->get();
 
         if (collect($aResult)->isEmpty()) {
             return response()->json(['result' => false]);

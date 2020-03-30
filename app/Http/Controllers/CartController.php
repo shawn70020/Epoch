@@ -111,14 +111,15 @@ class CartController extends Controller
     public function updateUserCart(Request $_oRequest)
     {
         $aResponse = $_oRequest->input('post');
-        $aResult = Cart::where('uid', 11)->where('delete_at', null)->orWhere('delete_at', 2)->get();
+        $iUid = $_oRequest->input('id');
+        $aResult = Cart::where('uid', $iUid)->where('delete_at', null)->orWhere('delete_at', 2)->get();
 
         for ($i = 0;$i < count($aResponse); $i++) {
             $post = Cart::find($aResult[$i]['id']);
             $post->num = $aResponse[$i];
             $post->save();
         }
-        $aCart = Cart::select('pid', 'num')->where('uid', 11)->where('delete_at', null)->orWhere('delete_at', 2)->get();
+        $aCart = Cart::select('pid', 'num')->where('uid', $iUid)->where('delete_at', null)->orWhere('delete_at', 2)->get();
         return response()->json(['result' => true,'data' => $aCart]);
     }
 
@@ -203,6 +204,7 @@ class CartController extends Controller
         $aUser = $_oRequest->input('user');
         $aAddress = $_oRequest->input('detail');
         $iTotal = $_oRequest->input('total');
+        $sCoupon = $_oRequest->input('coupon');
 
         $cartNum = count($aCart);
 
@@ -245,7 +247,7 @@ class CartController extends Controller
 
         ## 生成訂單
         $post = new Order();
-        $iOid = $post->addOrder($iUid, $aCart, $iTotal, $aAddress['delivery']);
+        $iOid = $post->addOrder($iUid, $aCart, $iTotal, $aAddress['delivery'], $sCoupon);
 
         ## 完成訂單細節
         $details = new Orderinfo();
