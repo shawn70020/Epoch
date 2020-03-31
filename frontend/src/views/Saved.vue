@@ -115,8 +115,7 @@
                 <div class="item">
                     <h4>SHOPPING FROM:</h4>
                     <h5>
-                        You're in <i class="fab fa-canadian-maple-leaf"></i>|
-                        Change
+                        You're in <i class="fas fa-globe-americas"></i> | Change
                     </h5>
                 </div>
             </div>
@@ -124,9 +123,6 @@
                 <h5>&copy; 2020</h5>
                 <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
             </div>
-        </div>
-        <div class="epoch">
-            <h5>Epoch</h5>
         </div>
     </div>
 </template>
@@ -417,17 +413,23 @@ $color: #232323;
         background: #eee;
         display: flex;
         justify-content: space-around;
-        padding-top: 25px;
+        padding-top: 45px;
         .item {
             h4 {
                 color: #666;
                 font-weight: bold;
                 font-size: 20px;
             }
-            a {
-                text-decoration: none;
-                color: #666;
-                font-size: 16px;
+            ul {
+                list-style: none;
+                padding: 0;
+                li {
+                    a {
+                        text-decoration: none;
+                        color: #666;
+                        font-size: 16px;
+                    }
+                }
             }
         }
     }
