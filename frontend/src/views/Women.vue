@@ -382,13 +382,11 @@ $color: #fa81e4;
     }
 }
 .product {
-    width: 1300px;
+    width: 67%;
     display: flex;
     flex-wrap: wrap;
     margin: auto;
-
     .item {
-        position: relative;
         padding: 10px;
         margin-top: 25px;
         a {
@@ -398,25 +396,11 @@ $color: #fa81e4;
             width: 300px;
             height: 404px;
         }
-        .heart {
-            width: 36px;
-            height: 36px;
-            text-align: center;
-            position: absolute;
-            background: #fff;
-            border-radius: 50%;
-            bottom: 100px;
-            right: 20px;
-            .fa-heart {
-                color: #2d2d2d;
-                line-height: 36px;
-            }
-        }
         .item-txt {
-            width: 100%;
+            width: 300px;
             margin-top: 10px;
             h5 {
-                width: 96%;
+                width: 90%;
                 font-size: 16px;
                 color: #000000;
             }

@@ -373,13 +373,11 @@ $color: #1010c4;
     }
 }
 .product {
-    width: 1300px;
+    width: 67%;
     display: flex;
     flex-wrap: wrap;
     margin: auto;
-
     .item {
-        position: relative;
         padding: 10px;
         margin-top: 25px;
         a {
@@ -389,23 +387,8 @@ $color: #1010c4;
             width: 300px;
             height: 404px;
         }
-        .heart {
-            width: 36px;
-            height: 36px;
-            text-align: center;
-            position: absolute;
-            background: #fff;
-            border-radius: 50%;
-            bottom: 100px;
-            right: 20px;
-            .far {
-                line-height: 36px;
-                width: 20px;
-                height: 18px;
-                color: #2d2d2d;
-            }
-        }
         .item-txt {
+            width: 300px;
             margin-top: 10px;
             h5 {
                 font-size: 16px;
