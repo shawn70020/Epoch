@@ -237,9 +237,6 @@ export default {
                         this.loadBtn = "block";
                     }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         changePage() {
             this.isLoading = true;
@@ -248,7 +245,6 @@ export default {
                     .get(`/api/products/men/page=${this.page}`)
                     .then(res => {
                         let newData = res.data.data;
-                        console.log(newData[0]);
                         for (let i = 0; i < newData.length; i++) {
                             this.products.push(newData[i]);
                         }
@@ -267,9 +263,6 @@ export default {
                         }
                         this.isLoading = false;
                     })
-                    .catch(err => {
-                        console.log(err);
-                    });
             }, 1000);
         }
     }

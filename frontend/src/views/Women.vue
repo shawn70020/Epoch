@@ -238,9 +238,6 @@ export default {
                         this.loadBtn = "block";
                     }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         changePage() {
             this.isLoading = true;
@@ -267,9 +264,6 @@ export default {
                         }
                         this.isLoading = false;
                     })
-                    .catch(err => {
-                        console.log(err);
-                    });
             }, 1000);
         },
         save() {
