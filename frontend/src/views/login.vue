@@ -175,9 +175,6 @@ export default {
                         vm.showError = 1;
                     }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         showPassword() {
             if (this.type === "password") {

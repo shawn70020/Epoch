@@ -216,9 +216,6 @@ export default {
                         }
                     }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         backPage() {
             this.$router.go(-1);

@@ -346,9 +346,6 @@ export default {
                         }
                     }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         getMoney() {
             this.cash = "成功收到款項";

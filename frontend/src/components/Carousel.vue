@@ -100,9 +100,6 @@ export default {
                 .then(res => {
                     this.items = res.data.data
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         }
     }
 };

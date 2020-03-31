@@ -172,9 +172,6 @@ export default {
                         this.isB = "none";
                     }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         moveToBag(id) {
             axios
@@ -183,9 +180,6 @@ export default {
                     this.$store.commit("updateCart", parseInt(id));
                     this.getSavedItems(this.uid);
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         deleteCart(id) {
             axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {

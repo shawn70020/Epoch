@@ -249,9 +249,6 @@ export default {
                 .then(res => {
                     this.products = res.data.data;
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         addCart() {
             if (this.value == "") {

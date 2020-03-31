@@ -165,11 +165,7 @@ export default {
                                 });
                             }
                         })
-                        .catch(err => {
-                            console.log(err);
-                        });
                 } else {
-                    console.log("error submit!!");
                     return false;
                 }
             });
@@ -216,9 +212,6 @@ export default {
                         });
                     }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         }
     }
 };

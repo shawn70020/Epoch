@@ -199,9 +199,6 @@ export default {
                     this.orders = res.data.data;
                     this.array = res.data.data;
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         }
     }
 };

@@ -398,9 +398,6 @@ export default {
                         });
                     }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         delProduct(id) {
             this.$confirm("此操作將永久刪除此商品, 是否繼續?", "提示", {

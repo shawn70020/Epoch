@@ -309,9 +309,6 @@ export default {
                 .then(res => {
                     this.products = res.data.data;
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         updateNum() {
             this.isLoading = true;
@@ -335,9 +332,6 @@ export default {
                         }, 1000);
                     }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         deleteCart(id) {
             axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {

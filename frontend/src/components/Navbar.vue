@@ -210,9 +210,6 @@ export default {
                         this.$router.push("/login");
                     }
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         },
         deleteCart(id) {
             axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {
