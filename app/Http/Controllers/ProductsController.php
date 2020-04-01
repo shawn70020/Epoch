@@ -227,4 +227,34 @@ class ProductsController extends Controller
             return response()->json(['result' => false]);
         };
     }
+
+    public function getSearchItem($_sSearch)
+    {
+        $aTotal = Product::where('name', 'like', "%".$this->escape_like_str($_sSearch)."%")->where('enable', 1)->get();
+
+        $aResult = Product::where('name', 'like', "%".$this->escape_like_str($_sSearch)."%")->where('enable', 1)->skip(0)->take(12)->get();
+
+        return response()->json(['result' => true, 'data' => $aResult, 'total' => count($aTotal)]);
+    }
+
+    protected function escape_like_str($str)
+    {
+        $like_escape_char = '!';
+        return str_replace([$like_escape_char, '%', '_'], [
+            $like_escape_char.$like_escape_char,
+            $like_escape_char.'%',
+            $like_escape_char.'_',
+        ], $str);
+    }
+
+    public function changeSearchPage($_sSearch, $num)
+    {
+        ##取得抓取筆數
+        $nowNum = ($num- 1) * 12;
+
+        ## 取得搜尋商品資料
+        $aResult = Product::where('name', 'like', "%".$this->escape_like_str($_sSearch)."%")->where('enable', 1)->skip($nowNum)->take(12)->get();
+
+        return response()->json(['result' => true, 'data' => $aResult]);
+    }
 }

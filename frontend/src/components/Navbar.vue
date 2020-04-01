@@ -14,9 +14,13 @@
                         type="search"
                         name=""
                         id=""
+                        v-model="search"
+                        @keyup.enter="searchItem"
                         placeholder="Search for items,style and dream"
                     />
-                    <button><i class="fas fa-search"></i></button>
+                    <button @click.prevent="searchItem">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </form>
                 <nav class="side-nav">
                     <li v-on:mouseover="userMouseOver">
@@ -130,6 +134,7 @@ export default {
             isClose: false,
             isCard: false,
             isUser: false,
+            search:'',
             showDot: "block",
             toggle: {
                 empty: "none",
@@ -232,6 +237,14 @@ export default {
                 this.isUser = false;
             }
             this.isCard = true;
+        },
+        searchItem() {
+            this.$router.push({
+                path:'/search/',
+                query:{
+                    q:this.search
+                }
+            })
         }
     }
 };

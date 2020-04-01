@@ -31,6 +31,7 @@ Route::post('/user/getusercart', 'CartController@getUserCart')->where('any', '.*
 Route::post('/user/updatecart', 'CartController@updateUserCart')->where('any', '.*');
 Route::post('/user/checkout', 'CartController@addOrder');
 Route::get('/products/{sex}/page={num}', 'ProductsController@changePage');
+Route::get('/search/{query}/page={num}', 'ProductsController@changeSearchPage');
 Route::get('/myorder/{uid}/page={num}', 'UserController@changeOrderPage');
 Route::get('/user/info/{id}', 'UserController@getUserData');
 Route::get('/user/saved/{id}', 'UserController@getUserSaved');
@@ -65,3 +66,4 @@ Route::get('/user/status/{token}', 'UserController@checkStatus');
 Route::get('/admin/order/{oid}', 'OrderController@checkAllOrder');
 Route::get('/admin/member/{uid}', 'UserController@checkAllMember');
 Route::get('/admin/overview', 'OrderController@getOverview');
+Route::get('/search/{search}', 'ProductsController@getSearchItem');

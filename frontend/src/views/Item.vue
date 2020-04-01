@@ -1,5 +1,5 @@
 <template>
-    <div class="wrap">
+    <div>
         <Navbar></Navbar>
         <div class="banner">
             <router-link to="/women" class="">
@@ -256,10 +256,12 @@ export default {
     methods: {
         getProduct(id) {
             this.wrapLoading = true;
+               setTimeout(() => {
             axios.get(`/api/products/men/item/${id}`).then(res => {
                 this.products = res.data.data;
                 this.wrapLoading = false;
             });
+            }, 2000);
         },
         addCart() {
             if (this.value == "") {
@@ -319,9 +321,6 @@ export default {
 @import url("https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap");
 $color: #1010c4;
 $color1: #1ca753;
-.wrap {
-    height: 100vh;
-}
 .wrap-loading {
     position: relative;
 }

@@ -123,16 +123,6 @@ class UserController extends Controller
     }
 
     /**
-     * 取得使用者基本資訊及購物車資料
-     * @return json
-     */
-    // public function checkoutCart($_iUid)
-    // {
-    //     $aCart = Cart::select('pid', 'num')->where('uid', $_iUid)->where('delete_at', null)->orWhere('delete_at', 2)->get();
-    //     return response()->json(['result' => true,'cart' => $aCart]);
-    // }
-
-    /**
      * 取得使用者基本資訊
      * @return json
      */

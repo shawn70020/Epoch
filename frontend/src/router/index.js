@@ -1,5 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err);
+};
 import Index from '../views/Index.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
@@ -22,10 +26,12 @@ import Orders from "../components/Orders"
 import Orderdetails from "../views/Orderdetails"
 import Member from "../views/Member"
 import Memberdetails from "../views/Memberdetails"
+import Search from "../views/Search"
 
 import store from '../store'
 import axios from "axios";
 Vue.use(VueRouter)
+
 
 const routes = [{
         path: '*',
@@ -164,6 +170,14 @@ const routes = [{
         path: '/user/saved',
         name: 'Saved',
         component: Saved,
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
+        path: '/search',
+        name: 'Search',
+        component: Search,
         meta: {
             requiresAuth: true
         },
