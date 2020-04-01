@@ -14,186 +14,196 @@
                 </div></router-link
             >
         </div>
-        <div class="navs">
-            <ol class="bread">
-                <li><router-link to="/">Home</router-link></li>
-                <li v-if="products.sex === 'M'">
-                    <router-link to="/men">Men</router-link>
-                </li>
-                <li v-if="products.sex === 'W'">
-                    <router-link to="/women">Women</router-link>
-                </li>
-                <li>{{ products.name }}</li>
-            </ol>
-        </div>
-        <div class="container">
-            <div class="top">
-                <div class="left-img">
-                    <img
-                        :src="'data:image/png;base64,' + products.image"
-                        class="img-fluid"
-                    />
-                </div>
-                <div class="right-info">
-                    <h3>{{ products.name }}</h3>
-                    <h4>NT {{ products.price | currency }}</h4>
-                    <h5>COLOUR: White</h5>
-                    <h5 v-if="products.num >= 150" class="sufficient">
-                        STOCK: SUFFICIENT
-                    </h5>
-                    <h5
-                        v-if="150 > products.num && products.num >= 50"
-                        class="enough"
-                    >
-                        STOCK: ENOUGH
-                    </h5>
-                    <h5
-                        v-if="50 > products.num && products.num > 0"
-                        class="few"
-                    >
-                        STOCK: ONLY FEW
-                    </h5>
-                    <h5 v-if="products.num === 0" class="out">
-                        <i class="fas fa-exclamation-circle"></i> STOCK: SELL
-                        OUT
-                    </h5>
-                    <h5>SIZE : {{ value }}</h5>
-                    <el-select
-                        v-model="value"
-                        placeholder="Please Select"
-                        class="el-select"
-                    >
-                        <el-option
-                            v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
+        <div class="wrap-loading">
+            <loading
+                loader="dots"
+                :active.sync="wrapLoading"
+                :is-full-page="false"
+                :opacity="1"
+            >
+            </loading>
+            <div class="navs">
+                <ol class="bread">
+                    <li><router-link to="/">Home</router-link></li>
+                    <li v-if="products.sex === 'M'">
+                        <router-link to="/men">Men</router-link>
+                    </li>
+                    <li v-if="products.sex === 'W'">
+                        <router-link to="/women">Women</router-link>
+                    </li>
+                    <li>{{ products.name }}</li>
+                </ol>
+            </div>
+            <div class="container">
+                <div class="top">
+                    <div class="left-img">
+                        <img
+                            :src="'data:image/png;base64,' + products.image"
+                            class="img-fluid"
+                        />
+                    </div>
+                    <div class="right-info">
+                        <h3>{{ products.name }}</h3>
+                        <h4>NT {{ products.price | currency }}</h4>
+                        <h5>COLOUR: White</h5>
+                        <h5 v-if="products.num >= 150" class="sufficient">
+                            STOCK: SUFFICIENT
+                        </h5>
+                        <h5
+                            v-if="150 > products.num && products.num >= 50"
+                            class="enough"
                         >
-                        </el-option>
-                    </el-select>
-                    <div class="error" :style="{ opacity: showError }">
-                        <div class="msg">
-                            <h5>
-                                Please select from the available colour and size
-                                options
-                            </h5>
+                            STOCK: ENOUGH
+                        </h5>
+                        <h5
+                            v-if="50 > products.num && products.num > 0"
+                            class="few"
+                        >
+                            STOCK: ONLY FEW
+                        </h5>
+                        <h5 v-if="products.num === 0" class="out">
+                            <i class="fas fa-exclamation-circle"></i> STOCK:
+                            SELL OUT
+                        </h5>
+                        <h5>SIZE : {{ value }}</h5>
+                        <el-select
+                            v-model="value"
+                            placeholder="Please Select"
+                            class="el-select"
+                        >
+                            <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                            >
+                            </el-option>
+                        </el-select>
+                        <div class="error" :style="{ opacity: showError }">
+                            <div class="msg">
+                                <h5>
+                                    Please select from the available colour and
+                                    size options
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="item-btn">
+                            <button
+                                v-if="products.num > 0"
+                                type="button"
+                                class="btn"
+                                @click="addCart"
+                            >
+                                ADD TO BAG
+                            </button>
+                            <button
+                                v-if="products.num === 0"
+                                type="button"
+                                disabled="disabled"
+                                class="btn"
+                            >
+                                ADD TO BAG
+                            </button>
+                            <div class="heart" @click="saveItem(pid)">
+                                <i
+                                    class="fa-heart"
+                                    :class="{ fas: isCheck, far: noCheck }"
+                                ></i>
+                            </div>
                         </div>
                     </div>
-                    <div class="item-btn">
-                        <button
-                            v-if="products.num > 0"
-                            type="button"
-                            class="btn"
-                            @click="addCart"
-                        >
-                            ADD TO BAG
-                        </button>
-                        <button
-                            v-if="products.num === 0"
-                            type="button"
-                            disabled="disabled"
-                            class="btn"
-                        >
-                            ADD TO BAG
-                        </button>
-                        <div class="heart" @click="saveItem(pid)">
-                            <i
-                                class="fa-heart"
-                                :class="{ fas: isCheck, far: noCheck }"
-                            ></i>
+                </div>
+                <div class="bottom">
+                    <div class="bottom-info">
+                        <h3>PRODUCT DETAILS</h3>
+                        <h5>{{ products.content }}</h5>
+                        <p></p>
+                    </div>
+                    <div class="bottom-info">
+                        <h3>ABOUT ME</h3>
+                        <h5>{{ products.detail }}</h5>
+                        <p></p>
+                    </div>
+                    <div class="bottom-info">
+                        <h3>PRODUCT CODE | CATEGORY</h3>
+                        <h5>{{ products.id }} | {{ products.class }}</h5>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <div class="social">
+                <ul>
+                    <li>
+                        <div class="icon fb">
+                            <i class="fab fa-facebook-square"></i>
                         </div>
-                    </div>
-                </div>
+                    </li>
+                    <li>
+                        <div class="icon ig">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon tw">
+                            <i class="fab fa-twitter"></i>
+                        </div>
+                    </li>
+                    <li>|</li>
+                    <li>
+                        <div class="icon yt">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon sc">
+                            <i class="fab fa-snapchat"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon pi">
+                            <i class="fab fa-pinterest"></i>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            <div class="bottom">
-                <div class="bottom-info">
-                    <h3>PRODUCT DETAILS</h3>
-                    <h5>{{ products.content }}</h5>
-                    <p></p>
-                </div>
-                <div class="bottom-info">
-                    <h3>ABOUT ME</h3>
-                    <h5>{{ products.detail }}</h5>
-                    <p></p>
-                </div>
-                <div class="bottom-info">
-                    <h3>PRODUCT CODE | CATEGORY</h3>
-                    <h5>{{ products.id }} | {{ products.class }}</h5>
-                    <p></p>
-                </div>
-            </div>
-        </div>
-        <div class="social">
-            <ul>
-                <li>
-                    <div class="icon fb">
-                        <i class="fab fa-facebook-square"></i>
+            <div class="foot">
+                <div class="foot-top">
+                    <div class="item">
+                        <h4>HELP & INFORMATION</h4>
+                        <ul>
+                            <li><a href="#">Help</a></li>
+                            <li><a href="#">Deliverey & Returns</a></li>
+                            <li><a href="#">Track Order</a></li>
+                        </ul>
                     </div>
-                </li>
-                <li>
-                    <div class="icon ig">
-                        <i class="fab fa-instagram"></i>
+                    <div class="item">
+                        <h4>ABOUT VUESTORE</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers at VueStore</a></li>
+                            <li><a href="#">Investors Site</a></li>
+                        </ul>
                     </div>
-                </li>
-                <li>
-                    <div class="icon tw">
-                        <i class="fab fa-twitter"></i>
+                    <div class="item">
+                        <h4>MORE FROM VUESTORE</h4>
+                        <ul>
+                            <li><a href="#">Mobile and Apps</a></li>
+                            <li><a href="#">VueStore Marketplcae</a></li>
+                            <li><a href="#">Gift vouchers</a></li>
+                        </ul>
                     </div>
-                </li>
-                <li>|</li>
-                <li>
-                    <div class="icon yt">
-                        <i class="fab fa-youtube"></i>
+                    <div class="item">
+                        <h4>SHOPPING FROM:</h4>
+                        <h5>
+                            You're in <i class="fas fa-globe-americas"></i> |
+                            Change
+                        </h5>
                     </div>
-                </li>
-                <li>
-                    <div class="icon sc">
-                        <i class="fab fa-snapchat"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon pi">
-                        <i class="fab fa-pinterest"></i>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="foot">
-            <div class="foot-top">
-                <div class="item">
-                    <h4>HELP & INFORMATION</h4>
-                    <ul>
-                        <li><a href="#">Help</a></li>
-                        <li><a href="#">Deliverey & Returns</a></li>
-                        <li><a href="#">Track Order</a></li>
-                    </ul>
                 </div>
-                <div class="item">
-                    <h4>ABOUT VUESTORE</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers at VueStore</a></li>
-                        <li><a href="#">Investors Site</a></li>
-                    </ul>
+                <div class="foot-bot">
+                    <h5>&copy; 2020</h5>
+                    <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
                 </div>
-                <div class="item">
-                    <h4>MORE FROM VUESTORE</h4>
-                    <ul>
-                        <li><a href="#">Mobile and Apps</a></li>
-                        <li><a href="#">VueStore Marketplcae</a></li>
-                        <li><a href="#">Gift vouchers</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>SHOPPING FROM:</h4>
-                    <h5>
-                        You're in <i class="fas fa-globe-americas"></i> | Change
-                    </h5>
-                </div>
-            </div>
-            <div class="foot-bot">
-                <h5>&copy; 2020</h5>
-                <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
             </div>
         </div>
     </div>
@@ -207,6 +217,7 @@ export default {
     data() {
         return {
             showError: 0,
+            wrapLoading: false,
             isCheck: false,
             noCheck: true,
             pid: this.$route.params.pid,
@@ -244,11 +255,11 @@ export default {
     },
     methods: {
         getProduct(id) {
-            axios
-                .get(`/api/products/men/item/${id}`)
-                .then(res => {
-                    this.products = res.data.data;
-                })
+            this.wrapLoading = true;
+            axios.get(`/api/products/men/item/${id}`).then(res => {
+                this.products = res.data.data;
+                this.wrapLoading = false;
+            });
         },
         addCart() {
             if (this.value == "") {
@@ -316,6 +327,9 @@ $color: #1010c4;
 $color1: #1ca753;
 .wrap {
     height: 100vh;
+}
+.wrap-loading {
+    position: relative;
 }
 .banner {
     display: flex;

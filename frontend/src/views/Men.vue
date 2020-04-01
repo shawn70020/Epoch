@@ -14,166 +14,178 @@
                 </div></router-link
             >
         </div>
-        <div class="navs">
-            <ol class="bread">
-                <li><router-link to="/">Home</router-link></li>
-                <li><router-link to="/men">Men</router-link></li>
-                <li><a href="#">New In</a></li>
-            </ol>
-        </div>
-        <div class="container">
-            <div class="introduce">
-                <h3>Men's New in</h3>
-                <p>
-                    Looking for something new? Discover emerging trends, the
-                    latest clothing for men and the freshest new fits with our
-                    ASOS New In page. From sharp office shirts and suits to see
-                    you right through to 5PM, to the shorts, tees and vests
-                    that’ll keep you looking fresh– you can find the look here
-                    as soon as it lands. What’s more, our men’s new clothing
-                    selection includes all those accessory touches that make the
-                    difference, from laidback caps and timeless
-                    <span id="more" :style="{ display: show }">
-                        >shades to boardroom-ready watches and belts. Expect
-                        fresh drops from sportswear authorities Nike and adidas
-                        Originals. If you’re after a style change up, you’ll
-                        find the best in men’s new clothing, shoes and
-                        accessories courtesy of our very own ASOS Design. Men’s
-                        denim doesn’t get much better than the likes of Cheap
-                        Monday, while brands like BOSS combine sophisticated
-                        prints with casual fits for a weekend-ready look.
-                    </span>
-                </p>
-                <div class="view-btn">
-                    <button
-                        type="button"
-                        class="btn"
-                        id="myBtn"
-                        @click="showMore"
+        <div class="wrap-loading">
+            <loading
+                loader="dots"
+                :active.sync="wrapLoading"
+                :is-full-page="false"
+                :opacity="1"
+            >
+            </loading>
+            <div class="navs">
+                <ol class="bread">
+                    <li><router-link to="/">Home</router-link></li>
+                    <li><router-link to="/men">Men</router-link></li>
+                    <li><a href="#">New In</a></li>
+                </ol>
+            </div>
+            <div class="container">
+                <div class="introduce">
+                    <h3>Men's New in</h3>
+                    <p>
+                        Looking for something new? Discover emerging trends, the
+                        latest clothing for men and the freshest new fits with
+                        our ASOS New In page. From sharp office shirts and suits
+                        to see you right through to 5PM, to the shorts, tees and
+                        vests that’ll keep you looking fresh– you can find the
+                        look here as soon as it lands. What’s more, our men’s
+                        new clothing selection includes all those accessory
+                        touches that make the difference, from laidback caps and
+                        timeless
+                        <span id="more" :style="{ display: show }">
+                            >shades to boardroom-ready watches and belts. Expect
+                            fresh drops from sportswear authorities Nike and
+                            adidas Originals. If you’re after a style change up,
+                            you’ll find the best in men’s new clothing, shoes
+                            and accessories courtesy of our very own ASOS
+                            Design. Men’s denim doesn’t get much better than the
+                            likes of Cheap Monday, while brands like BOSS
+                            combine sophisticated prints with casual fits for a
+                            weekend-ready look.
+                        </span>
+                    </p>
+                    <div class="view-btn">
+                        <button
+                            type="button"
+                            class="btn"
+                            id="myBtn"
+                            @click="showMore"
+                        >
+                            View more
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="product">
+                <div v-for="item in products" :key="item.id" class="item">
+                    <router-link
+                        :to="{
+                            name: 'Item',
+                            params: { pid: item.id }
+                        }"
                     >
-                        View more
+                        <img
+                            :src="'data:image/png;base64,' + item.image"
+                            class="img-fluid"
+                        />
+                        <div class="item-txt">
+                            <h5>{{ item.name }}</h5>
+                            <h4>NT {{ item.price | currency }}</h4>
+                        </div>
+                    </router-link>
+                </div>
+            </div>
+            <div class="page">
+                <h5>You've viewed {{ nowNum }} of {{ allNum }} products</h5>
+                <div class="progress" style="height: 2.5px;">
+                    <div
+                        class="progress-bar"
+                        role="progressbar"
+                        :style="{ width: bar }"
+                        aria-valuenow="20"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                    ></div>
+                </div>
+                <div class="loading">
+                    <loading
+                        loader="bars"
+                        :active.sync="isLoading"
+                        :is-full-page="false"
+                        :opacity="1"
+                    ></loading>
+                    <button
+                        class="load"
+                        :style="{ display: loadBtn }"
+                        @click="changePage"
+                    >
+                        LOAD MORE
                     </button>
                 </div>
             </div>
-        </div>
-        <div class="product">
-            <div v-for="item in products" :key="item.id" class="item">
-                <router-link
-                    :to="{
-                        name: 'Item',
-                        params: { pid: item.id }
-                    }"
-                >
-                    <img
-                        :src="'data:image/png;base64,' + item.image"
-                        class="img-fluid"
-                    />
-                    <div class="item-txt">
-                        <h5>{{ item.name }}</h5>
-                        <h4>NT {{ item.price | currency }}</h4>
-                    </div>
-                </router-link>
+            <div class="social">
+                <ul>
+                    <li>
+                        <div class="icon fb">
+                            <i class="fab fa-facebook-square"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon ig">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon tw">
+                            <i class="fab fa-twitter"></i>
+                        </div>
+                    </li>
+                    <li>|</li>
+                    <li>
+                        <div class="icon yt">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon sc">
+                            <i class="fab fa-snapchat"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon pi">
+                            <i class="fab fa-pinterest"></i>
+                        </div>
+                    </li>
+                </ul>
             </div>
-        </div>
-        <div class="page">
-            <h5>You've viewed {{ nowNum }} of {{ allNum }} products</h5>
-            <div class="progress" style="height: 2.5px;">
-                <div
-                    class="progress-bar"
-                    role="progressbar"
-                    :style="{ width: bar }"
-                    aria-valuenow="20"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                ></div>
-            </div>
-            <div class="loading">
-                <loading
-                    loader="bars"
-                    :active.sync="isLoading"
-                    :is-full-page="false"
-                    :opacity="1"
-                ></loading>
-                <button
-                    class="load"
-                    :style="{ display: loadBtn }"
-                    @click="changePage"
-                >
-                    LOAD MORE
-                </button>
-            </div>
-        </div>
-        <div class="social">
-            <ul>
-                <li>
-                    <div class="icon fb">
-                        <i class="fab fa-facebook-square"></i>
+            <div class="foot">
+                <div class="foot-top">
+                    <div class="item">
+                        <h4>HELP & INFORMATION</h4>
+                        <ul>
+                            <li><a href="#">Help</a></li>
+                            <li><a href="#">Deliverey & Returns</a></li>
+                            <li><a href="#">Track Order</a></li>
+                        </ul>
                     </div>
-                </li>
-                <li>
-                    <div class="icon ig">
-                        <i class="fab fa-instagram"></i>
+                    <div class="item">
+                        <h4>ABOUT VUESTORE</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers at VueStore</a></li>
+                            <li><a href="#">Investors Site</a></li>
+                        </ul>
                     </div>
-                </li>
-                <li>
-                    <div class="icon tw">
-                        <i class="fab fa-twitter"></i>
+                    <div class="item">
+                        <h4>MORE FROM VUESTORE</h4>
+                        <ul>
+                            <li><a href="#">Mobile and Apps</a></li>
+                            <li><a href="#">VueStore Marketplcae</a></li>
+                            <li><a href="#">Gift vouchers</a></li>
+                        </ul>
                     </div>
-                </li>
-                <li>|</li>
-                <li>
-                    <div class="icon yt">
-                        <i class="fab fa-youtube"></i>
+                    <div class="item">
+                        <h4>SHOPPING FROM:</h4>
+                        <h5>
+                            You're in <i class="fas fa-globe-americas"></i> |
+                            Change
+                        </h5>
                     </div>
-                </li>
-                <li>
-                    <div class="icon sc">
-                        <i class="fab fa-snapchat"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon pi">
-                        <i class="fab fa-pinterest"></i>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="foot">
-            <div class="foot-top">
-                <div class="item">
-                    <h4>HELP & INFORMATION</h4>
-                    <ul>
-                        <li><a href="#">Help</a></li>
-                        <li><a href="#">Deliverey & Returns</a></li>
-                        <li><a href="#">Track Order</a></li>
-                    </ul>
                 </div>
-                <div class="item">
-                    <h4>ABOUT VUESTORE</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers at VueStore</a></li>
-                        <li><a href="#">Investors Site</a></li>
-                    </ul>
+                <div class="foot-bot">
+                    <h5>&copy; 2020</h5>
+                    <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
                 </div>
-                <div class="item">
-                    <h4>MORE FROM VUESTORE</h4>
-                    <ul>
-                        <li><a href="#">Mobile and Apps</a></li>
-                        <li><a href="#">VueStore Marketplcae</a></li>
-                        <li><a href="#">Gift vouchers</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>SHOPPING FROM:</h4>
-                    <h5>
-                        You're in <i class="fas fa-globe-americas"></i> | Change
-                    </h5>
-                </div>
-            </div>
-            <div class="foot-bot">
-                <h5>&copy; 2020</h5>
-                <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
             </div>
         </div>
     </div>
@@ -185,6 +197,7 @@ export default {
     data() {
         return {
             isLoading: false,
+            wrapLoading: false,
             show: "none",
             products: [],
             nowNum: "",
@@ -215,12 +228,35 @@ export default {
             }
         },
         getProducts() {
-            axios
-                .get("/api/products/men")
-                .then(res => {
-                    this.products = res.data.data;
-                    this.allNum = res.data.total;
-                    this.nowNum = res.data.data.length;
+            this.wrapLoading = true;
+            axios.get("/api/products/men").then(res => {
+                this.products = res.data.data;
+                this.allNum = res.data.total;
+                this.nowNum = res.data.data.length;
+                let barWidth;
+                barWidth = (
+                    this.products.length *
+                    (100 / this.allNum)
+                ).toString();
+                this.bar = barWidth + "%";
+                if (this.nowNum === this.allNum) {
+                    this.loadBtn = "none";
+                } else {
+                    this.loadBtn = "block";
+                }
+                this.wrapLoading = false;
+            });
+        },
+        changePage() {
+            this.isLoading = true;
+            setTimeout(() => {
+                axios.get(`/api/products/men/page=${this.page}`).then(res => {
+                    let newData = res.data.data;
+                    for (let i = 0; i < newData.length; i++) {
+                        this.products.push(newData[i]);
+                    }
+                    this.nowNum = this.products.length;
+                    this.page = this.page + 1;
                     let barWidth;
                     barWidth = (
                         this.products.length *
@@ -232,33 +268,8 @@ export default {
                     } else {
                         this.loadBtn = "block";
                     }
-                })
-        },
-        changePage() {
-            this.isLoading = true;
-            setTimeout(() => {
-                axios
-                    .get(`/api/products/men/page=${this.page}`)
-                    .then(res => {
-                        let newData = res.data.data;
-                        for (let i = 0; i < newData.length; i++) {
-                            this.products.push(newData[i]);
-                        }
-                        this.nowNum = this.products.length;
-                        this.page = this.page + 1;
-                        let barWidth;
-                        barWidth = (
-                            this.products.length *
-                            (100 / this.allNum)
-                        ).toString();
-                        this.bar = barWidth + "%";
-                        if (this.nowNum === this.allNum) {
-                            this.loadBtn = "none";
-                        } else {
-                            this.loadBtn = "block";
-                        }
-                        this.isLoading = false;
-                    })
+                    this.isLoading = false;
+                });
             }, 1000);
         }
     }
@@ -267,6 +278,9 @@ export default {
 
 <style lang="scss" scoped>
 $color: #1010c4;
+.wrap-loading {
+    position: relative;
+}
 .banner {
     display: flex;
     height: 50px;
@@ -480,7 +494,7 @@ $color: #1010c4;
     }
 }
 .foot {
-   .foot-top {
+    .foot-top {
         height: 220px;
         background: #eee;
         display: flex;

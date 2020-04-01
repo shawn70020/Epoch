@@ -17,111 +17,121 @@
         <div class="title">
             <h5>Saved Items</h5>
         </div>
-        <div class="empty" :style="{ display: isA }">
-            <div class="box">
-                <i class="far fa-heart"></i>
-                <h4>You have no Saved Items</h4>
-                <h5>
-                    Start saving as you shop by selecting the little heart.
-                    We'll sync your items across all your devices. Easy.
-                </h5>
-                <router-link to="/" class="">
-                    <button>START SHOPPING</button>
-                </router-link>
-            </div>
-        </div>
-        <div class="product" :style="{ display: isB }">
-            <div v-for="item in products" :key="item.id" class="item">
-                <img
-                    :src="'data:image/png;base64,' + item.image"
-                    class="img-fluid"
-                />
-                <div class="heart">
-                    <i
-                        class="far fa-trash-alt"
-                        @click="deleteCart(item.id)"
-                    ></i>
-                </div>
-                <div class="item-txt">
-                    <h5>{{ item.name }}</h5>
-                    <h4>NT {{ item.price | currency }}</h4>
-                </div>
-                <button class="bag-btn" @click="moveToBag(item.id)">
-                    MOVE TO BAG
-                </button>
-            </div>
-        </div>
-        <div class="social">
-            <ul>
-                <li>
-                    <div class="icon fb">
-                        <i class="fab fa-facebook-square"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon ig">
-                        <i class="fab fa-instagram"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon tw">
-                        <i class="fab fa-twitter"></i>
-                    </div>
-                </li>
-                <li>|</li>
-                <li>
-                    <div class="icon yt">
-                        <i class="fab fa-youtube"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon sc">
-                        <i class="fab fa-snapchat"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon pi">
-                        <i class="fab fa-pinterest"></i>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="foot">
-            <div class="foot-top">
-                <div class="item">
-                    <h4>HELP & INFORMATION</h4>
-                    <ul>
-                        <li><a href="#">Help</a></li>
-                        <li><a href="#">Deliverey & Returns</a></li>
-                        <li><a href="#">Track Order</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>ABOUT VUESTORE</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers at VueStore</a></li>
-                        <li><a href="#">Investors Site</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>MORE FROM VUESTORE</h4>
-                    <ul>
-                        <li><a href="#">Mobile and Apps</a></li>
-                        <li><a href="#">VueStore Marketplcae</a></li>
-                        <li><a href="#">Gift vouchers</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>SHOPPING FROM:</h4>
+        <div class="wrap-loading">
+            <loading
+                loader="dots"
+                :active.sync="wrapLoading"
+                :is-full-page="false"
+                :opacity="1"
+            >
+            </loading>
+            <div class="empty" :style="{ display: isA }">
+                <div class="box">
+                    <i class="far fa-heart"></i>
+                    <h4>You have no Saved Items</h4>
                     <h5>
-                        You're in <i class="fas fa-globe-americas"></i> | Change
+                        Start saving as you shop by selecting the little heart.
+                        We'll sync your items across all your devices. Easy.
                     </h5>
+                    <router-link to="/" class="">
+                        <button>START SHOPPING</button>
+                    </router-link>
                 </div>
             </div>
-            <div class="foot-bot">
-                <h5>&copy; 2020</h5>
-                <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
+            <div class="product" :style="{ display: isB }">
+                <div v-for="item in products" :key="item.id" class="item">
+                    <img
+                        :src="'data:image/png;base64,' + item.image"
+                        class="img-fluid"
+                    />
+                    <div class="heart">
+                        <i
+                            class="far fa-trash-alt"
+                            @click="deleteCart(item.id)"
+                        ></i>
+                    </div>
+                    <div class="item-txt">
+                        <h5>{{ item.name }}</h5>
+                        <h4>NT {{ item.price | currency }}</h4>
+                    </div>
+                    <button class="bag-btn" @click="moveToBag(item.id)">
+                        MOVE TO BAG
+                    </button>
+                </div>
+            </div>
+            <div class="social">
+                <ul>
+                    <li>
+                        <div class="icon fb">
+                            <i class="fab fa-facebook-square"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon ig">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon tw">
+                            <i class="fab fa-twitter"></i>
+                        </div>
+                    </li>
+                    <li>|</li>
+                    <li>
+                        <div class="icon yt">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon sc">
+                            <i class="fab fa-snapchat"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon pi">
+                            <i class="fab fa-pinterest"></i>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="foot">
+                <div class="foot-top">
+                    <div class="item">
+                        <h4>HELP & INFORMATION</h4>
+                        <ul>
+                            <li><a href="#">Help</a></li>
+                            <li><a href="#">Deliverey & Returns</a></li>
+                            <li><a href="#">Track Order</a></li>
+                        </ul>
+                    </div>
+                    <div class="item">
+                        <h4>ABOUT VUESTORE</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers at VueStore</a></li>
+                            <li><a href="#">Investors Site</a></li>
+                        </ul>
+                    </div>
+                    <div class="item">
+                        <h4>MORE FROM VUESTORE</h4>
+                        <ul>
+                            <li><a href="#">Mobile and Apps</a></li>
+                            <li><a href="#">VueStore Marketplcae</a></li>
+                            <li><a href="#">Gift vouchers</a></li>
+                        </ul>
+                    </div>
+                    <div class="item">
+                        <h4>SHOPPING FROM:</h4>
+                        <h5>
+                            You're in <i class="fas fa-globe-americas"></i> |
+                            Change
+                        </h5>
+                    </div>
+                </div>
+                <div class="foot-bot">
+                    <h5>&copy; 2020</h5>
+                    <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
+                </div>
             </div>
         </div>
     </div>
@@ -133,6 +143,7 @@ export default {
     name: "Saved",
     data() {
         return {
+            wrapLoading: false,
             uid: this.$store.state.info.id,
             isA: "none",
             isB: "flex",
@@ -159,27 +170,25 @@ export default {
     },
     methods: {
         getSavedItems(id) {
-            axios
-                .get(`/api/user/saved/${id}`)
-                .then(res => {
-                    if (res.data.result === true) {
-                        this.isA = "none";
-                        this.isB = "flex";
-                        this.products = res.data.data;
-                        this.allNum = res.data.total;
-                    } else {
-                        this.isA = "block";
-                        this.isB = "none";
-                    }
-                })
+            this.wrapLoading = true;
+            axios.get(`/api/user/saved/${id}`).then(res => {
+                if (res.data.result === true) {
+                    this.isA = "none";
+                    this.isB = "flex";
+                    this.products = res.data.data;
+                    this.allNum = res.data.total;
+                } else {
+                    this.isA = "block";
+                    this.isB = "none";
+                }
+                this.wrapLoading = false;
+            });
         },
         moveToBag(id) {
-            axios
-                .put(`/api/saved/moveback/${this.uid}/${id}`)
-                .then(() => {
-                    this.$store.commit("updateCart", parseInt(id));
-                    this.getSavedItems(this.uid);
-                })
+            axios.put(`/api/saved/moveback/${this.uid}/${id}`).then(() => {
+                this.$store.commit("updateCart", parseInt(id));
+                this.getSavedItems(this.uid);
+            });
         },
         deleteCart(id) {
             axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {
@@ -193,6 +202,9 @@ export default {
 
 <style lang="scss" scoped>
 $color: #232323;
+.wrap-loading {
+    position: relative;
+}
 .banner {
     display: flex;
     height: 50px;

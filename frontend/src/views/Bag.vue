@@ -14,202 +14,216 @@
                 </div>
             </router-link>
         </div>
-        <div class="empty-bag" :style="{ display: isA }">
-            <div class="wrap">
-                <i class="icon fas fa-shopping-bag"></i>
-                <h4>Your bag is empty</h4>
-                <h5>
-                    Items remain in your bag for 1 day, and then they’re moved
-                    to your Saved Items.
-                </h5>
-                <router-link to="/user/saved"
-                    ><button>VIEW SAVED ITEMS</button></router-link
-                >
-                <a href="#">Continue Shopping</a>
+        <div class="wrap-loading">
+            <loading
+                loader="dots"
+                :active.sync="wrapLoading"
+                :is-full-page="false"
+                :opacity="1"
+            >
+            </loading>
+            <div class="empty-bag" :style="{ display: isA }">
+                <div class="wrap">
+                    <i class="icon fas fa-shopping-bag"></i>
+                    <h4>Your bag is empty</h4>
+                    <h5>
+                        Items remain in your bag for 1 day, and then they’re
+                        moved to your Saved Items.
+                    </h5>
+                    <router-link to="/user/saved"
+                        ><button>VIEW SAVED ITEMS</button></router-link
+                    >
+                    <a href="#">Continue Shopping</a>
+                </div>
             </div>
-        </div>
-        <div class="bag" :style="{ display: isB }">
-            <div class="bag-top">
-                <div class="left">
-                    <div class="bag-item">
-                        <div class="title">
-                            <h3>MY BAG</h3>
-                            <h5>Items are reserved for 24 hours</h5>
-                        </div>
-                        <div class="loading">
-                            <loading
-                                :active.sync="isLoading"
-                                :is-full-page="false"
-                                :opacity="1"
-                                class="loading-style"
-                            >
-                                <template slot="before">Ep</template>
-                                <template slot="after">ch</template>
-                            </loading>
-                            <div
-                                class="item"
-                                v-for="item in carts"
-                                :key="item.id"
-                            >
-                                <img
-                                    :src="'data:image/png;base64,' + item.image"
-                                    class="img-fluid"
-                                />
-                                <div class="item-info">
-                                    <h4>NT {{ item.price | currency }}</h4>
-                                    <h5>
-                                        {{ item.name }}
-                                    </h5>
-                                    <span>QTY : </span>
-                                    <el-select
-                                        v-model="item.item"
-                                        @change="updateNum"
-                                    >
-                                        <el-option
-                                            v-for="items in options"
-                                            :key="items.value"
-                                            :label="items.label"
-                                            :value="items.value"
+            <div class="bag" :style="{ display: isB }">
+                <div class="bag-top">
+                    <div class="left">
+                        <div class="bag-item">
+                            <div class="title">
+                                <h3>MY BAG</h3>
+                                <h5>Items are reserved for 24 hours</h5>
+                            </div>
+                            <div class="loading">
+                                <loading
+                                    :active.sync="isLoading"
+                                    :is-full-page="false"
+                                    :opacity="1"
+                                    class="loading-style"
+                                >
+                                    <template slot="before">Ep</template>
+                                    <template slot="after">ch</template>
+                                </loading>
+                                <div
+                                    class="item"
+                                    v-for="item in carts"
+                                    :key="item.id"
+                                >
+                                    <img
+                                        :src="
+                                            'data:image/png;base64,' +
+                                                item.image
+                                        "
+                                        class="img-fluid"
+                                    />
+                                    <div class="item-info">
+                                        <h4>NT {{ item.price | currency }}</h4>
+                                        <h5>
+                                            {{ item.name }}
+                                        </h5>
+                                        <span>QTY : </span>
+                                        <el-select
+                                            v-model="item.item"
+                                            @change="updateNum"
                                         >
-                                        </el-option>
-                                    </el-select>
-                                    <i
-                                        class="fas fa-times"
-                                        @click="deleteCart(item.id)"
-                                    ></i>
+                                            <el-option
+                                                v-for="items in options"
+                                                :key="items.value"
+                                                :label="items.label"
+                                                :value="items.value"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                        <i
+                                            class="fas fa-times"
+                                            @click="deleteCart(item.id)"
+                                        ></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <h3 class="total">
-                            SUB-TOTAL NT {{ total | currency }}
-                        </h3>
-                    </div>
-                    <div class="delivery">
-                        <i class="fas fa-truck"></i>
-                        <div class="info">
-                            <h3>FREE* STANDARD DELIVERY</h3>
-                            <h4>
-                                Faster delivery options available to most
-                                countries.
-                            </h4>
-                            <a href="#">More info</a>
+                            <h3 class="total">
+                                SUB-TOTAL NT {{ total | currency }}
+                            </h3>
                         </div>
-                    </div>
-                    <div class="return">
-                        <i class="fas fa-undo-alt"></i>
-                        <div class="info">
-                            <h3>FREE & EASY RETURNS</h3>
-                            <h4>
-                                Send it back within 30 days of receiving your
-                                order.
-                            </h4>
-                            <a href="#">More info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="right">
-                    <div class="bag-info">
-                        <h3>TOTAL</h3>
-                        <div class="wrap">
-                            <div class="title">
-                                <h4>Sub-total</h4>
-                            </div>
-                            <div class="cost">
-                                <h4>NT {{ total | currency }}</h4>
+                        <div class="delivery">
+                            <i class="fas fa-truck"></i>
+                            <div class="info">
+                                <h3>FREE* STANDARD DELIVERY</h3>
+                                <h4>
+                                    Faster delivery options available to most
+                                    countries.
+                                </h4>
+                                <a href="#">More info</a>
                             </div>
                         </div>
-                        <router-link to="/user/checkout"
-                            ><button class="checkout-btn">
-                                CHECKOUT
-                            </button></router-link
-                        >
-                        <div class="payment">
-                            <h5>WE ACCEPT:</h5>
-                            <i class="fab fa-cc-visa"></i>
-                            <i class="fas fa-wallet"> </i
-                            ><i class="fab fa-cc-paypal"> </i>
+                        <div class="return">
+                            <i class="fas fa-undo-alt"></i>
+                            <div class="info">
+                                <h3>FREE & EASY RETURNS</h3>
+                                <h4>
+                                    Send it back within 30 days of receiving
+                                    your order.
+                                </h4>
+                                <a href="#">More info</a>
+                            </div>
                         </div>
-                        <div class="coupon">
-                            <h5>
-                                Got a discount code? Add it in the next step.
-                            </h5>
+                    </div>
+                    <div class="right">
+                        <div class="bag-info">
+                            <h3>TOTAL</h3>
+                            <div class="wrap">
+                                <div class="title">
+                                    <h4>Sub-total</h4>
+                                </div>
+                                <div class="cost">
+                                    <h4>NT {{ total | currency }}</h4>
+                                </div>
+                            </div>
+                            <router-link to="/user/checkout"
+                                ><button class="checkout-btn">
+                                    CHECKOUT
+                                </button></router-link
+                            >
+                            <div class="payment">
+                                <h5>WE ACCEPT:</h5>
+                                <i class="fab fa-cc-visa"></i>
+                                <i class="fas fa-wallet"> </i
+                                ><i class="fab fa-cc-paypal"> </i>
+                            </div>
+                            <div class="coupon">
+                                <h5>
+                                    Got a discount code? Add it in the next
+                                    step.
+                                </h5>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="social">
-            <ul>
-                <li>
-                    <div class="icon fb">
-                        <i class="fab fa-facebook-square"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon ig">
-                        <i class="fab fa-instagram"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon tw">
-                        <i class="fab fa-twitter"></i>
-                    </div>
-                </li>
-                <li>|</li>
-                <li>
-                    <div class="icon yt">
-                        <i class="fab fa-youtube"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon sc">
-                        <i class="fab fa-snapchat"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon pi">
-                        <i class="fab fa-pinterest"></i>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="foot">
-            <div class="foot-top">
-                <div class="item">
-                    <h4>HELP & INFORMATION</h4>
-                    <ul>
-                        <li><a href="#">Help</a></li>
-                        <li><a href="#">Deliverey & Returns</a></li>
-                        <li><a href="#">Track Order</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>ABOUT VUESTORE</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers at VueStore</a></li>
-                        <li><a href="#">Investors Site</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>MORE FROM VUESTORE</h4>
-                    <ul>
-                        <li><a href="#">Mobile and Apps</a></li>
-                        <li><a href="#">VueStore Marketplcae</a></li>
-                        <li><a href="#">Gift vouchers</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>SHOPPING FROM:</h4>
-                    <h5>
-                        You're in <i class="fas fa-globe-americas"></i> | Change
-                    </h5>
-                </div>
+            <div class="social">
+                <ul>
+                    <li>
+                        <div class="icon fb">
+                            <i class="fab fa-facebook-square"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon ig">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon tw">
+                            <i class="fab fa-twitter"></i>
+                        </div>
+                    </li>
+                    <li>|</li>
+                    <li>
+                        <div class="icon yt">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon sc">
+                            <i class="fab fa-snapchat"></i>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon pi">
+                            <i class="fab fa-pinterest"></i>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            <div class="foot-bot">
-                <h5>&copy; 2020</h5>
-                <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
+            <div class="foot">
+                <div class="foot-top">
+                    <div class="item">
+                        <h4>HELP & INFORMATION</h4>
+                        <ul>
+                            <li><a href="#">Help</a></li>
+                            <li><a href="#">Deliverey & Returns</a></li>
+                            <li><a href="#">Track Order</a></li>
+                        </ul>
+                    </div>
+                    <div class="item">
+                        <h4>ABOUT VUESTORE</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers at VueStore</a></li>
+                            <li><a href="#">Investors Site</a></li>
+                        </ul>
+                    </div>
+                    <div class="item">
+                        <h4>MORE FROM VUESTORE</h4>
+                        <ul>
+                            <li><a href="#">Mobile and Apps</a></li>
+                            <li><a href="#">VueStore Marketplcae</a></li>
+                            <li><a href="#">Gift vouchers</a></li>
+                        </ul>
+                    </div>
+                    <div class="item">
+                        <h4>SHOPPING FROM:</h4>
+                        <h5>
+                            You're in <i class="fas fa-globe-americas"></i> |
+                            Change
+                        </h5>
+                    </div>
+                </div>
+                <div class="foot-bot">
+                    <h5>&copy; 2020</h5>
+                    <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
+                </div>
             </div>
         </div>
     </div>
@@ -265,6 +279,7 @@ export default {
     watch: {
         getCart: {
             handler(aCart) {
+                this.wrapLoading = true;
                 if (this.$store.state.isEmpty === false) {
                     this.isA = "flex";
                     this.isB = "none";
@@ -292,9 +307,7 @@ export default {
                                     this.carts[i].item * this.carts[i].price;
                             }
                             this.finalTotal = this.total;
-                        })
-                        .catch(err => {
-                            console.log(err);
+                            this.wrapLoading = false;
                         });
                 }
             },
@@ -304,11 +317,9 @@ export default {
     },
     methods: {
         getProducts() {
-            axios
-                .get("/api/products/men")
-                .then(res => {
-                    this.products = res.data.data;
-                })
+            axios.get("/api/products/men").then(res => {
+                this.products = res.data.data;
+            });
         },
         updateNum() {
             this.isLoading = true;
@@ -331,7 +342,7 @@ export default {
                             this.isLoading = false;
                         }, 1000);
                     }
-                })
+                });
         },
         deleteCart(id) {
             axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {
@@ -344,6 +355,9 @@ export default {
 <style lang="scss" scoped>
 $color: #f2f2fa;
 $color1: #1ca753;
+.wrap-loading {
+    position: relative;
+}
 .banner {
     display: flex;
     height: 50px;
