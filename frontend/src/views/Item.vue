@@ -283,9 +283,6 @@ export default {
                             message: "Add To Cart",
                             type: "success"
                         });
-                    })
-                    .catch(err => {
-                        console.log(err);
                     });
             }
         },
@@ -312,9 +309,6 @@ export default {
                                 type: "success"
                             });
                         }
-                    })
-                    .catch(err => {
-                        console.log(err);
                     });
             }
         }
