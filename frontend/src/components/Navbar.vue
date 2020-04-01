@@ -184,9 +184,6 @@ export default {
                                     this.carts[i].item * this.carts[i].price;
                             }
                         })
-                        .catch(err => {
-                            console.log(err);
-                        });
                 }
             },
             immediate: true,
