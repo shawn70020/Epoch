@@ -61,7 +61,7 @@ class UserController extends Controller
 
         ## 會員狀態禁止
         if ($aResult[0]['status'] === 1) {
-            return response()->json(['result' => false]);
+            return response()->json(['result' => 'frozen']);
         }
         ## 給予Token並且設置在資料庫及更改上次登入時間
         $iUid  = $aResult[0]['id'];
@@ -249,7 +249,7 @@ class UserController extends Controller
         $aResult = User::find($uid);
 
         ## 該會員訂單資料
-        $aOrder = Order::select('id', 'status', 'addDate')->where('uid', $uid)->get();
+        $aOrder = Order::select('id', 'status', 'addDate')->where('uid', $uid)->orderBy('addDate', 'DESC')->get();
 
         return response()->json(['result' => true, 'data' => $aResult,'order' => $aOrder]);
     }

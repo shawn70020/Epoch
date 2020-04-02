@@ -123,7 +123,7 @@
                     </div>
                 </div>
 
-                <div class="page">
+                <div class="page" v-if="order.length !== 0">
                     <h5>You've viewed {{ nowNum }} of {{ allNum }} Orders</h5>
                     <div class="loading">
                         <loading

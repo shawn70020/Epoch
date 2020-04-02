@@ -228,7 +228,6 @@ export default {
         text-align: center;
         font-size: 38px;
         font-weight: bold;
-        // font-family: "Krona One", sans-serif;
     }
 }
 .container {

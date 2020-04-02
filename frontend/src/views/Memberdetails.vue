@@ -167,9 +167,6 @@ export default {
                                 });
                             }
                         })
-                        .catch(err => {
-                            console.log(err);
-                        });
                 })
                 .catch(() => {
                     if (this.value1 === true) {

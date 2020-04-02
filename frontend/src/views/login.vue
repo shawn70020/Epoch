@@ -129,19 +129,16 @@ export default {
                                 } else {
                                     vm.$router.push("/admin/dashboard");
                                 }
-                            } else {
+                            } else if (res.data.result === "frozen") {
                                 this.$notify.error({
-                                    title: "(ಠ益ಠ)Error",
+                                    title: "Sorry",
                                     message: "This Account Has Been Frozen"
                                 });
+                            } else {
                                 vm.showError = 1;
                             }
-                        })
-                        .catch(err => {
-                            console.log(err);
                         });
                 } else {
-                    console.log("error submit!!");
                     return false;
                 }
             });
@@ -174,7 +171,7 @@ export default {
                     } else {
                         vm.showError = 1;
                     }
-                })
+                });
         },
         showPassword() {
             if (this.type === "password") {
@@ -184,9 +181,6 @@ export default {
                 this.type = "password";
                 this.btnText = "SHOW";
             }
-        },
-        test(){
-            console.log(123)
         }
     }
 };
@@ -201,8 +195,8 @@ export default {
     padding: 20px 0;
     h2 {
         text-align: center;
-        font-size: 28px;
-        font-family: "Krona One", sans-serif;
+        font-size: 38px;
+        font-weight: bold;
     }
 }
 .container {

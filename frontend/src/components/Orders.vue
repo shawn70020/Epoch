@@ -37,7 +37,8 @@
             </el-option>
         </el-select>
         <div class="table-wrap">
-            <table class="table table-borderless">
+            <div class="empty" v-if="orders.length === 0">抱歉！今日尚無訂單</div>
+            <table class="table table-borderless" v-if="orders.length !== 0">
                 <thead>
                     <tr>
                         <th scope="col">分類</th>
@@ -228,6 +229,14 @@ export default {
     }
     .table-wrap {
         width: 100vw;
+        .empty{
+            width: 80%;
+            height: 50%;
+            text-align: center;
+            font-size: 40px;
+            font-weight: bold;
+            margin-top: 5rem;
+        }
         .table {
             width: 75%;
             margin-top: 1.5rem;
