@@ -324,14 +324,15 @@ export default {
                                 type: "success",
                                 duration: 1500
                             });
-                        }
-                    }).catch(res=>{
-                        this.$notify({
+                        } else {
+                            let i = res.data.result;
+                            this.$notify({
                                 title: "Success !",
-                                message: `${res}`,
+                                message: `${i}`,
                                 type: "success",
-                                duration: 5500
+                                duration: 6000
                             });
+                        }
                     });
             }
         }
