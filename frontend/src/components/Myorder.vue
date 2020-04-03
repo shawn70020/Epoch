@@ -292,7 +292,7 @@ export default {
     cursor: pointer;
 }
 .wrapper {
-    width: 55%;
+    width: 62%;
     margin: auto;
     display: flex;
     justify-content: center;
@@ -348,7 +348,7 @@ export default {
         }
     }
     .right {
-        width: 640px;
+        width: 70%;
         margin-left: 20px;
         .top {
             width: 100%;
@@ -473,7 +473,7 @@ export default {
                 .image-wrap {
                     display: flex;
                     width: 50%;
-                    padding-left: 20px;
+                    padding-left: 2rem;
                     .image {
                         img {
                             width: 90px;
@@ -487,13 +487,13 @@ export default {
                     width: 45%;
                     padding-right: 50px;
                     button {
-                        width: 270px;
+                        width: 250px;
                         height: 50px;
                         background: transparent;
                         color: #2d2d2d;
                         padding: 10px;
                         margin-bottom: 10px;
-                        font-weight: bold;
+                        font-weight: bold;border: 1px solid #999;
                     }
                 }
             }

@@ -193,8 +193,8 @@ export default {
     }
     .right {
         margin-left: 20px;
-        width: 620px;
-        height: 820px;
+        width: 60%;
+        height: 90%;
         background-image: url(../assets/image/camera.jpg);
         background-repeat: no-repeat;
         background-size: cover;

@@ -109,7 +109,7 @@ export default {
                 background-size: cover;
                 margin: auto;
                 position: relative;
-                top: 30px;
+                top: .6rem;
             }
         }
         .side-nav {

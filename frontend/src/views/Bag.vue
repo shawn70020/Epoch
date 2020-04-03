@@ -322,7 +322,6 @@ export default {
             });
         },
         updateNum() {
-            this.isLoading = true;
             let i;
             let uid = this.$store.state.info.id;
             for (i = 0; i < this.carts.length; i++) {
@@ -337,10 +336,6 @@ export default {
                 .then(res => {
                     if (res.data.result === true) {
                         this.$store.state.cart = res.data.data;
-                        setTimeout(() => {
-                            this.reload();
-                            this.isLoading = false;
-                        }, 1000);
                     }
                 });
         },

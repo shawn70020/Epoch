@@ -519,7 +519,7 @@ $color: #2d2d2d;
     }
 }
 .wrap {
-    width: 50%;
+    width: 65%;
     margin: auto;
     display: flex;
     position: relative;
@@ -528,7 +528,7 @@ $color: #2d2d2d;
         transform: scaley(-1);
     }
     .left-info {
-        width: 60%;
+        width: 75%;
         height: 900px;
         background: #eee;
         margin-right: 0.6rem;
@@ -740,8 +740,8 @@ $color: #2d2d2d;
         }
     }
     .right-info {
-        width: 35%;
-        height: 650px;
+        width: 50%;
+        height: 100%;
         background: #fff;
         .cut {
             position: relative;
@@ -774,6 +774,7 @@ $color: #2d2d2d;
                 height: 360px;
                 width: 100%;
                 overflow-y: scroll;
+                margin-bottom: 30px;
                 .cart {
                     display: flex;
                     img {
@@ -830,6 +831,12 @@ $color: #2d2d2d;
                 line-height: 56px;
                 margin-left: 3%;
                 margin-top: 3%;
+                margin-bottom: 5%;
+                transition: .4s;
+                &:hover{
+                    background: #ccc;
+                    color: #2d2d2d;
+                }
             }
         }
     }

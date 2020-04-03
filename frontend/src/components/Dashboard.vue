@@ -213,7 +213,7 @@ $color: #2d2d2d;
         .right {
             width: 40%;
             border-radius: 10px;
-            margin: 40px;
+            margin: 1.5rem;
             background: #fff;
         }
         .left {
@@ -233,7 +233,7 @@ $color: #2d2d2d;
             }
             .chart {
                 margin: auto;
-                margin-left: 30px;
+                margin-left: 10px;
                 margin-top: 30px;
             }
         }
