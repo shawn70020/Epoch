@@ -25,6 +25,8 @@ class UserController extends Controller
         if (!collect($aResult)->isEmpty()) {
             return response()->json(['result' => false,'msg' => '此會員已被註冊']);
         };
+        ## 取得當下時間
+        $dNowDate = (string) Carbon::now('Asia/Taipei');
 
         ## 新增會員
         $aArray = [
@@ -33,6 +35,7 @@ class UserController extends Controller
             'name' => $_oRequest->input('name'),
             'birthday' => $_oRequest->input('date'),
             'sex' =>  $_oRequest->input('sex'),
+            'addDate' =>  $dNowDate,
         ];
 
         User::create($aArray);

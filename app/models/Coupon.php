@@ -8,5 +8,5 @@ class Coupon extends Model
 {
     public $timestamps = false;
     protected $guarded = ['id'];
-    protected $fillable = ['name', 'code', 'discount', 'expiry_date','enable'];
+    protected $fillable = ['name', 'code', 'discount', 'expiry_date','enable', 'add_date'];
 }

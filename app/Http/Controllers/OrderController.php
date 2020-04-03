@@ -149,6 +149,9 @@ class OrderController extends Controller
             return response()->json(['result' => false]);
         }
 
+        ## 取得當下時間
+        $dNowDate = (string) Carbon::now('Asia/Taipei');
+
         ## 新增優惠券
         $aParam = [
            'name' => $name,
@@ -156,6 +159,7 @@ class OrderController extends Controller
            'discount' => $discount,
            'expiry_date' => $expiry_date,
            'enable'  => $enable,
+           'add_date' => $dNowDate
        ];
 
         Coupon::create($aParam);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\models\Product;
 use App\models\Coupon;
+use Illuminate\Support\Carbon;
 
 class ProductsController extends Controller
 {
@@ -143,6 +144,10 @@ class ProductsController extends Controller
         if (is_null($name)||is_null($sex)||is_null($class)||is_null($price)||is_null($content)||is_null($detail)||is_null($image)) {
             return response()->json(['result' => false]);
         }
+
+        ## 取得當下時間
+        $dNowDate = (string) Carbon::now('Asia/Taipei');
+
         ## 新增商品
         $aParam = [
             'name' => $name,
@@ -153,6 +158,7 @@ class ProductsController extends Controller
             'detail' => $detail,
             'image'  => $image,
             'enable'  => $enable,
+            'date' => $dNowDate
         ];
         Product::create($aParam);
         return response()->json(['result' => true]);

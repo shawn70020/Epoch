@@ -7,12 +7,13 @@ use App\models\Orderdetail;
 use App\models\Product;
 use App\models\Cart;
 use App\models\Coupon;
+use Illuminate\Support\Carbon;
 
 class Order extends Model
 {
     public $timestamps = false;
     protected $guarded = ['id'];
-    protected $fillable = ['uid', 'total', 'delivery','status','shipDate','doneDate','closeDate'];
+    protected $fillable = ['uid', 'total', 'delivery','status', 'addDate','shipDate','doneDate','closeDate'];
 
     public function addOrder($_iUid, $_aCart, $_iTotal, $_sDelivery, $_sCoupon)
     {
@@ -22,11 +23,16 @@ class Order extends Model
         } else {
             $iCoupon = null;
         }
+
+        ## 取得當下時間
+        $dNowDate = (string) Carbon::now('Asia/Taipei');
+
         $iOid = new Order;
         $iOid->uid = $_iUid;
         $iOid->total = $_iTotal;
         $iOid->delivery = $_sDelivery;
         $iOid->coupon = $iCoupon;
+        $iOid->addDate = $dNowDate;
         $iOid->save();
         $aLastOid = Order::where('uid', $_iUid)->latest('addDate')->first();
 

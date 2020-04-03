@@ -47,12 +47,16 @@ class CartController extends Controller
         $iPid = (int)$_oRequest->input('pid');
         $aResult = Cart::where('uid', $iUid)->where('pid', $iPid)->get();
 
+        ## 取得當下時間
+        $dNowDate = (string) Carbon::now('Asia/Taipei');
+
         ## 購物車不存在該商品即新增
         if ($aResult->isEmpty()) {
             $aArray = [
                 'uid' => $iUid,
                 'pid' =>  $iPid,
                 'num' => 1,
+                'addtime' => $dNowDate
             ];
             Cart::create($aArray);
         } else {
@@ -60,7 +64,7 @@ class CartController extends Controller
             $iId = $aResult[0]['id'];
             $post = Cart::find($iId);
             $post->num = $iNum +1;
-            $post->delete_at = null;
+            $post->delete_at = Null;
             $post->save();
         }
         return response()->json(['result' => true]);

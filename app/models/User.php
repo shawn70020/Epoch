@@ -7,5 +7,5 @@ class User extends Model
 {
     public $timestamps = false;
     protected $guarded = ['id'];
-    protected $fillable = ['email', 'passwd', 'name','birthday','sex'];
+    protected $fillable = ['email', 'passwd', 'name','birthday','sex', 'addDate'];
 }
