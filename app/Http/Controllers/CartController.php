@@ -176,6 +176,34 @@ class CartController extends Controller
         return response()->json(['result' => true]);
     }
 
+    public function saveUserItem(Request $_oRequest)
+    {
+        ## 參數初始化
+        $iUid = (int)$_oRequest->input('uid');
+        $iPid = (int)$_oRequest->input('pid');
+        $aResult = Cart::where('uid', $iUid)->where('pid', $iPid)->get();
+
+        ## 取得當下時間
+        $dNowDate = (string) Carbon::now('Asia/Taipei');
+
+        ## 購物車不存在該商品即新增
+        if ($aResult->isEmpty()) {
+            $aArray = [
+            'uid' => $iUid,
+            'pid' =>  $iPid,
+            'num' => 1,
+            'addtime' => $dNowDate,
+            'delete_at' => 1
+        ];
+            Cart::create($aArray);
+        } else {
+            $iId = $aResult[0]['id'];
+            $post = Cart::find($iId);
+            $post->delete_at = 2;
+            $post->save();
+        }
+        return response()->json(['result' => true]);
+    }
     /**
     * 使用優惠券
     * @return json
