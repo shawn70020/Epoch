@@ -94,7 +94,7 @@
                                 class="btn"
                                 @click="addCart"
                             >
-                                ADD TO BAG
+                                ADD BAG
                             </button>
                             <button
                                 v-if="products.num === 0"
