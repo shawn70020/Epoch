@@ -325,6 +325,13 @@ export default {
                                 duration: 1500
                             });
                         }
+                    }).catch(res=>{
+                        this.$notify({
+                                title: "Success !",
+                                message: `${res}`,
+                                type: "success",
+                                duration: 5500
+                            });
                     });
             }
         }
