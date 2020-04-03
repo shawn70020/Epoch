@@ -161,10 +161,11 @@ export default {
                             } else {
                                 this.$notify.error({
                                     title: "抱歉",
-                                    message: res.data.msg
+                                    message: res.data.msg,
+                                    duration: 1500
                                 });
                             }
-                        })
+                        });
                 } else {
                     return false;
                 }
@@ -177,13 +178,15 @@ export default {
             this.$notify({
                 title: "成功",
                 message: "註冊會員",
-                type: "success"
+                type: "success",
+                duration: 1500
             });
         },
         error() {
             this.$notify.error({
                 title: "抱歉",
-                message: "註冊失敗！請重新嘗試"
+                message: "註冊失敗！請重新嘗試",
+                duration: 1500
             });
         },
         signin() {
@@ -208,10 +211,11 @@ export default {
                     } else {
                         this.$notify.error({
                             title: "抱歉",
-                            message: res.data.msg
+                            message: res.data.msg,
+                            duration: 1500
                         });
                     }
-                })
+                });
         }
     }
 };

@@ -9,7 +9,7 @@
                 :active.sync="isLoading"
                 :is-full-page="false"
                 :opacity="1"
-                background-color='#eee'
+                background-color="#eee"
             >
                 <template slot="before">SENDING </template></loading
             >
@@ -396,7 +396,8 @@ export default {
                                         this.$notify({
                                             title: "Success",
                                             message: "Your Order is Send",
-                                            type: "success"
+                                            type: "success",
+                                            duration: 1500
                                         });
                                         this.$store.commit("checkoutCart");
                                         this.isLoading = false;
@@ -404,7 +405,8 @@ export default {
                                     } else {
                                         this.$notify.error({
                                             title: "Sorry",
-                                            message: res.data.msg
+                                            message: res.data.msg,
+                                            duration: 1500
                                         });
                                     }
                                 })
@@ -443,14 +445,16 @@ export default {
                                 this.$notify({
                                     title: "Success",
                                     message: "Your Order is Send",
-                                    type: "success"
+                                    type: "success",
+                                    duration: 1500
                                 });
                                 this.$store.commit("checkoutCart");
                                 this.$router.push("/myorder");
                             } else {
                                 this.$notify.error({
                                     title: "Sorry",
-                                    message: res.data.msg
+                                    message: res.data.msg,
+                                    duration: 1500
                                 });
                             }
                         })
@@ -467,13 +471,15 @@ export default {
             this.$notify({
                 title: "Success",
                 message: "Use The Coupon",
-                type: "success"
+                type: "success",
+                duration: 1500
             });
         },
         error() {
             this.$notify.error({
                 title: "Sorry",
-                message: "This Coupon Is Not Exist"
+                message: "This Coupon Is Not Exist",
+                duration: 1500
             });
         },
         toggle() {

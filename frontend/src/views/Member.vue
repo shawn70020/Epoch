@@ -54,7 +54,7 @@ export default {
             page: 1,
             total: "",
             tempProduct: {},
-            isNew: false,
+            isNew: false
         };
     },
     created() {
@@ -63,7 +63,7 @@ export default {
     methods: {
         getMembers() {
             axios.get(`/api/admin/member/page=${this.page}`).then(res => {
-                this.member = res.data.data.filter(function(item){
+                this.member = res.data.data.filter(function(item) {
                     return item.level === 0;
                 });
                 this.total = res.data.total;
@@ -76,7 +76,7 @@ export default {
                     .get(`/api/admin/orders/page=${page}`)
                     .then(res => {
                         this.orders = res.data.data;
-                this.array = res.data.data;
+                        this.array = res.data.data;
                         this.page = page;
                     })
                     .catch(err => {
@@ -85,7 +85,8 @@ export default {
             } else {
                 this.$notify.info({
                     title: "提醒",
-                    message: "這已是第一頁！(`・ω・´)"
+                    message: "這已是第一頁！(`・ω・´)",
+                    duration: 1500
                 });
             }
         },
@@ -96,7 +97,7 @@ export default {
                     .get(`/api/admin/orders/page=${page}`)
                     .then(res => {
                         this.orders = res.data.data;
-                this.array = res.data.data;
+                        this.array = res.data.data;
                         this.page = page;
                     })
                     .catch(err => {
@@ -105,10 +106,11 @@ export default {
             } else {
                 this.$notify.info({
                     title: "提醒",
-                    message: "這已是最後一頁！(`・ω・´)"
+                    message: "這已是最後一頁！(`・ω・´)",
+                    duration: 1500
                 });
             }
-        },
+        }
     }
 };
 </script>

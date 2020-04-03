@@ -286,7 +286,8 @@ export default {
             } else {
                 this.$notify.info({
                     title: "提醒",
-                    message: "這已是第一頁！(`・ω・´)"
+                    message: "這已是第一頁！(`・ω・´)",
+                    duration: 1500
                 });
             }
         },
@@ -305,7 +306,8 @@ export default {
             } else {
                 this.$notify.info({
                     title: "提醒",
-                    message: "這已是最後一頁！(`・ω・´)"
+                    message: "這已是最後一頁！(`・ω・´)",
+                    duration: 1500
                 });
             }
         },
@@ -335,7 +337,8 @@ export default {
                             this.$notify({
                                 title: "成功",
                                 message: "已編輯一筆商品",
-                                type: "success"
+                                type: "success",
+                                duration: 1500
                             });
                             $("#productModal").modal("hide");
                             this.getProducts();
@@ -352,14 +355,16 @@ export default {
                             this.$notify({
                                 title: "成功",
                                 message: "已新增一筆商品",
-                                type: "success"
+                                type: "success",
+                                duration: 1500
                             });
                             $("#productModal").modal("hide");
                             this.getProducts();
                         } else {
                             this.$notify.error({
                                 title: "抱歉",
-                                message: "請確認所有欄位都填寫"
+                                message: "請確認所有欄位都填寫",
+                                duration: 1500
                             });
                         }
                     })
@@ -394,10 +399,11 @@ export default {
                         $("#customFile").val("");
                         this.$notify.error({
                             title: "錯誤",
-                            message: "只接受圖片檔"
+                            message: "只接受圖片檔",
+                            duration: 1500
                         });
                     }
-                })
+                });
         },
         delProduct(id) {
             this.$confirm("此操作將永久刪除此商品, 是否繼續?", "提示", {
@@ -414,24 +420,24 @@ export default {
                                 this.$notify({
                                     title: "成功",
                                     message: "已成功刪除此商品",
-                                    type: "success"
+                                    type: "success",
+                                    duration: 1500
                                 });
                                 this.getProducts();
                             } else {
                                 this.$notify.error({
                                     title: "錯誤",
-                                    message: "查無此商品"
+                                    message: "查無此商品",
+                                    duration: 1500
                                 });
                             }
                         })
-                        .catch(err => {
-                            console.log(err);
-                        });
                 })
                 .catch(() => {
                     this.$notify.info({
                         title: "提醒",
-                        message: "已取消刪除動作"
+                        message: "已取消刪除動作",
+                        duration: 1500
                     });
                 });
         }

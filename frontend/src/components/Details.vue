@@ -183,14 +183,16 @@ export default {
                             if (res.data.result === false) {
                                 this.$notify.error({
                                     title: "Sorry !",
-                                    message: res.data.msg
+                                    message: res.data.msg,
+                                    duration: 1500
                                 });
                             } else {
                                 let token = localStorage.getItem("token");
                                 this.$notify({
                                     title: "Success !",
                                     message: "Change Your Profiles",
-                                    type: "success"
+                                    type: "success",
+                                    duration: 1500
                                 });
                                 this.$store.commit("getUserInfo", token);
                             }
@@ -221,7 +223,8 @@ export default {
                     if (res.data.result === false) {
                         this.$notify.error({
                             title: "抱歉",
-                            message: res.data.msg
+                            message: res.data.msg,
+                            duration: 1500
                         });
                     } else {
                         this.$message({
@@ -243,7 +246,7 @@ export default {
                         localStorage.removeItem("isLogin");
                         this.$router.push("/login");
                     }
-                })
+                });
         }
     }
 };

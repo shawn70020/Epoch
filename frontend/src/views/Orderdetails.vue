@@ -301,7 +301,8 @@ export default {
                         this.$notify.error({
                             title: "錯誤",
                             message: "請至少選取一項商品",
-                            type: "info"
+                            type: "info",
+                            duration: 1500
                         });
                     }
                 })
@@ -321,31 +322,29 @@ export default {
         },
         getOrderdetails(id) {
             console.log(id);
-            axios
-                .get(`/api/orders/detail/${id}`)
-                .then(res => {
-                    let i;
-                    let j;
-                    this.info = res.data.info;
-                    this.products = res.data.item;
-                    this.details = res.data.data;
-                    this.ship = this.details.filter(function(item) {
-                        return item.ship === 0;
-                    });
-                    for (i = 0; i < this.products.length; i++) {
-                        this.products[i].num = this.details[i].num;
-                        this.products[i].id = this.details[i].pid;
-                        this.products[i].total =
-                            this.details[i].num * this.products[i].price;
-                        this.subTotal =
-                            this.subTotal + parseInt(this.products[i].total);
-                        for (j = 0; j < this.ship.length; j++) {
-                            if (this.ship[j].pid === this.products[i].id) {
-                                this.ship[j].name = this.products[i].name;
-                            }
+            axios.get(`/api/orders/detail/${id}`).then(res => {
+                let i;
+                let j;
+                this.info = res.data.info;
+                this.products = res.data.item;
+                this.details = res.data.data;
+                this.ship = this.details.filter(function(item) {
+                    return item.ship === 0;
+                });
+                for (i = 0; i < this.products.length; i++) {
+                    this.products[i].num = this.details[i].num;
+                    this.products[i].id = this.details[i].pid;
+                    this.products[i].total =
+                        this.details[i].num * this.products[i].price;
+                    this.subTotal =
+                        this.subTotal + parseInt(this.products[i].total);
+                    for (j = 0; j < this.ship.length; j++) {
+                        if (this.ship[j].pid === this.products[i].id) {
+                            this.ship[j].name = this.products[i].name;
                         }
                     }
-                })
+                }
+            });
         },
         getMoney() {
             this.cash = "成功收到款項";
@@ -369,11 +368,9 @@ export default {
                         this.$notify({
                             title: "成功",
                             message: "選中商品已出貨(ﾉ>ω<)ﾉ",
-                            type: "success"
+                            type: "success",
+                            duration: 1500
                         });
-                    })
-                    .catch(err => {
-                        console.log(err);
                     });
             }
         },

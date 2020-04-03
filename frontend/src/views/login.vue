@@ -132,7 +132,8 @@ export default {
                             } else if (res.data.result === "frozen") {
                                 this.$notify.error({
                                     title: "Sorry",
-                                    message: "This Account Has Been Frozen"
+                                    message: "This Account Has Been Frozen",
+                                    duration: 1500
                                 });
                             } else {
                                 vm.showError = 1;

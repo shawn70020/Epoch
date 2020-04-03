@@ -191,19 +191,15 @@ export default {
         previousPage() {
             let page = this.page - 1;
             if (page > 0) {
-                axios
-                    .get(`/api/admin/coupons/page=${page}`)
-                    .then(res => {
-                        this.products = res.data.data;
-                        this.page = page;
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                axios.get(`/api/admin/coupons/page=${page}`).then(res => {
+                    this.products = res.data.data;
+                    this.page = page;
+                });
             } else {
                 this.$notify.info({
                     title: "提醒",
-                    message: "這已是第一頁！(`・ω・´)"
+                    message: "這已是第一頁！(`・ω・´)",
+                    duration: 1500
                 });
             }
         },
@@ -222,7 +218,8 @@ export default {
             } else {
                 this.$notify.info({
                     title: "提醒",
-                    message: "這已是最後一頁！(`・ω・´)"
+                    message: "這已是最後一頁！(`・ω・´)",
+                    duration: 1500
                 });
             }
         },
@@ -248,7 +245,8 @@ export default {
                             this.$notify({
                                 title: "成功",
                                 message: "已編輯一筆優惠券",
-                                type: "success"
+                                type: "success",
+                                duration: 1500
                             });
                             $("#productModal").modal("hide");
                             this.getCoupons();
@@ -265,14 +263,16 @@ export default {
                             this.$notify({
                                 title: "成功",
                                 message: "已新增一筆優惠券",
-                                type: "success"
+                                type: "success",
+                                duration: 1500
                             });
                             $("#productModal").modal("hide");
                             this.getCoupons();
                         } else {
                             this.$notify.error({
                                 title: "錯誤",
-                                message: "請確定所有欄位輸入"
+                                message: "請確定所有欄位輸入",
+                                duration: 1500
                             });
                         }
                     })
@@ -300,13 +300,15 @@ export default {
                                 this.$notify({
                                     title: "成功",
                                     message: "已成功刪除此優惠券",
-                                    type: "success"
+                                    type: "success",
+                                    duration: 1500
                                 });
                                 this.getCoupons();
                             } else {
                                 this.$notify.error({
                                     title: "錯誤",
-                                    message: "查無此優惠券"
+                                    message: "查無此優惠券",
+                                    duration: 1500
                                 });
                             }
                         })
@@ -317,7 +319,8 @@ export default {
                 .catch(() => {
                     this.$notify.info({
                         title: "提醒",
-                        message: "已取消刪除動作"
+                        message: "已取消刪除動作",
+                        duration: 1500
                     });
                 });
         }

@@ -280,7 +280,8 @@ export default {
                 this.$notify({
                     title: "Sorry !",
                     message: "Please Sign In",
-                    type: "warning"
+                    type: "warning",
+                    duration: 1500
                 });
             } else {
                 axios
@@ -293,7 +294,8 @@ export default {
                         this.$notify({
                             title: "Success !",
                             message: "Add To Cart",
-                            type: "success"
+                            type: "success",
+                            duration: 1500
                         });
                     });
             }
@@ -303,7 +305,8 @@ export default {
                 this.$notify({
                     title: "Sorry !",
                     message: "Please Sign In First",
-                    type: "warning"
+                    type: "warning",
+                    duration: 1500
                 });
             } else {
                 axios
@@ -318,7 +321,8 @@ export default {
                             this.$notify({
                                 title: "Success !",
                                 message: "ADD TO SAVED ITEMS",
-                                type: "success"
+                                type: "success",
+                                duration: 1500
                             });
                         }
                     });

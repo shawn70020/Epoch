@@ -166,13 +166,15 @@ export default {
                             if (res.data.result === false) {
                                 this.$notify.error({
                                     title: "抱歉",
-                                    message: res.data.msg
+                                    message: res.data.msg,
+                                    duration: 1500
                                 });
                             } else {
                                 this.$notify({
                                     title: "Success",
                                     message: "Change Your Password !",
-                                    type: "success"
+                                    type: "success",
+                                    duration: 1500
                                 });
                                 this.ruleForm.old = "";
                                 this.ruleForm.new = "";
@@ -195,7 +197,8 @@ export default {
                     if (res.data.result === false) {
                         this.$notify.error({
                             title: "抱歉",
-                            message: res.data.msg
+                            message: res.data.msg,
+                            duration: 1500
                         });
                     } else {
                         this.$message({
@@ -219,7 +222,7 @@ export default {
                         localStorage.removeItem("isLogin");
                         this.$router.push("/login");
                     }
-                })
+                });
         }
     }
 };
@@ -240,7 +243,7 @@ export default {
         font-family: "IM Fell Great Primer SC";
         font-weight: 700;
     }
-    a{
+    a {
         color: #2d2d2d;
         text-decoration: none;
     }
