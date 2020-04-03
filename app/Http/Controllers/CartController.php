@@ -154,7 +154,7 @@ class CartController extends Controller
         $aResult = Cart::where('uid', $iUid)->where('pid', $iPid)->get();
 
         ## 取得當下時間
-        $dNowDate = (string) Carbon::now('Asia/Taipei');
+        // $dNowDate = (string) Carbon::now('Asia/Taipei');
 
         ## 購物車不存在該商品即新增
         if ($aResult->isEmpty()) {
@@ -162,7 +162,7 @@ class CartController extends Controller
             'uid' => $iUid,
             'pid' =>  $iPid,
             'num' => 1,
-            'addtime' => $dNowDate,
+            // 'addtime' => $dNowDate,
             'delete_at' => 1
         ];
             Cart::create($aArray);
