@@ -250,18 +250,28 @@ export default {
     components: {
         Navbar
     },
+    computed: {
+        getQuery() {
+            return this.$route.params.pid;
+        }
+    },
+    watch: {
+        getQuery: {
+            handler(sQuery) {
+                this.getProduct(sQuery);
+            }
+        }
+    },
     created() {
         this.getProduct(this.pid);
     },
     methods: {
         getProduct(id) {
             this.wrapLoading = true;
-               setTimeout(() => {
             axios.get(`/api/products/men/item/${id}`).then(res => {
                 this.products = res.data.data;
                 this.wrapLoading = false;
             });
-            }, 2000);
         },
         addCart() {
             if (this.value == "") {

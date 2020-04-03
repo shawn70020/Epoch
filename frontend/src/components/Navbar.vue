@@ -86,7 +86,12 @@
             </div>
             <div class="cart-item" :style="{ display: toggle.bag }">
                 <div class="cart-wrap">
-                    <div class="product" v-for="item in carts" :key="item.id">
+                    <div
+                        class="product"
+                        v-for="item in carts"
+                        :key="item.id"
+                        @click="goItem(item.id)"
+                    >
                         <img
                             :src="'data:image/png;base64,' + item.image"
                             class="img-fluid"
@@ -134,7 +139,7 @@ export default {
             isClose: false,
             isCard: false,
             isUser: false,
-            search:'',
+            search: "",
             showDot: "block",
             toggle: {
                 empty: "none",
@@ -148,6 +153,9 @@ export default {
         },
         userInfo() {
             return this.$store.state.info;
+        },
+        getQuery() {
+            return this.$route.query.q;
         }
     },
     watch: {
@@ -183,7 +191,7 @@ export default {
                                     this.total +
                                     this.carts[i].item * this.carts[i].price;
                             }
-                        })
+                        });
                 }
             },
             immediate: true,
@@ -193,6 +201,31 @@ export default {
             handler(aInfo) {
                 this.userName = aInfo.name;
                 this.uid = aInfo.id;
+            },
+            immediate: true,
+            deep: true
+        },
+        getQuery: {
+            handler(sQuery) {
+                this.wrapLoading = true;
+                axios.get(`/api/search/${sQuery}`).then(res => {
+                    this.products = res.data.data;
+                    this.allNum = res.data.total;
+                    this.nowNum = res.data.data.length;
+                    this.search = sQuery;
+                    let barWidth;
+                    barWidth = (
+                        this.products.length *
+                        (100 / this.allNum)
+                    ).toString();
+                    this.bar = barWidth + "%";
+                    if (this.nowNum === this.allNum) {
+                        this.loadBtn = "none";
+                    } else {
+                        this.loadBtn = "block";
+                    }
+                    this.wrapLoading = false;
+                });
             },
             immediate: true,
             deep: true
@@ -211,7 +244,7 @@ export default {
                         localStorage.removeItem("isLogin");
                         this.$router.push("/login");
                     }
-                })
+                });
         },
         deleteCart(id) {
             axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {
@@ -237,11 +270,18 @@ export default {
         },
         searchItem() {
             this.$router.push({
-                path:'/search/',
-                query:{
-                    q:this.search
+                path: "/search/",
+                query: {
+                    q: this.search
                 }
-            })
+            });
+        },
+        goItem(id) {
+            this.$router.push({
+                name: "Item",
+                params: { pid: id }
+            });
+            this.isCard = false;
         }
     }
 };
@@ -422,6 +462,7 @@ $color1: #1ca753;
                 padding-left: 10px;
                 display: flex;
                 margin-bottom: 20px;
+                cursor: pointer;
                 img {
                     width: 90px;
                     height: 120px;
@@ -429,12 +470,6 @@ $color1: #1ca753;
                 }
                 .product-info {
                     font-family: "Sriracha";
-                    &:hover {
-                        h3,
-                        h4 {
-                            color: rgb(102, 123, 216);
-                        }
-                    }
                     h3 {
                         font-size: 18px;
                         font-weight: bold;

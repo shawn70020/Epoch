@@ -27,7 +27,7 @@
                         <td v-if="item.enable === 1">啟用</td>
                         <td v-if="item.enable === 0">未啟用</td>
                         <td class="operate-btn">
-                             <button @click="openModal(false, item)">
+                            <button @click="openModal(false, item)">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button @click="delCoupon(item.id)">
@@ -93,9 +93,7 @@
 
                                 <div class="form-row">
                                     <div class="form-group col-md-8">
-                                        <label for="origin_price"
-                                            >百分比</label
-                                        >
+                                        <label for="origin_price">百分比</label>
                                         <input
                                             type="number"
                                             class="form-control"
@@ -272,10 +270,10 @@ export default {
                             $("#productModal").modal("hide");
                             this.getCoupons();
                         } else {
-                             this.$notify.error({
-                                    title: "錯誤",
-                                    message: "請確定所有欄位輸入"
-                                });
+                            this.$notify.error({
+                                title: "錯誤",
+                                message: "請確定所有欄位輸入"
+                            });
                         }
                     })
                     .catch(err => {
@@ -288,14 +286,13 @@ export default {
             $("#delProductModal").modal("show");
             vm.tempProduct = Object.assign({}, item);
         },
- delCoupon(id) {
+        delCoupon(id) {
             this.$confirm("此操作將永久刪除此優惠券, 是否繼續?", "提示", {
                 confirmButtonText: "確定",
                 cancelButtonText: "取消",
                 type: "warning"
             })
                 .then(() => {
-                    console.log(id);
                     axios
                         .delete(`/api/coupons/delete/${id}`)
                         .then(res => {

@@ -171,9 +171,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 $color: #7f033b;
-.wrap {
-    height: 100vh;
-}
 .banner-up {
     display: flex;
     height: 50px;
@@ -182,6 +179,7 @@ $color: #7f033b;
     justify-content: space-around;
     font-family: "Sriracha";
     margin-bottom: 2px;
+    // position: relative;
     h5 {
         padding-top: 10px;
         font-size: 18px;

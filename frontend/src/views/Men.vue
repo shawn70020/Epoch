@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div @wheel="mousewheel">
         <Navbar></Navbar>
         <div class="banner">
             <router-link to="/women" class="">
@@ -271,6 +271,14 @@ export default {
                     this.isLoading = false;
                 });
             }, 1000);
+        },
+        mousewheel(e) {
+            if (e.wheelDelta > 0) {
+                console.log("go up");
+            } else {
+                console.log("go down");
+
+            }
         }
     }
 };
