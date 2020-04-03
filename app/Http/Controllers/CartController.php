@@ -146,36 +146,6 @@ class CartController extends Controller
     * 新增喜好項目
     * @return json
     */
-    public function saveItem(Request $_oRequest)
-    {
-        // ## 參數初始化
-        // return response()->json(['result' => '哈囉']);
-        // $iUid = (int)$_oRequest->input('uid');
-        // $iPid = (int)$_oRequest->input('pid');
-        // $aResult = Cart::where('uid', $iUid)->where('pid', $iPid)->get();
-
-        // ## 取得當下時間
-        // $dNowDate = (string) Carbon::now('Asia/Taipei');
-        // return response()->json(['result' => $dNowDate]);
-        // ## 購物車不存在該商品即新增
-        // if ($aResult->isEmpty()) {
-        //     $aArray = [
-        //     'uid' => $iUid,
-        //     'pid' =>  $iPid,
-        //     'num' => 1,
-        //     'addtime' => $dNowDate,
-        //     'delete_at' => 1
-        // ];
-        //     Cart::create($aArray);
-        // } else {
-        //     $iId = $aResult[0]['id'];
-        //     $post = Cart::find($iId);
-        //     $post->delete_at = 2;
-        //     $post->save();
-        // }
-        return response()->json(['result' => true]);
-    }
-
     public function saveUserItem(Request $_oRequest)
     {
         ## 參數初始化

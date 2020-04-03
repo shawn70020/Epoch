@@ -324,14 +324,6 @@ export default {
                                 type: "success",
                                 duration: 1500
                             });
-                        } else {
-                            let i = res.data.result;
-                            this.$notify({
-                                title: "Success !",
-                                message: `${i}`,
-                                type: "success",
-                                duration: 6000
-                            });
                         }
                     });
             }
