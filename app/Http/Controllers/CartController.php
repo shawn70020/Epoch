@@ -155,7 +155,8 @@ class CartController extends Controller
 
         ## 取得當下時間
         $dNowDate = (string) Carbon::now('Asia/Taipei');
-
+echo $dNowDate;
+exit;
         ## 購物車不存在該商品即新增
         if ($aResult->isEmpty()) {
             $aArray = [
