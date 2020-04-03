@@ -35,7 +35,7 @@ Route::get('/search/{query}/page={num}', 'ProductsController@changeSearchPage');
 Route::get('/myorder/{uid}/page={num}', 'UserController@changeOrderPage');
 Route::get('/user/info/{id}', 'UserController@getUserData');
 Route::get('/user/saved/{id}', 'UserController@getUserSaved');
-Route::post('/user/saved/item', 'cartController@saveItem');
+Route::post('/user/saved', 'cartController@saveItem');
 Route::put('/user/changeinfo/{id}', 'UserController@changeUserInfo');
 Route::put('/user/password/{id}', 'UserController@changeUserPassword');
 Route::put('/saved/moveback/{uid}/{pid}', 'CartController@moveToBag');

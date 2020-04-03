@@ -310,7 +310,7 @@ export default {
                 });
             } else {
                 axios
-                    .post("/api/user/saved/item", {
+                    .post("/api/user/saved", {
                         uid: this.$store.state.info.id,
                         pid: id
                     })
