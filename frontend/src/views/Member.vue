@@ -79,9 +79,6 @@ export default {
                         this.array = res.data.data;
                         this.page = page;
                     })
-                    .catch(err => {
-                        console.log(err);
-                    });
             } else {
                 this.$notify.info({
                     title: "提醒",
@@ -100,9 +97,6 @@ export default {
                         this.array = res.data.data;
                         this.page = page;
                     })
-                    .catch(err => {
-                        console.log(err);
-                    });
             } else {
                 this.$notify.info({
                     title: "提醒",

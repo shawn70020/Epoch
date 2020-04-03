@@ -248,9 +248,6 @@ export default {
                                 });
                             }
                         })
-                        .catch(err => {
-                            console.log(err);
-                        });
                 })
                 .catch(() => {
                     this.$message({
@@ -321,7 +318,6 @@ export default {
             }
         },
         getOrderdetails(id) {
-            console.log(id);
             axios.get(`/api/orders/detail/${id}`).then(res => {
                 let i;
                 let j;

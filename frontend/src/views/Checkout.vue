@@ -348,9 +348,6 @@ export default {
                                 this.subtotal +
                                 this.carts[i].item * this.carts[i].price;
                         }
-                    })
-                    .catch(err => {
-                        console.log(err);
                     });
             },
             immediate: true
@@ -409,9 +406,6 @@ export default {
                                             duration: 1500
                                         });
                                     }
-                                })
-                                .catch(err => {
-                                    console.log(err);
                                 });
                         }, 2300);
                     } else {
@@ -457,12 +451,8 @@ export default {
                                     duration: 1500
                                 });
                             }
-                        })
-                        .catch(err => {
-                            console.log(err);
                         });
                 } else {
-                    console.log("error submit!!");
                     return false;
                 }
             });

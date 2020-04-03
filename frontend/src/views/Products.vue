@@ -274,15 +274,10 @@ export default {
         previousPage() {
             let page = this.page - 1;
             if (page > 0) {
-                axios
-                    .get(`/api/admin/products/page=${page}`)
-                    .then(res => {
-                        this.products = res.data.data;
-                        this.page = page;
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                axios.get(`/api/admin/products/page=${page}`).then(res => {
+                    this.products = res.data.data;
+                    this.page = page;
+                });
             } else {
                 this.$notify.info({
                     title: "提醒",
@@ -294,15 +289,10 @@ export default {
         nextPage() {
             let page = this.page + 1;
             if (page <= this.total) {
-                axios
-                    .get(`/api/admin/products/page=${page}`)
-                    .then(res => {
-                        this.products = res.data.data;
-                        this.page = page;
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                axios.get(`/api/admin/products/page=${page}`).then(res => {
+                    this.products = res.data.data;
+                    this.page = page;
+                });
             } else {
                 this.$notify.info({
                     title: "提醒",
@@ -330,47 +320,37 @@ export default {
         updateProduct() {
             const vm = this;
             if (!vm.isNew) {
-                axios
-                    .put("/api/products/update", vm.tempProduct)
-                    .then(res => {
-                        if (res.data.result === true) {
-                            this.$notify({
-                                title: "成功",
-                                message: "已編輯一筆商品",
-                                type: "success",
-                                duration: 1500
-                            });
-                            $("#productModal").modal("hide");
-                            this.getProducts();
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                axios.put("/api/products/update", vm.tempProduct).then(res => {
+                    if (res.data.result === true) {
+                        this.$notify({
+                            title: "成功",
+                            message: "已編輯一筆商品",
+                            type: "success",
+                            duration: 1500
+                        });
+                        $("#productModal").modal("hide");
+                        this.getProducts();
+                    }
+                });
             } else {
-                axios
-                    .post("/api/products/upload", vm.tempProduct)
-                    .then(res => {
-                        if (res.data.result === true) {
-                            this.$notify({
-                                title: "成功",
-                                message: "已新增一筆商品",
-                                type: "success",
-                                duration: 1500
-                            });
-                            $("#productModal").modal("hide");
-                            this.getProducts();
-                        } else {
-                            this.$notify.error({
-                                title: "抱歉",
-                                message: "請確認所有欄位都填寫",
-                                duration: 1500
-                            });
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                axios.post("/api/products/upload", vm.tempProduct).then(res => {
+                    if (res.data.result === true) {
+                        this.$notify({
+                            title: "成功",
+                            message: "已新增一筆商品",
+                            type: "success",
+                            duration: 1500
+                        });
+                        $("#productModal").modal("hide");
+                        this.getProducts();
+                    } else {
+                        this.$notify.error({
+                            title: "抱歉",
+                            message: "請確認所有欄位都填寫",
+                            duration: 1500
+                        });
+                    }
+                });
             }
         },
         openDelProductModal(item) {
@@ -412,26 +392,23 @@ export default {
                 type: "warning"
             })
                 .then(() => {
-                    console.log(id);
-                    axios
-                        .delete(`/api/products/delete/${id}`)
-                        .then(res => {
-                            if (res.data.result === true) {
-                                this.$notify({
-                                    title: "成功",
-                                    message: "已成功刪除此商品",
-                                    type: "success",
-                                    duration: 1500
-                                });
-                                this.getProducts();
-                            } else {
-                                this.$notify.error({
-                                    title: "錯誤",
-                                    message: "查無此商品",
-                                    duration: 1500
-                                });
-                            }
-                        })
+                    axios.delete(`/api/products/delete/${id}`).then(res => {
+                        if (res.data.result === true) {
+                            this.$notify({
+                                title: "成功",
+                                message: "已成功刪除此商品",
+                                type: "success",
+                                duration: 1500
+                            });
+                            this.getProducts();
+                        } else {
+                            this.$notify.error({
+                                title: "錯誤",
+                                message: "查無此商品",
+                                duration: 1500
+                            });
+                        }
+                    });
                 })
                 .catch(() => {
                     this.$notify.info({
