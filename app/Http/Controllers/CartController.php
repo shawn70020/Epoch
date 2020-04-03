@@ -149,6 +149,7 @@ class CartController extends Controller
     public function saveItem(Request $_oRequest)
     {
         ## 參數初始化
+        return response()->json(['result' => '哈囉']);
         $iUid = (int)$_oRequest->input('uid');
         $iPid = (int)$_oRequest->input('pid');
         $aResult = Cart::where('uid', $iUid)->where('pid', $iPid)->get();
