@@ -26,7 +26,7 @@ Route::get('/products/men', 'ProductsController@getMenProducts')->where('any', '
 Route::get('/products/women', 'ProductsController@getWomenProducts')->where('any', '.*');
 Route::get('/products/men/item/{id}', 'ProductsController@getSingleProduct')->where('any', '.*');
 Route::get('/getuserinfo/{token}', 'UserController@getUserInfo')->where('any', '.*');
-Route::post('/user/addcart', 'CartController@addCart')->where('any', '.*');
+Route::post('/user/addcart', 'CartController@addCart');
 Route::post('/user/getusercart', 'CartController@getUserCart')->where('any', '.*');
 Route::post('/user/updatecart', 'CartController@updateUserCart')->where('any', '.*');
 Route::post('/user/checkout', 'CartController@addOrder');
@@ -35,7 +35,7 @@ Route::get('/search/{query}/page={num}', 'ProductsController@changeSearchPage');
 Route::get('/myorder/{uid}/page={num}', 'UserController@changeOrderPage');
 Route::get('/user/info/{id}', 'UserController@getUserData');
 Route::get('/user/saved/{id}', 'UserController@getUserSaved');
-Route::post('/user/saved', 'cartController@saveItem');
+Route::post('/user/saved', function(){echo "test";});
 Route::put('/user/changeinfo/{id}', 'UserController@changeUserInfo');
 Route::put('/user/password/{id}', 'UserController@changeUserPassword');
 Route::put('/saved/moveback/{uid}/{pid}', 'CartController@moveToBag');
