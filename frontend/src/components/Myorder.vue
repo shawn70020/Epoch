@@ -225,40 +225,30 @@ export default {
                         localStorage.removeItem("isLogin");
                         this.$router.push("/login");
                     }
-                })
+                });
         },
         changePage() {
             this.isLoading = true;
             let uid = this.$store.state.info.id;
-            setTimeout(() => {
-                axios
-                    .get(`/api/myorder/${uid}/page=${this.page}`)
-                    .then(res => {
-                        let newData = res.data.data;
-                        let newImage = res.data.image;
-                        for (let i = 0; i < newData.length; i++) {
-                            this.order.push(newData[i]);
-                            this.image.push(newImage[i]);
-                        }
-                        this.nowNum = this.order.length;
-                        this.page = this.page + 1;
-                        let barWidth;
-                        barWidth = (
-                            this.order.length *
-                            (100 / this.allNum)
-                        ).toString();
-                        this.bar = barWidth + "%";
-                        if (this.nowNum === this.allNum) {
-                            this.loadBtn = "none";
-                        } else {
-                            this.loadBtn = "block";
-                        }
-                        this.isLoading = false;
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
-            }, 1000);
+            axios.get(`/api/myorder/${uid}/page=${this.page}`).then(res => {
+                let newData = res.data.data;
+                let newImage = res.data.image;
+                for (let i = 0; i < newData.length; i++) {
+                    this.order.push(newData[i]);
+                    this.image.push(newImage[i]);
+                }
+                this.nowNum = this.order.length;
+                this.page = this.page + 1;
+                let barWidth;
+                barWidth = (this.order.length * (100 / this.allNum)).toString();
+                this.bar = barWidth + "%";
+                if (this.nowNum === this.allNum) {
+                    this.loadBtn = "none";
+                } else {
+                    this.loadBtn = "block";
+                }
+                this.isLoading = false;
+            });
         }
     }
 };
@@ -493,7 +483,8 @@ export default {
                         color: #2d2d2d;
                         padding: 10px;
                         margin-bottom: 10px;
-                        font-weight: bold;border: 1px solid #999;
+                        font-weight: bold;
+                        border: 1px solid #999;
                     }
                 }
             }
