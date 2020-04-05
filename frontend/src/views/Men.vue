@@ -229,34 +229,12 @@ export default {
         },
         getProducts() {
             this.wrapLoading = true;
-            axios.get("/api/products/men").then(res => {
-                this.products = res.data.data;
-                this.allNum = res.data.total;
-                this.nowNum = res.data.data.length;
-                let barWidth;
-                barWidth = (
-                    this.products.length *
-                    (100 / this.allNum)
-                ).toString();
-                this.bar = barWidth + "%";
-                if (this.nowNum === this.allNum) {
-                    this.loadBtn = "none";
-                } else {
-                    this.loadBtn = "block";
-                }
-                this.wrapLoading = false;
-            });
-        },
-        changePage() {
-            this.isLoading = true;
-            setTimeout(() => {
-                axios.get(`/api/products/men/page=${this.page}`).then(res => {
-                    let newData = res.data.data;
-                    for (let i = 0; i < newData.length; i++) {
-                        this.products.push(newData[i]);
-                    }
-                    this.nowNum = this.products.length;
-                    this.page = this.page + 1;
+            axios
+                .get("/api/products/me")
+                .then(res => {
+                    this.products = res.data.data;
+                    this.allNum = res.data.total;
+                    this.nowNum = res.data.data.length;
                     let barWidth;
                     barWidth = (
                         this.products.length *
@@ -268,10 +246,39 @@ export default {
                     } else {
                         this.loadBtn = "block";
                     }
-                    this.isLoading = false;
+                    this.wrapLoading = false;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please try to refresh page again",
+                        duration: 6500
+                    });
                 });
-            }, 1000);
         },
+        changePage() {
+            this.isLoading = true;
+            axios.get(`/api/products/men/page=${this.page}`).then(res => {
+                let newData = res.data.data;
+                for (let i = 0; i < newData.length; i++) {
+                    this.products.push(newData[i]);
+                }
+                this.nowNum = this.products.length;
+                this.page = this.page + 1;
+                let barWidth;
+                barWidth = (
+                    this.products.length *
+                    (100 / this.allNum)
+                ).toString();
+                this.bar = barWidth + "%";
+                if (this.nowNum === this.allNum) {
+                    this.loadBtn = "none";
+                } else {
+                    this.loadBtn = "block";
+                }
+                this.isLoading = false;
+            });
+        }
         // mousewheel(e) {
         //     if (e.wheelDelta > 0) {
         //         console.log("go up");

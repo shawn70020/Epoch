@@ -183,18 +183,36 @@ export default {
     },
     methods: {
         getCoupons() {
-            axios.get(`/api/admin/coupons/page=${this.page}`).then(res => {
-                this.products = res.data.data;
-                this.total = res.data.total;
-            });
+            axios
+                .get(`/api/admin/coupons/page=${this.page}`)
+                .then(res => {
+                    this.products = res.data.data;
+                    this.total = res.data.total;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please try to refresh page again",
+                        duration: 6500
+                    });
+                });
         },
         previousPage() {
             let page = this.page - 1;
             if (page > 0) {
-                axios.get(`/api/admin/coupons/page=${page}`).then(res => {
-                    this.products = res.data.data;
-                    this.page = page;
-                });
+                axios
+                    .get(`/api/admin/coupons/page=${page}`)
+                    .then(res => {
+                        this.products = res.data.data;
+                        this.page = page;
+                    })
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please try to refresh page again",
+                            duration: 6500
+                        });
+                    });
             } else {
                 this.$notify.info({
                     title: "提醒",
@@ -252,8 +270,12 @@ export default {
                             this.getCoupons();
                         }
                     })
-                    .catch(err => {
-                        console.log(err);
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please try to refresh page again",
+                            duration: 6500
+                        });
                     });
             } else {
                 axios
@@ -276,8 +298,12 @@ export default {
                             });
                         }
                     })
-                    .catch(err => {
-                        console.log(err);
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please try to refresh page again",
+                            duration: 6500
+                        });
                     });
             }
         },
@@ -312,8 +338,12 @@ export default {
                                 });
                             }
                         })
-                        .catch(err => {
-                            console.log(err);
+                        .catch(() => {
+                            this.$notify.error({
+                                title: "Something Goes Wrong ...",
+                                message: "Please try to refresh page again",
+                                duration: 6500
+                            });
                         });
                 })
                 .catch(() => {

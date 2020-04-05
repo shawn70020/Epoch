@@ -205,31 +205,6 @@ export default {
             immediate: true,
             deep: true
         },
-        getQuery: {
-            handler(sQuery) {
-                this.wrapLoading = true;
-                axios.get(`/api/search/${sQuery}`).then(res => {
-                    this.products = res.data.data;
-                    this.allNum = res.data.total;
-                    this.nowNum = res.data.data.length;
-                    this.search = sQuery;
-                    let barWidth;
-                    barWidth = (
-                        this.products.length *
-                        (100 / this.allNum)
-                    ).toString();
-                    this.bar = barWidth + "%";
-                    if (this.nowNum === this.allNum) {
-                        this.loadBtn = "none";
-                    } else {
-                        this.loadBtn = "block";
-                    }
-                    this.wrapLoading = false;
-                });
-            },
-            immediate: true,
-            deep: true
-        }
     },
     methods: {
         signout() {
