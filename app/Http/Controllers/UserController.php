@@ -236,8 +236,8 @@ class UserController extends Controller
         ##取得抓取筆數
         $nowNum = ($num- 1) * 10;
 
-        ## 取得單一商品資料
-        $aResult = User::skip($nowNum)->take(10)->get();
+        ## 取得單一會員資料
+        $aResult = User::where('level', 0)->orderBy('addDate', 'DESC')->skip($nowNum)->take(10)->get();
 
         return response()->json(['result' => true, 'data' => $aResult,'total' => $iTotalPage]);
     }

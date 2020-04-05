@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in products" :key="item.id">
+                    <tr v-for="item in coupons" :key="item.id">
                         <th>{{ item.name }}</th>
                         <td>{{ item.discount }}</td>
                         <td>{{ moment(item.expiry_date).calendar() }}</td>
@@ -166,16 +166,12 @@ export default {
     data() {
         return {
             moment: moment,
-            products: [],
+            coupons: [],
             page: 1,
             total: "",
-            tempProduct: {},
             isNew: false,
+            tempProduct :[],
             isLoading: false,
-            imageUrl: null,
-            status: {
-                fileUploading: false
-            }
         };
     },
     created() {
@@ -186,7 +182,7 @@ export default {
             axios
                 .get(`/api/admin/coupons/page=${this.page}`)
                 .then(res => {
-                    this.products = res.data.data;
+                    this.coupons = res.data.data;
                     this.total = res.data.total;
                 })
                 .catch(() => {
@@ -203,7 +199,7 @@ export default {
                 axios
                     .get(`/api/admin/coupons/page=${page}`)
                     .then(res => {
-                        this.products = res.data.data;
+                        this.coupons = res.data.data;
                         this.page = page;
                     })
                     .catch(() => {
@@ -227,7 +223,7 @@ export default {
                 axios
                     .get(`/api/admin/coupons/page=${page}`)
                     .then(res => {
-                        this.products = res.data.data;
+                        this.coupons = res.data.data;
                         this.page = page;
                     })
                     .catch(() => {

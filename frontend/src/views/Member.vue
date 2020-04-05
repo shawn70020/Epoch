@@ -47,13 +47,12 @@
 <script>
 import axios from "axios";
 export default {
-    name: "Orders",
+    name: "Member",
     data() {
         return {
             member: [],
             page: 1,
             total: "",
-            tempProduct: {},
             isNew: false
         };
     },
@@ -84,8 +83,7 @@ export default {
                 axios
                     .get(`/api/admin/member/page=${page}`)
                     .then(res => {
-                        this.orders = res.data.data;
-                        this.array = res.data.data;
+                        this.member = res.data.data;
                         this.page = page;
                     })
                     .catch(() => {
@@ -109,8 +107,7 @@ export default {
                 axios
                     .get(`/api/admin/member/page=${page}`)
                     .then(res => {
-                        this.orders = res.data.data;
-                        this.array = res.data.data;
+                        this.member = res.data.data;
                         this.page = page;
                     })
                     .catch(() => {
