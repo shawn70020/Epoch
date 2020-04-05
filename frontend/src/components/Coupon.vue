@@ -230,8 +230,12 @@ export default {
                         this.products = res.data.data;
                         this.page = page;
                     })
-                    .catch(err => {
-                        console.log(err);
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please try to refresh page again",
+                            duration: 6500
+                        });
                     });
             } else {
                 this.$notify.info({
