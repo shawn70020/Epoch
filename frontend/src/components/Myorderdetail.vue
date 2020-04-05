@@ -165,16 +165,25 @@ export default {
     },
     methods: {
         getOrderdetail(id) {
-            axios.get(`/api/myorder/detail/${id}`).then(res => {
-                if (res.data.result === true) {
-                    this.order = res.data.data;
-                    this.info = res.data.info;
-                    this.num = res.data.num;
-                    this.item = res.data.item;
-                } else {
-                    this.isEmpty = false;
-                }
-            });
+            axios
+                .get(`/api/myorder/detail/${id}`)
+                .then(res => {
+                    if (res.data.result === true) {
+                        this.order = res.data.data;
+                        this.info = res.data.info;
+                        this.num = res.data.num;
+                        this.item = res.data.item;
+                    } else {
+                        this.isEmpty = false;
+                    }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         backPage() {
             this.$router.go(-1);
@@ -192,6 +201,13 @@ export default {
                         this.$router.push("/login");
                     }
                 })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         }
     }
 };

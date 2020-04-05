@@ -146,26 +146,35 @@ export default {
     },
     methods: {
         getOverview() {
-            axios.get("/api/admin/overview").then(res => {
-                this.allData = res.data.data;
-                this.today = res.data.today;
-                let data = this.today;
-                data.forEach(item => {
-                    if (item.status === 0) {
-                        this.deal++;
-                    } else if (item.status === 1) {
-                        this.ship++;
-                    } else if (item.status === 2) {
-                        this.done++;
-                    } else if (item.status === 3) {
-                        this.cancel++;
-                    }
+            axios
+                .get("/api/admin/overview")
+                .then(res => {
+                    this.allData = res.data.data;
+                    this.today = res.data.today;
+                    let data = this.today;
+                    data.forEach(item => {
+                        if (item.status === 0) {
+                            this.deal++;
+                        } else if (item.status === 1) {
+                            this.ship++;
+                        } else if (item.status === 2) {
+                            this.done++;
+                        } else if (item.status === 3) {
+                            this.cancel++;
+                        }
+                    });
+                    this.orgOptions.series[0].data[0].value = this.deal;
+                    this.orgOptions.series[0].data[1].value = this.ship;
+                    this.orgOptions.series[0].data[2].value = this.done;
+                    this.orgOptions.series[0].data[3].value = this.cancel;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
-                this.orgOptions.series[0].data[0].value = this.deal;
-                this.orgOptions.series[0].data[1].value = this.ship;
-                this.orgOptions.series[0].data[2].value = this.done;
-                this.orgOptions.series[0].data[3].value = this.cancel;
-            });
         }
     }
 };
@@ -237,12 +246,12 @@ $color: #2d2d2d;
                 margin-top: 30px;
             }
         }
-        .right{
+        .right {
             display: flex;
             flex-direction: column;
             justify-content: center;
             padding-left: 15px;
-            h5{
+            h5 {
                 padding: 15px;
             }
         }

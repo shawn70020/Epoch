@@ -192,8 +192,8 @@ export default {
                 .catch(() => {
                     this.$notify.error({
                         title: "Something Goes Wrong ...",
-                        message: "Please try to refresh page again",
-                        duration: 6500
+                        message: "Please refresh your page again",
+                        duration: 6800
                     });
                 });
         },
@@ -209,8 +209,8 @@ export default {
                     .catch(() => {
                         this.$notify.error({
                             title: "Something Goes Wrong ...",
-                            message: "Please try to refresh page again",
-                            duration: 6500
+                            message: "Please refresh your page again",
+                            duration: 6800
                         });
                     });
             } else {
@@ -233,8 +233,8 @@ export default {
                     .catch(() => {
                         this.$notify.error({
                             title: "Something Goes Wrong ...",
-                            message: "Please try to refresh page again",
-                            duration: 6500
+                            message: "Please refresh your page again",
+                            duration: 6800
                         });
                     });
             } else {
@@ -277,8 +277,8 @@ export default {
                     .catch(() => {
                         this.$notify.error({
                             title: "Something Goes Wrong ...",
-                            message: "Please try to refresh page again",
-                            duration: 6500
+                            message: "Please refresh your page again",
+                            duration: 6800
                         });
                     });
             } else {
@@ -305,8 +305,8 @@ export default {
                     .catch(() => {
                         this.$notify.error({
                             title: "Something Goes Wrong ...",
-                            message: "Please try to refresh page again",
-                            duration: 6500
+                            message: "Please refresh your page again",
+                            duration: 6800
                         });
                     });
             }
@@ -345,8 +345,8 @@ export default {
                         .catch(() => {
                             this.$notify.error({
                                 title: "Something Goes Wrong ...",
-                                message: "Please try to refresh page again",
-                                duration: 6500
+                                message: "Please refresh your page again",
+                                duration: 6800
                             });
                         });
                 })

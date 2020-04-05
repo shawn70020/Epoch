@@ -62,12 +62,21 @@ export default {
     },
     methods: {
         getMembers() {
-            axios.get(`/api/admin/member/page=${this.page}`).then(res => {
-                this.member = res.data.data.filter(function(item) {
-                    return item.level === 0;
+            axios
+                .get(`/api/admin/member/page=${this.page}`)
+                .then(res => {
+                    this.member = res.data.data.filter(function(item) {
+                        return item.level === 0;
+                    });
+                    this.total = res.data.total;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
-                this.total = res.data.total;
-            });
         },
         previousPage() {
             let page = this.page - 1;
@@ -79,6 +88,13 @@ export default {
                         this.array = res.data.data;
                         this.page = page;
                     })
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please refresh your page again",
+                            duration: 6800
+                        });
+                    });
             } else {
                 this.$notify.info({
                     title: "提醒",
@@ -97,6 +113,13 @@ export default {
                         this.array = res.data.data;
                         this.page = page;
                     })
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please refresh your page again",
+                            duration: 6800
+                        });
+                    });
             } else {
                 this.$notify.info({
                     title: "提醒",

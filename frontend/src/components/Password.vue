@@ -180,6 +180,13 @@ export default {
                                 this.ruleForm.new = "";
                                 this.ruleForm.checkPass = "";
                             }
+                        })
+                        .catch(() => {
+                            this.$notify.error({
+                                title: "Something Goes Wrong ...",
+                                message: "Please refresh your page again",
+                                duration: 6800
+                            });
                         });
                 } else {
                     return false;
@@ -207,6 +214,13 @@ export default {
                         this.user.old = "";
                         this.user.new = "";
                     }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
         },
         signout() {
@@ -221,6 +235,13 @@ export default {
                         localStorage.removeItem("isLogin");
                         this.$router.push("/login");
                     }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
         }
     }

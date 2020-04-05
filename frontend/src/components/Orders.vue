@@ -3,7 +3,8 @@
         <div class="title">
             <h3>
                 訂單管理<span class="outside"
-                    >(以下列出<span class="inside" @click="getOrders">今日</span>訂單)</span
+                    >(以下列出<span class="inside" @click="getOrders">今日</span
+                    >訂單)</span
                 >
             </h3>
             <div class="block">
@@ -37,7 +38,9 @@
             </el-option>
         </el-select>
         <div class="table-wrap">
-            <div class="empty" v-if="orders.length === 0">抱歉！今日尚無訂單</div>
+            <div class="empty" v-if="orders.length === 0">
+                抱歉！今日尚無訂單
+            </div>
             <table class="table table-borderless" v-if="orders.length !== 0">
                 <thead>
                     <tr>
@@ -159,11 +162,20 @@ export default {
     },
     methods: {
         getOrders() {
-            axios.get("/api/admin/orders").then(res => {
-                this.orders = res.data.data;
-                this.array = res.data.data;
-                this.total = res.data.total;
-            });
+            axios
+                .get("/api/admin/orders")
+                .then(res => {
+                    this.orders = res.data.data;
+                    this.array = res.data.data;
+                    this.total = res.data.total;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         selectItem() {
             this.orders = this.array;
@@ -200,6 +212,13 @@ export default {
                     this.orders = res.data.data;
                     this.array = res.data.data;
                 })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         }
     }
 };
@@ -212,11 +231,12 @@ export default {
     .title {
         margin-left: 50px;
         margin-top: 50px;
-        h3{
-            .outside,.inside{
+        h3 {
+            .outside,
+            .inside {
                 font-size: 24px;
             }
-            .inside{
+            .inside {
                 color: #db2c00;
                 cursor: pointer;
             }
@@ -229,7 +249,7 @@ export default {
     }
     .table-wrap {
         width: 100vw;
-        .empty{
+        .empty {
             width: 80%;
             height: 50%;
             text-align: center;

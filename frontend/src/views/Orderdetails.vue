@@ -248,6 +248,13 @@ export default {
                                 });
                             }
                         })
+                        .catch(() => {
+                            this.$notify.error({
+                                title: "Something Goes Wrong ...",
+                                message: "Please refresh your page again",
+                                duration: 6800
+                            });
+                        });
                 })
                 .catch(() => {
                     this.$message({
@@ -293,6 +300,13 @@ export default {
                                         });
                                     }, 1000);
                                 }
+                            })
+                            .catch(() => {
+                                this.$notify.error({
+                                    title: "Something Goes Wrong ...",
+                                    message: "Please refresh your page again",
+                                    duration: 6800
+                                });
                             });
                     } else {
                         this.$notify.error({
@@ -318,29 +332,38 @@ export default {
             }
         },
         getOrderdetails(id) {
-            axios.get(`/api/orders/detail/${id}`).then(res => {
-                let i;
-                let j;
-                this.info = res.data.info;
-                this.products = res.data.item;
-                this.details = res.data.data;
-                this.ship = this.details.filter(function(item) {
-                    return item.ship === 0;
-                });
-                for (i = 0; i < this.products.length; i++) {
-                    this.products[i].num = this.details[i].num;
-                    this.products[i].id = this.details[i].pid;
-                    this.products[i].total =
-                        this.details[i].num * this.products[i].price;
-                    this.subTotal =
-                        this.subTotal + parseInt(this.products[i].total);
-                    for (j = 0; j < this.ship.length; j++) {
-                        if (this.ship[j].pid === this.products[i].id) {
-                            this.ship[j].name = this.products[i].name;
+            axios
+                .get(`/api/orders/detail/${id}`)
+                .then(res => {
+                    let i;
+                    let j;
+                    this.info = res.data.info;
+                    this.products = res.data.item;
+                    this.details = res.data.data;
+                    this.ship = this.details.filter(function(item) {
+                        return item.ship === 0;
+                    });
+                    for (i = 0; i < this.products.length; i++) {
+                        this.products[i].num = this.details[i].num;
+                        this.products[i].id = this.details[i].pid;
+                        this.products[i].total =
+                            this.details[i].num * this.products[i].price;
+                        this.subTotal =
+                            this.subTotal + parseInt(this.products[i].total);
+                        for (j = 0; j < this.ship.length; j++) {
+                            if (this.ship[j].pid === this.products[i].id) {
+                                this.ship[j].name = this.products[i].name;
+                            }
                         }
                     }
-                }
-            });
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         getMoney() {
             this.cash = "成功收到款項";
@@ -366,6 +389,13 @@ export default {
                             message: "選中商品已出貨(ﾉ>ω<)ﾉ",
                             type: "success",
                             duration: 1500
+                        });
+                    })
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please refresh your page again",
+                            duration: 6800
                         });
                     });
             }

@@ -230,28 +230,38 @@ export default {
         },
         getProducts() {
             this.wrapLoading = true;
-            axios.get("/api/products/women").then(res => {
-                this.products = res.data.data;
-                this.allNum = res.data.total;
-                this.nowNum = res.data.data.length;
-                let barWidth;
-                barWidth = (
-                    this.products.length *
-                    (100 / this.allNum)
-                ).toString();
-                this.bar = barWidth + "%";
-                if (this.nowNum === this.allNum) {
-                    this.loadBtn = "none";
-                } else {
-                    this.loadBtn = "block";
-                }
-                this.wrapLoading = false;
-            });
+            axios
+                .get("/api/products/women")
+                .then(res => {
+                    this.products = res.data.data;
+                    this.allNum = res.data.total;
+                    this.nowNum = res.data.data.length;
+                    let barWidth;
+                    barWidth = (
+                        this.products.length *
+                        (100 / this.allNum)
+                    ).toString();
+                    this.bar = barWidth + "%";
+                    if (this.nowNum === this.allNum) {
+                        this.loadBtn = "none";
+                    } else {
+                        this.loadBtn = "block";
+                    }
+                    this.wrapLoading = false;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         changePage() {
             this.isLoading = true;
-            setTimeout(() => {
-                axios.get(`/api/products/women/page=${this.page}`).then(res => {
+            axios
+                .get(`/api/products/women/page=${this.page}`)
+                .then(res => {
                     let newData = res.data.data;
                     for (let i = 0; i < newData.length; i++) {
                         this.products.push(newData[i]);
@@ -270,8 +280,14 @@ export default {
                         this.loadBtn = "block";
                     }
                     this.isLoading = false;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
-            }, 1000);
         },
         save() {
             if (this.isCheck === false) {

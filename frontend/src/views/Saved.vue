@@ -171,30 +171,57 @@ export default {
     methods: {
         getSavedItems(id) {
             this.wrapLoading = true;
-            axios.get(`/api/user/saved/${id}`).then(res => {
-                if (res.data.result === true) {
-                    this.isA = "none";
-                    this.isB = "flex";
-                    this.products = res.data.data;
-                    this.allNum = res.data.total;
-                } else {
-                    this.isA = "block";
-                    this.isB = "none";
-                }
-                this.wrapLoading = false;
-            });
+            axios
+                .get(`/api/user/saved/${id}`)
+                .then(res => {
+                    if (res.data.result === true) {
+                        this.isA = "none";
+                        this.isB = "flex";
+                        this.products = res.data.data;
+                        this.allNum = res.data.total;
+                    } else {
+                        this.isA = "block";
+                        this.isB = "none";
+                    }
+                    this.wrapLoading = false;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         moveToBag(id) {
-            axios.put(`/api/saved/moveback/${this.uid}/${id}`).then(() => {
-                this.$store.commit("updateCart", parseInt(id));
-                this.getSavedItems(this.uid);
-            });
+            axios
+                .put(`/api/saved/moveback/${this.uid}/${id}`)
+                .then(() => {
+                    this.$store.commit("updateCart", parseInt(id));
+                    this.getSavedItems(this.uid);
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         deleteCart(id) {
-            axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {
-                this.$store.commit("deleteCart", parseInt(id));
-                this.getSavedItems(this.uid);
-            });
+            axios
+                .delete(`/api/cart/${this.uid}/${id}`)
+                .then(() => {
+                    this.$store.commit("deleteCart", parseInt(id));
+                    this.getSavedItems(this.uid);
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         }
     }
 };

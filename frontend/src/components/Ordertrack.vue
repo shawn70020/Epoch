@@ -140,14 +140,23 @@ export default {
     },
     methods: {
         getMyOrders(id) {
-            axios.get(`/api/user/myorder/${id}`).then(res => {
-                if (res.data.result === true) {
-                    this.order = res.data.data;
-                    this.image = res.data.image;
-                } else {
-                    this.isEmpty = false;
-                }
-            });
+            axios
+                .get(`/api/user/myorder/${id}`)
+                .then(res => {
+                    if (res.data.result === true) {
+                        this.order = res.data.data;
+                        this.image = res.data.image;
+                    } else {
+                        this.isEmpty = false;
+                    }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         }
     }
 };

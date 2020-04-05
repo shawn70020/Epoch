@@ -10,11 +10,13 @@
                 <h5>加入時間：{{ info.addDate }}</h5>
             </div>
             <div class="online">
-                <h5 v-if="info.token === ''" >
-                    會員未上線<div :class="{ grey: true }"></div>
+                <h5 v-if="info.token === null">
+                    會員未上線
+                    <div :class="{ grey: true }"></div>
                 </h5>
-                <h5 v-if="info.token !== ''" >
-                    會員上線中<div :class="{ green: true }"></div>
+                <h5 v-if="info.token !== '' && info.token !== null">
+                    會員上線中
+                    <div :class="{ green: true }"></div>
                 </h5>
             </div>
         </div>
@@ -167,6 +169,13 @@ export default {
                                 });
                             }
                         })
+                        .catch(() => {
+                            this.$notify.error({
+                                title: "Something Goes Wrong ...",
+                                message: "Please refresh your page again",
+                                duration: 6800
+                            });
+                        });
                 })
                 .catch(() => {
                     if (this.value1 === true) {
@@ -213,6 +222,13 @@ export default {
                         }
                     }
                 })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         backPage() {
             this.$router.go(-1);
@@ -237,7 +253,7 @@ $color: #2d2d2d;
     .info {
         display: flex;
         color: $color;
-        .fa-long-arrow-alt-left{
+        .fa-long-arrow-alt-left {
             margin-left: 10px;
             margin-top: 8px;
             cursor: pointer;
@@ -257,18 +273,18 @@ $color: #2d2d2d;
     }
     .online {
         margin-right: 30px;
-        h5{
+        h5 {
             display: flex;
             align-items: center;
         }
-        .grey{
+        .grey {
             width: 15px;
             height: 15px;
             border-radius: 50%;
             background: #666;
             margin-left: 10px;
         }
-        .green{
+        .green {
             width: 15px;
             height: 15px;
             border-radius: 50%;

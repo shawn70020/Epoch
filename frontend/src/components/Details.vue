@@ -196,6 +196,13 @@ export default {
                                 });
                                 this.$store.commit("getUserInfo", token);
                             }
+                        })
+                        .catch(() => {
+                            this.$notify.error({
+                                title: "Something Goes Wrong ...",
+                                message: "Please refresh your page again",
+                                duration: 6800
+                            });
                         });
                 } else {
                     return false;
@@ -206,9 +213,18 @@ export default {
             this.$refs[formName].resetFields();
         },
         getInfo(id) {
-            axios.get(`/api/user/info/${id}`).then(res => {
-                this.ruleForm = res.data.data[0];
-            });
+            axios
+                .get(`/api/user/info/${id}`)
+                .then(res => {
+                    this.ruleForm = res.data.data[0];
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         changeInfo() {
             axios
@@ -231,6 +247,13 @@ export default {
                             type: "success"
                         });
                     }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
         },
         signout() {
@@ -245,6 +268,13 @@ export default {
                         localStorage.removeItem("isLogin");
                         this.$router.push("/login");
                     }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
         }
     }

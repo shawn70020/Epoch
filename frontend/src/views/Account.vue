@@ -100,6 +100,13 @@ export default {
                         this.$router.push("/login");
                     }
                 })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         }
     }
 };

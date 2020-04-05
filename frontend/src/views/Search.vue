@@ -226,24 +226,33 @@ export default {
         getQuery: {
             handler(sQuery) {
                 this.wrapLoading = true;
-                axios.get(`/api/search/${sQuery}`).then(res => {
-                    this.products = res.data.data;
-                    this.allNum = res.data.total;
-                    this.nowNum = res.data.data.length;
-                    this.search = sQuery;
-                    let barWidth;
-                    barWidth = (
-                        this.products.length *
-                        (100 / this.allNum)
-                    ).toString();
-                    this.bar = barWidth + "%";
-                    if (this.nowNum === this.allNum) {
-                        this.loadBtn = "none";
-                    } else {
-                        this.loadBtn = "block";
-                    }
-                    this.wrapLoading = false;
-                });
+                axios
+                    .get(`/api/search/${sQuery}`)
+                    .then(res => {
+                        this.products = res.data.data;
+                        this.allNum = res.data.total;
+                        this.nowNum = res.data.data.length;
+                        this.search = sQuery;
+                        let barWidth;
+                        barWidth = (
+                            this.products.length *
+                            (100 / this.allNum)
+                        ).toString();
+                        this.bar = barWidth + "%";
+                        if (this.nowNum === this.allNum) {
+                            this.loadBtn = "none";
+                        } else {
+                            this.loadBtn = "block";
+                        }
+                        this.wrapLoading = false;
+                    })
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please refresh your page again",
+                            duration: 6800
+                        });
+                    });
             },
             immediate: true,
             deep: true
@@ -273,6 +282,13 @@ export default {
                         this.loadBtn = "block";
                     }
                     this.isLoading = false;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
         }
     }

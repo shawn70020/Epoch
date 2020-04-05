@@ -52,8 +52,8 @@
 import axios from "axios";
 export default {
     name: "Admin",
-      methods: {
-         signout() {
+    methods: {
+        signout() {
             let uid = this.$store.state.info.id;
             axios
                 .put("/api/user/logout", {
@@ -66,7 +66,14 @@ export default {
                         this.$router.push("/login");
                     }
                 })
-        },
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
+        }
     }
 };
 </script>
@@ -109,7 +116,7 @@ export default {
                 background-size: cover;
                 margin: auto;
                 position: relative;
-                top: .6rem;
+                top: 0.6rem;
             }
         }
         .side-nav {

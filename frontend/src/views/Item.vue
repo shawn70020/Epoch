@@ -268,10 +268,19 @@ export default {
     methods: {
         getProduct(id) {
             this.wrapLoading = true;
-            axios.get(`/api/products/men/item/${id}`).then(res => {
-                this.products = res.data.data;
-                this.wrapLoading = false;
-            });
+            axios
+                .get(`/api/products/men/item/${id}`)
+                .then(res => {
+                    this.products = res.data.data;
+                    this.wrapLoading = false;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         addCart() {
             if (this.value == "") {
@@ -296,6 +305,13 @@ export default {
                             message: "Add To Cart",
                             type: "success",
                             duration: 1500
+                        });
+                    })
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please refresh your page again",
+                            duration: 6800
                         });
                     });
             }
@@ -325,6 +341,13 @@ export default {
                                 duration: 1500
                             });
                         }
+                    })
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please refresh your page again",
+                            duration: 6800
+                        });
                     });
             }
         }

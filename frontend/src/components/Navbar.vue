@@ -191,6 +191,13 @@ export default {
                                     this.total +
                                     this.carts[i].item * this.carts[i].price;
                             }
+                        })
+                        .catch(() => {
+                            this.$notify.error({
+                                title: "Something Goes Wrong ...",
+                                message: "Please refresh your page again",
+                                duration: 6800
+                            });
                         });
                 }
             },
@@ -204,7 +211,7 @@ export default {
             },
             immediate: true,
             deep: true
-        },
+        }
     },
     methods: {
         signout() {
@@ -222,9 +229,25 @@ export default {
                 });
         },
         deleteCart(id) {
-            axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {
-                this.$store.commit("deleteCart", parseInt(id));
-            });
+            axios
+                .delete(`/api/cart/${this.uid}/${id}`)
+                .then(() => {
+                    this.$store.commit("deleteCart", parseInt(id));
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         closeItem() {
             this.isCard = false;

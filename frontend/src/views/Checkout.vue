@@ -348,6 +348,13 @@ export default {
                                 this.subtotal +
                                 this.carts[i].item * this.carts[i].price;
                         }
+                    })
+                    .catch(() => {
+                        this.$notify.error({
+                            title: "Something Goes Wrong ...",
+                            message: "Please refresh your page again",
+                            duration: 6800
+                        });
                     });
             },
             immediate: true
@@ -406,6 +413,14 @@ export default {
                                             duration: 1500
                                         });
                                     }
+                                })
+                                .catch(() => {
+                                    this.$notify.error({
+                                        title: "Something Goes Wrong ...",
+                                        message:
+                                            "Please refresh your page again",
+                                        duration: 6800
+                                    });
                                 });
                         }, 2300);
                     } else {
@@ -451,6 +466,13 @@ export default {
                                     duration: 1500
                                 });
                             }
+                        })
+                        .catch(() => {
+                            this.$notify.error({
+                                title: "Something Goes Wrong ...",
+                                message: "Please refresh your page again",
+                                duration: 6800
+                            });
                         });
                 } else {
                     return false;
@@ -492,6 +514,13 @@ export default {
                     } else {
                         this.error();
                     }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
         }
     }
@@ -832,8 +861,8 @@ $color: #2d2d2d;
                 margin-left: 3%;
                 margin-top: 3%;
                 margin-bottom: 5%;
-                transition: .4s;
-                &:hover{
+                transition: 0.4s;
+                &:hover {
                     background: #ccc;
                     color: #2d2d2d;
                 }

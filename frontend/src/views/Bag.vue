@@ -308,6 +308,13 @@ export default {
                             }
                             this.finalTotal = this.total;
                             this.wrapLoading = false;
+                        })
+                        .catch(() => {
+                            this.$notify.error({
+                                title: "Something Goes Wrong ...",
+                                message: "Please refresh your page again",
+                                duration: 6800
+                            });
                         });
                 }
             },
@@ -317,9 +324,18 @@ export default {
     },
     methods: {
         getProducts() {
-            axios.get("/api/products/men").then(res => {
-                this.products = res.data.data;
-            });
+            axios
+                .get("/api/products/men")
+                .then(res => {
+                    this.products = res.data.data;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         updateNum() {
             let i;
@@ -337,12 +353,28 @@ export default {
                     if (res.data.result === true) {
                         this.$store.state.cart = res.data.data;
                     }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
         },
         deleteCart(id) {
-            axios.delete(`/api/cart/${this.uid}/${id}`).then(() => {
-                this.$store.commit("deleteCart", parseInt(id));
-            });
+            axios
+                .delete(`/api/cart/${this.uid}/${id}`)
+                .then(() => {
+                    this.$store.commit("deleteCart", parseInt(id));
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         }
     }
 };

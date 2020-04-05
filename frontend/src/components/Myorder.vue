@@ -202,16 +202,25 @@ export default {
     },
     methods: {
         getMyOrders(id) {
-            axios.get(`/api/user/myorder/${id}`).then(res => {
-                if (res.data.result === true) {
-                    this.order = res.data.data;
-                    this.image = res.data.image;
-                    this.nowNum = res.data.data.length;
-                    this.allNum = res.data.total;
-                } else {
-                    this.isEmpty = false;
-                }
-            });
+            axios
+                .get(`/api/user/myorder/${id}`)
+                .then(res => {
+                    if (res.data.result === true) {
+                        this.order = res.data.data;
+                        this.image = res.data.image;
+                        this.nowNum = res.data.data.length;
+                        this.allNum = res.data.total;
+                    } else {
+                        this.isEmpty = false;
+                    }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         },
         signout() {
             let uid = this.$store.state.info.id;
@@ -225,30 +234,49 @@ export default {
                         localStorage.removeItem("isLogin");
                         this.$router.push("/login");
                     }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
         },
         changePage() {
             this.isLoading = true;
             let uid = this.$store.state.info.id;
-            axios.get(`/api/myorder/${uid}/page=${this.page}`).then(res => {
-                let newData = res.data.data;
-                let newImage = res.data.image;
-                for (let i = 0; i < newData.length; i++) {
-                    this.order.push(newData[i]);
-                    this.image.push(newImage[i]);
-                }
-                this.nowNum = this.order.length;
-                this.page = this.page + 1;
-                let barWidth;
-                barWidth = (this.order.length * (100 / this.allNum)).toString();
-                this.bar = barWidth + "%";
-                if (this.nowNum === this.allNum) {
-                    this.loadBtn = "none";
-                } else {
-                    this.loadBtn = "block";
-                }
-                this.isLoading = false;
-            });
+            axios
+                .get(`/api/myorder/${uid}/page=${this.page}`)
+                .then(res => {
+                    let newData = res.data.data;
+                    let newImage = res.data.image;
+                    for (let i = 0; i < newData.length; i++) {
+                        this.order.push(newData[i]);
+                        this.image.push(newImage[i]);
+                    }
+                    this.nowNum = this.order.length;
+                    this.page = this.page + 1;
+                    let barWidth;
+                    barWidth = (
+                        this.order.length *
+                        (100 / this.allNum)
+                    ).toString();
+                    this.bar = barWidth + "%";
+                    if (this.nowNum === this.allNum) {
+                        this.loadBtn = "none";
+                    } else {
+                        this.loadBtn = "block";
+                    }
+                    this.isLoading = false;
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
+                });
         }
     }
 };

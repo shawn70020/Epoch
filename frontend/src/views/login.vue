@@ -138,6 +138,13 @@ export default {
                             } else {
                                 vm.showError = 1;
                             }
+                        })
+                        .catch(() => {
+                            this.$notify.error({
+                                title: "Something Goes Wrong ...",
+                                message: "Please refresh your page again",
+                                duration: 6800
+                            });
                         });
                 } else {
                     return false;
@@ -146,33 +153,6 @@ export default {
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();
-        },
-        login() {
-            const vm = this;
-            vm.isLoading = true;
-            axios
-                .post("/api/login", {
-                    email: vm.ruleForm.email,
-                    password: vm.ruleForm.password
-                })
-                .then(res => {
-                    vm.isLoading = false;
-                    if (res.data.result === true) {
-                        localStorage.setItem("token", res.data.token);
-                        this.$store.state.isLogin = true;
-                        if (res.data.level === "member") {
-                            if (res.data.sex === "M") {
-                                vm.$router.push("/men");
-                            } else {
-                                vm.$router.push("/women");
-                            }
-                        } else {
-                            vm.$router.push("/admin/dashboard");
-                        }
-                    } else {
-                        vm.showError = 1;
-                    }
-                });
         },
         showPassword() {
             if (this.type === "password") {

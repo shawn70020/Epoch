@@ -165,6 +165,13 @@ export default {
                                     duration: 1500
                                 });
                             }
+                        })
+                        .catch(() => {
+                            this.$notify.error({
+                                title: "Something Goes Wrong ...",
+                                message: "Please refresh your page again",
+                                duration: 6800
+                            });
                         });
                 } else {
                     return false;
@@ -215,6 +222,13 @@ export default {
                             duration: 1500
                         });
                     }
+                })
+                .catch(() => {
+                    this.$notify.error({
+                        title: "Something Goes Wrong ...",
+                        message: "Please refresh your page again",
+                        duration: 6800
+                    });
                 });
         }
     }
