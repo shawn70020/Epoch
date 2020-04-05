@@ -86,23 +86,18 @@
             </div>
             <div class="cart-item" :style="{ display: toggle.bag }">
                 <div class="cart-wrap">
-                    <div
-                        class="product"
-                        v-for="item in carts"
-                        :key="item.id"
-                        @click="goItem(item.id)"
-                    >
+                    <div class="product" v-for="item in carts" :key="item.id">
                         <img
                             :src="'data:image/png;base64,' + item.image"
                             class="img-fluid"
                         />
                         <div class="product-info">
                             <h3>NT {{ item.price | currency }}</h3>
-                            <h4>{{ item.name }}</h4>
-                            <h4>QTY:{{ item.item }}</h4>
+                            <h4 @click="goItem(item.id)">{{ item.name }}</h4>
+                            <h5>QTY:{{ item.item }}</h5>
                             <i
                                 class="far fa-trash-alt"
-                                @click="deleteCart(item.id)"
+                                @click.prevent="deleteCart(item.id)"
                             ></i>
                         </div>
                     </div>
@@ -233,13 +228,6 @@ export default {
                 .delete(`/api/cart/${this.uid}/${id}`)
                 .then(() => {
                     this.$store.commit("deleteCart", parseInt(id));
-                })
-                .catch(() => {
-                    this.$notify.error({
-                        title: "Something Goes Wrong ...",
-                        message: "Please refresh your page again",
-                        duration: 6800
-                    });
                 })
                 .catch(() => {
                     this.$notify.error({
@@ -460,7 +448,7 @@ $color1: #1ca753;
                 padding-left: 10px;
                 display: flex;
                 margin-bottom: 20px;
-                cursor: pointer;
+                // cursor: pointer;
                 img {
                     width: 90px;
                     height: 120px;
@@ -475,11 +463,19 @@ $color1: #1ca753;
                     h4 {
                         font-size: 14px;
                         color: #2d2d2d;
+                        cursor: pointer;
+                        transition: 0.2s;
+                        &:hover {
+                            color: #3a8bd1;
+                        }
                     }
-
+                    h5 {
+                        font-size: 14px;
+                        color: #2d2d2d;
+                    }
                     .fa-trash-alt {
                         cursor: pointer;
-                        transition: .2s;
+                        transition: 0.2s;
                         &:hover {
                             color: red;
                         }
@@ -513,7 +509,7 @@ $color1: #1ca753;
                 height: 40px;
             }
             .btn-bag {
-                background:white;
+                background: white;
                 color: #2d2d2d;
             }
             .btn-check {

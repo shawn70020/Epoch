@@ -194,9 +194,11 @@ export default {
                 });
         },
         moveToBag(id) {
+            let token = localStorage.getItem("token");
             axios
                 .put(`/api/saved/moveback/${this.uid}/${id}`)
                 .then(() => {
+                    this.$store.commit("getUserInfo", token);
                     this.getSavedItems(this.uid);
                 })
                 .catch(() => {
