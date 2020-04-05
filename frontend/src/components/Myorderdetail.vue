@@ -392,6 +392,7 @@ export default {
                     }
                     h4 {
                         margin-left: 30px;
+                        margin-right: 30px;
                     }
                 }
             }

@@ -39,7 +39,7 @@
         </el-select>
         <div class="table-wrap">
             <div class="empty" v-if="orders.length === 0">
-                抱歉！今日尚無訂單
+                抱歉！查無訂單
             </div>
             <table class="table table-borderless" v-if="orders.length !== 0">
                 <thead>

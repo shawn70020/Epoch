@@ -82,7 +82,7 @@ export default {
             let page = this.page - 1;
             if (page > 0) {
                 axios
-                    .get(`/api/admin/orders/page=${page}`)
+                    .get(`/api/admin/member/page=${page}`)
                     .then(res => {
                         this.orders = res.data.data;
                         this.array = res.data.data;
@@ -107,7 +107,7 @@ export default {
             let page = this.page + 1;
             if (page <= this.total) {
                 axios
-                    .get(`/api/admin/orders/page=${page}`)
+                    .get(`/api/admin/member/page=${page}`)
                     .then(res => {
                         this.orders = res.data.data;
                         this.array = res.data.data;
