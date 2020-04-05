@@ -60,12 +60,18 @@ class CartController extends Controller
             ];
             Cart::create($aArray);
         } else {
-            $iNum = $aResult[0]['num'];
-            $iId = $aResult[0]['id'];
-            $post = Cart::find($iId);
-            $post->num = $iNum +1;
-            $post->delete_at = Null;
-            $post->save();
+            if ($aResult[0]['delete_at'] === 1) {
+                $iId = $aResult[0]['id'];
+                $post = Cart::find($iId);
+                $post->delete_at = 2;
+                $post->save();
+            } else {
+                $iNum = $aResult[0]['num'];
+                $iId = $aResult[0]['id'];
+                $post = Cart::find($iId);
+                $post->num = $iNum +1;
+                $post->save();
+            }
         }
         return response()->json(['result' => true]);
     }

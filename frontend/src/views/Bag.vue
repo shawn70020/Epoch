@@ -27,9 +27,10 @@
                     <i class="icon fas fa-shopping-bag"></i>
                     <h4>Your bag is empty</h4>
                     <h5>
-                        Items remain in your bag for 1 day, and then they’re
+                        Items remain in your bag for 1 hour, and then they’re
                         moved to your Saved Items.
                     </h5>
+                    <h5>After 1 day, they will be remove to your cart.</h5>
                     <router-link to="/user/saved"
                         ><button>VIEW SAVED ITEMS</button></router-link
                     >
@@ -283,6 +284,7 @@ export default {
                 if (this.$store.state.isEmpty === false) {
                     this.isA = "flex";
                     this.isB = "none";
+                    this.wrapLoading = false;
                 } else {
                     this.isA = "none";
                     this.isB = "block";
@@ -363,8 +365,9 @@ export default {
                 });
         },
         deleteCart(id) {
+            let uid = this.$store.state.info.id
             axios
-                .delete(`/api/cart/${this.uid}/${id}`)
+                .delete(`/api/cart/${uid}/${id}`)
                 .then(() => {
                     this.$store.commit("deleteCart", parseInt(id));
                 })

@@ -197,7 +197,6 @@ export default {
             axios
                 .put(`/api/saved/moveback/${this.uid}/${id}`)
                 .then(() => {
-                    this.$store.commit("updateCart", parseInt(id));
                     this.getSavedItems(this.uid);
                 })
                 .catch(() => {

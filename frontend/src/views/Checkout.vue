@@ -401,7 +401,7 @@ export default {
                                             title: "Success",
                                             message: "Your Order is Send",
                                             type: "success",
-                                            duration: 1500
+                                            duration: 1800
                                         });
                                         this.$store.commit("checkoutCart");
                                         this.isLoading = false;
@@ -410,7 +410,7 @@ export default {
                                         this.$notify.error({
                                             title: "Sorry",
                                             message: res.data.msg,
-                                            duration: 1500
+                                            duration: 1800
                                         });
                                     }
                                 })
@@ -455,7 +455,7 @@ export default {
                                     title: "Success",
                                     message: "Your Order is Send",
                                     type: "success",
-                                    duration: 1500
+                                    duration: 1800
                                 });
                                 this.$store.commit("checkoutCart");
                                 this.$router.push("/myorder");
@@ -463,7 +463,7 @@ export default {
                                 this.$notify.error({
                                     title: "Sorry",
                                     message: res.data.msg,
-                                    duration: 1500
+                                    duration: 1800
                                 });
                             }
                         })
@@ -484,14 +484,14 @@ export default {
                 title: "Success",
                 message: "Use The Coupon",
                 type: "success",
-                duration: 1500
+                duration: 1800
             });
         },
         error() {
             this.$notify.error({
                 title: "Sorry",
                 message: "This Coupon Is Not Exist",
-                duration: 1500
+                duration: 1800
             });
         },
         toggle() {

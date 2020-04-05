@@ -300,7 +300,7 @@ export default {
                 this.$notify.info({
                     title: "提醒",
                     message: "這已是第一頁！(`・ω・´)",
-                    duration: 1500
+                    duration: 1800
                 });
             }
         },
@@ -324,7 +324,7 @@ export default {
                 this.$notify.info({
                     title: "提醒",
                     message: "這已是最後一頁！(`・ω・´)",
-                    duration: 1500
+                    duration: 1800
                 });
             }
         },
@@ -355,7 +355,7 @@ export default {
                                 title: "成功",
                                 message: "已編輯一筆商品",
                                 type: "success",
-                                duration: 1500
+                                duration: 1800
                             });
                             $("#productModal").modal("hide");
                             this.getProducts();
@@ -377,7 +377,7 @@ export default {
                                 title: "成功",
                                 message: "已新增一筆商品",
                                 type: "success",
-                                duration: 1500
+                                duration: 1800
                             });
                             $("#productModal").modal("hide");
                             this.getProducts();
@@ -385,7 +385,7 @@ export default {
                             this.$notify.error({
                                 title: "抱歉",
                                 message: "請確認所有欄位都填寫",
-                                duration: 1500
+                                duration: 1800
                             });
                         }
                     })
@@ -425,7 +425,7 @@ export default {
                         this.$notify.error({
                             title: "錯誤",
                             message: "只接受圖片檔",
-                            duration: 1500
+                            duration: 1800
                         });
                     }
                 })
@@ -452,14 +452,14 @@ export default {
                                     title: "成功",
                                     message: "已成功刪除此商品",
                                     type: "success",
-                                    duration: 1500
+                                    duration: 1800
                                 });
                                 this.getProducts();
                             } else {
                                 this.$notify.error({
                                     title: "錯誤",
                                     message: "查無此商品",
-                                    duration: 1500
+                                    duration: 1800
                                 });
                             }
                         })
@@ -475,7 +475,7 @@ export default {
                     this.$notify.info({
                         title: "提醒",
                         message: "已取消刪除動作",
-                        duration: 1500
+                        duration: 1800
                     });
                 });
         }

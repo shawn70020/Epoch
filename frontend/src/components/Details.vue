@@ -184,7 +184,7 @@ export default {
                                 this.$notify.error({
                                     title: "Sorry !",
                                     message: res.data.msg,
-                                    duration: 1500
+                                    duration: 1800
                                 });
                             } else {
                                 let token = localStorage.getItem("token");
@@ -192,7 +192,7 @@ export default {
                                     title: "Success !",
                                     message: "Change Your Profiles",
                                     type: "success",
-                                    duration: 1500
+                                    duration: 1800
                                 });
                                 this.$store.commit("getUserInfo", token);
                             }
@@ -239,7 +239,7 @@ export default {
                         this.$notify.error({
                             title: "抱歉",
                             message: res.data.msg,
-                            duration: 1500
+                            duration: 1800
                         });
                     } else {
                         this.$message({

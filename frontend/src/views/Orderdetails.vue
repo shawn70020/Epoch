@@ -313,7 +313,7 @@ export default {
                             title: "錯誤",
                             message: "請至少選取一項商品",
                             type: "info",
-                            duration: 1500
+                            duration: 1800
                         });
                     }
                 })
@@ -388,7 +388,7 @@ export default {
                             title: "成功",
                             message: "選中商品已出貨(ﾉ>ω<)ﾉ",
                             type: "success",
-                            duration: 1500
+                            duration: 1800
                         });
                     })
                     .catch(() => {

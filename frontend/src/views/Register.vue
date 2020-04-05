@@ -151,18 +151,20 @@ export default {
                         })
                         .then(res => {
                             if (res.data.result === true) {
-                                this.$message({
-                                    message: "恭喜您！註冊會員成功",
-                                    type: "success"
+                                this.$notify({
+                                    title: "Success !",
+                                    message: "Lead You To Login",
+                                    type: "success",
+                                    duration: 1600
                                 });
                                 setTimeout(() => {
                                     vm.$router.push("/login");
-                                }, 1500);
+                                }, 1800);
                             } else {
                                 this.$notify.error({
-                                    title: "抱歉",
+                                    title: "Sorry",
                                     message: res.data.msg,
-                                    duration: 1500
+                                    duration: 1800
                                 });
                             }
                         })
@@ -180,56 +182,6 @@ export default {
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();
-        },
-        success() {
-            this.$notify({
-                title: "成功",
-                message: "註冊會員",
-                type: "success",
-                duration: 1500
-            });
-        },
-        error() {
-            this.$notify.error({
-                title: "抱歉",
-                message: "註冊失敗！請重新嘗試",
-                duration: 1500
-            });
-        },
-        signin() {
-            const vm = this;
-            axios
-                .post("/api/signin", {
-                    email: vm.user.email,
-                    password: vm.user.password,
-                    name: vm.user.username,
-                    date: vm.user.time,
-                    sex: vm.user.sex
-                })
-                .then(res => {
-                    if (res.data.result === true) {
-                        this.$message({
-                            message: "恭喜您！註冊會員成功",
-                            type: "success"
-                        });
-                        setTimeout(() => {
-                            vm.$router.push("/login");
-                        }, 1500);
-                    } else {
-                        this.$notify.error({
-                            title: "抱歉",
-                            message: res.data.msg,
-                            duration: 1500
-                        });
-                    }
-                })
-                .catch(() => {
-                    this.$notify.error({
-                        title: "Something Goes Wrong ...",
-                        message: "Please refresh your page again",
-                        duration: 6800
-                    });
-                });
         }
     }
 };

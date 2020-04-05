@@ -94,7 +94,7 @@
                                 class="btn"
                                 @click="addCart"
                             >
-                                ADD BAG
+                                ADD TO BAG
                             </button>
                             <button
                                 v-if="products.num === 0"
@@ -290,21 +290,21 @@ export default {
                     title: "Sorry !",
                     message: "Please Sign In",
                     type: "warning",
-                    duration: 1500
+                    duration: 1800
                 });
             } else {
                 axios
                     .post("/api/user/addcart", {
                         uid: this.$store.state.info.id,
-                        pid: this.pid
+                        pid: this.$route.params.pid
                     })
                     .then(() => {
-                        this.$store.commit("updateCart", parseInt(this.pid));
+                        this.$store.commit("updateCart", parseInt(this.$route.params.pid));
                         this.$notify({
                             title: "Success !",
                             message: "Add To Cart",
                             type: "success",
-                            duration: 1500
+                            duration: 1800
                         });
                     })
                     .catch(() => {
@@ -322,7 +322,7 @@ export default {
                     title: "Sorry !",
                     message: "Please Sign In First",
                     type: "warning",
-                    duration: 1500
+                    duration: 1800
                 });
             } else {
                 axios
@@ -338,7 +338,7 @@ export default {
                                 title: "Success !",
                                 message: "ADD TO SAVED ITEMS",
                                 type: "success",
-                                duration: 1500
+                                duration: 1800
                             });
                         }
                     })

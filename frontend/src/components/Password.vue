@@ -165,16 +165,16 @@ export default {
                         .then(res => {
                             if (res.data.result === false) {
                                 this.$notify.error({
-                                    title: "抱歉",
+                                    title: "Sorry",
                                     message: res.data.msg,
-                                    duration: 1500
+                                    duration: 1800
                                 });
                             } else {
                                 this.$notify({
                                     title: "Success",
                                     message: "Change Your Password !",
                                     type: "success",
-                                    duration: 1500
+                                    duration: 1800
                                 });
                                 this.ruleForm.old = "";
                                 this.ruleForm.new = "";
@@ -192,36 +192,6 @@ export default {
                     return false;
                 }
             });
-        },
-        changePassword() {
-            axios
-                .put(`/api/user/password/${this.uid}`, {
-                    oldpass: this.user.old,
-                    newpass: this.user.new
-                })
-                .then(res => {
-                    if (res.data.result === false) {
-                        this.$notify.error({
-                            title: "抱歉",
-                            message: res.data.msg,
-                            duration: 1500
-                        });
-                    } else {
-                        this.$message({
-                            message: "恭喜您！密碼修改成功",
-                            type: "success"
-                        });
-                        this.user.old = "";
-                        this.user.new = "";
-                    }
-                })
-                .catch(() => {
-                    this.$notify.error({
-                        title: "Something Goes Wrong ...",
-                        message: "Please refresh your page again",
-                        duration: 6800
-                    });
-                });
         },
         signout() {
             let uid = this.$store.state.info.id;

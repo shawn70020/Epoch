@@ -99,7 +99,7 @@ export default {
                 this.$notify.info({
                     title: "提醒",
                     message: "這已是第一頁！(`・ω・´)",
-                    duration: 1500
+                    duration: 1800
                 });
             }
         },
@@ -124,7 +124,7 @@ export default {
                 this.$notify.info({
                     title: "提醒",
                     message: "這已是最後一頁！(`・ω・´)",
-                    duration: 1500
+                    duration: 1800
                 });
             }
         }

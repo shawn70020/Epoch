@@ -23,7 +23,7 @@ class UserController extends Controller
         ## 檢查會員是否重複
         $aResult = User::select('email')->where('email', $_oRequest->input('email'))->get();
         if (!collect($aResult)->isEmpty()) {
-            return response()->json(['result' => false,'msg' => '此會員已被註冊']);
+            return response()->json(['result' => false,'msg' => 'This Email is already exist !']);
         };
         ## 取得當下時間
         $dNowDate = (string) Carbon::now('Asia/Taipei');
@@ -149,12 +149,12 @@ class UserController extends Controller
 
         ## 檢查會員是否存在及狀態
         if ($_iUid === '') {
-            return response()->json(['result' => false,'msg' => '會員不存在']);
+            return response()->json(['result' => false,'msg' => 'Member Not Exist']);
         }
 
         ##檢查信箱格式
         if (!preg_match("/([\w\-]+\@[\w\-]+\.[\w\-]+)/", $sEmail)) {
-            return response()->json(['result' => false,'msg' => '信箱格式錯誤']);
+            return response()->json(['result' => false,'msg' => 'Wrong Email Type']);
         }
 
         ## 更改會員資料
@@ -179,19 +179,19 @@ class UserController extends Controller
 
         ## 檢查會員是否存在及狀態
         if ($_iUid === '') {
-            return response()->json(['result' => false,'msg' => '會員不存在!']);
+            return response()->json(['result' => false,'msg' => 'Member Not Exist']);
         }
 
         ## 舊密碼確認
         $aResult =User::select('passwd')->where('id', $_iUid)->get();
         $sPassWd = $aResult[0]['passwd'];
         if (!Hash::check($sOld, $sPassWd)) {
-            return response()->json(['result' => false,'msg' => '舊密碼錯誤!']);
+            return response()->json(['result' => false,'msg' => 'Olp Password Not Correct!']);
         }
 
         ## 密碼重複驗證
         if ($sOld === $sNew) {
-            return response()->json(['result' => false,'msg' => '新舊密碼不能重複!']);
+            return response()->json(['result' => false,'msg' => "Can't Use Same Password"]);
         }
 
         ## 更改密碼

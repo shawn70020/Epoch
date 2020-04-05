@@ -476,8 +476,13 @@ $color1: #1ca753;
                         font-size: 14px;
                         color: #2d2d2d;
                     }
+
                     .fa-trash-alt {
                         cursor: pointer;
+                        transition: .2s;
+                        &:hover {
+                            color: red;
+                        }
                     }
                 }
             }
@@ -508,7 +513,7 @@ $color1: #1ca753;
                 height: 40px;
             }
             .btn-bag {
-                background: #fff;
+                background:white;
                 color: #2d2d2d;
             }
             .btn-check {

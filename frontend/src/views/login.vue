@@ -133,7 +133,7 @@ export default {
                                 this.$notify.error({
                                     title: "Sorry",
                                     message: "This Account Has Been Frozen",
-                                    duration: 1500
+                                    duration: 1800
                                 });
                             } else {
                                 vm.showError = 1;
