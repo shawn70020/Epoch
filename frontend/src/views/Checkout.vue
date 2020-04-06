@@ -7,7 +7,6 @@
             <loading
                 loader="bars"
                 :active.sync="isLoading"
-                :is-full-page="false"
                 :opacity="1"
                 background-color="#eee"
             >

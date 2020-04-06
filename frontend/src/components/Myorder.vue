@@ -1,154 +1,170 @@
 <template>
-    <div class="body">
-        <div class="title">
-            <router-link to="/">
-                <h4>EPOCH</h4>
-            </router-link>
-        </div>
-        <div class="wrapper">
-            <div class="left-nav">
-                <div class="user">
-                    <div class="circle">
-                        <h5>{{ spiltName }}</h5>
-                    </div>
-                    <div class="name">
-                        <h5>Hi,</h5>
-                        <h5>{{ userName }}</h5>
-                    </div>
-                </div>
-                <router-link to="/account">
-                    <div class="item">
-                        <i class="far fa-user"></i>
-                        <h5>Account overview</h5>
-                    </div>
+    <div>
+        <div class="body">
+            <div class="title">
+                <router-link to="/">
+                    <h4>EPOCH</h4>
                 </router-link>
-                <router-link to="/mydetails">
-                    <div class="item">
-                        <i class="far fa-address-card"></i>
-                        <h5>My details</h5>
-                    </div>
-                </router-link>
-                <router-link to="/mypassword">
-                    <div class="item">
-                        <i class="fas fa-lock"></i>
-                        <h5>Change password</h5>
-                    </div>
-                </router-link>
-                <router-link to="/myorder">
-                    <div class="item line">
-                        <i class="fas fa-list-alt"></i>
-                        <h5>My orders</h5>
-                    </div>
-                </router-link>
-                <div class="item">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <h5 @click="signout" class="pointer">Sign out</h5>
-                </div>
             </div>
-            <div class="right">
-                <div class="top">
-                    <i class="fas fa-list-alt"></i>
-                    <h3>MY ORDERS</h3>
-                </div>
-                <div class="display">
-                    <h5>Displaying {{ order.length }} orders</h5>
-                </div>
-                <div class="order">
-                    <div
-                        class="order-list"
-                        v-for="(item, index) in order"
-                        :key="item.id"
-                    >
-                        <div class="title">
-                            <div class="label">
-                                <h5 v-if="item.shipDate !== null">
-                                    WE'VE SENT IT!
-                                </h5>
-                                <h5 v-if="item.shipDate === null">
-                                    WE'RE WORKING ON IT!
-                                </h5>
-                                <h5>ORDER NO.</h5>
-                                <h5>SHIPPED DATE.</h5>
-                            </div>
-                            <div class="input">
-                                <h5 v-if="item.shipDate !== null">
-                                    {{
-                                        moment(item.shipDate)
-                                            .add(3, "days")
-                                            .calendar()
-                                    }}
-                                </h5>
-                                <h5 v-if="item.shipDate === null">
-                                    Thanks for orders
-                                </h5>
-                                <h5>{{ item.id }}</h5>
-                                <h5 v-if="item.shipDate !== null">
-                                    {{ moment(item.shipDate).calendar() }}
-                                </h5>
-                                <h5 v-if="item.shipDate === null">
-                                    {{
-                                        moment()
-                                            .add(1, "days")
-                                            .calendar()
-                                    }}
-                                </h5>
-                            </div>
+            <div class="wrapper">
+                <div class="left-nav">
+                    <div class="user">
+                        <div class="circle">
+                            <h5>{{ spiltName }}</h5>
                         </div>
-                        <div class="bottom">
-                            <div class="image-wrap">
-                                <div
-                                    class="image"
-                                    v-for="product in image[index]"
-                                    :key="product.id"
-                                >
-                                    <img
-                                        :src="
-                                            'data:image/png;base64,' +
-                                                product.image
-                                        "
-                                        class="img-fluid"
-                                    />
+                        <div class="name">
+                            <h5>Hi,</h5>
+                            <h5>{{ userName }}</h5>
+                        </div>
+                    </div>
+                    <router-link to="/account">
+                        <div class="item">
+                            <i class="far fa-user"></i>
+                            <h5>Account overview</h5>
+                        </div>
+                    </router-link>
+                    <router-link to="/mydetails">
+                        <div class="item">
+                            <i class="far fa-address-card"></i>
+                            <h5>My details</h5>
+                        </div>
+                    </router-link>
+                    <router-link to="/mypassword">
+                        <div class="item">
+                            <i class="fas fa-lock"></i>
+                            <h5>Change password</h5>
+                        </div>
+                    </router-link>
+                    <router-link to="/myorder">
+                        <div class="item line">
+                            <i class="fas fa-list-alt"></i>
+                            <h5>My orders</h5>
+                        </div>
+                    </router-link>
+                    <div class="item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <h5 @click="signout" class="pointer">Sign out</h5>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="top">
+                        <i class="fas fa-list-alt"></i>
+                        <h3>MY ORDERS</h3>
+                    </div>
+                    <div class="display">
+                        <h5>Displaying {{ order.length }} orders</h5>
+                    </div>
+                    <div class="banner" v-if="order.length !== 0">
+                        <i class="far fa-smile-wink"></i>
+                        <h4>Thanks for your order !
+                        </h4>
+                        <h5>Hope you can find anything in Epoch</h5>
+                        <router-link to="/">
+                            <button class="btn-shopping">KEEP SHOPPING</button>
+                        </router-link>
+                    </div>
+                    <div class="order">
+                        <div
+                            class="order-list"
+                            v-for="(item, index) in order"
+                            :key="item.id"
+                        >
+                            <div class="title">
+                                <div class="label">
+                                    <h5 v-if="item.shipDate !== null">
+                                        WE'VE SENT IT!
+                                    </h5>
+                                    <h5 v-if="item.shipDate === null">
+                                        WE'RE WORKING ON IT!
+                                    </h5>
+                                    <h5>ORDER NO.</h5>
+                                    <h5>SHIPPED DATE.</h5>
+                                </div>
+                                <div class="input">
+                                    <h5 v-if="item.shipDate !== null">
+                                        {{
+                                            moment(item.shipDate)
+                                                .add(3, "days")
+                                                .calendar()
+                                        }}
+                                    </h5>
+                                    <h5 v-if="item.shipDate === null">
+                                        Thanks for orders
+                                    </h5>
+                                    <h5>{{ item.id }}</h5>
+                                    <h5 v-if="item.shipDate !== null">
+                                        {{ moment(item.shipDate).calendar() }}
+                                    </h5>
+                                    <h5 v-if="item.shipDate === null">
+                                        {{
+                                            moment()
+                                                .add(1, "days")
+                                                .calendar()
+                                        }}
+                                    </h5>
                                 </div>
                             </div>
-                            <div class="btn-order">
-                                <router-link
-                                    :to="{
-                                        name: 'Myorderdetail',
-                                        params: { oid: item.id }
-                                    }"
-                                    ><button>VIEW ORDER</button></router-link
-                                >
+                            <div class="bottom">
+                                <div class="image-wrap">
+                                    <div
+                                        class="image"
+                                        v-for="product in image[index]"
+                                        :key="product.id"
+                                    >
+                                        <img
+                                            :src="
+                                                'data:image/png;base64,' +
+                                                    product.image
+                                            "
+                                            class="img-fluid"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="btn-order">
+                                    <router-link
+                                        :to="{
+                                            name: 'Myorderdetail',
+                                            params: { oid: item.id }
+                                        }"
+                                        ><button>
+                                            VIEW ORDER
+                                        </button></router-link
+                                    >
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="page" v-if="order.length !== 0">
-                    <h5>You've viewed {{ nowNum }} of {{ allNum }} Orders</h5>
-                    <div class="loading">
-                        <loading
-                            loader="dots"
-                            :active.sync="isLoading"
-                            :is-full-page="false"
-                            :opacity="1"
-                            background-color="#eee"
-                        ></loading>
-                        <button
-                            class="load"
-                            :style="{ display: loadBtn }"
-                            @click="changePage"
-                        >
-                            LOAD MORE
-                        </button>
+                    <div class="page" v-if="order.length !== 0">
+                        <h5>
+                            You've viewed {{ nowNum }} of {{ allNum }} Orders
+                        </h5>
+                        <div class="loading">
+                            <loading
+                                loader="dots"
+                                :active.sync="isLoading"
+                                :is-full-page="false"
+                                :opacity="1"
+                                background-color="#eee"
+                            ></loading>
+                            <button
+                                v-if="order.length > 1"
+                                class="load"
+                                :style="{ display: loadBtn }"
+                                @click="changePage"
+                            >
+                                LOAD MORE
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="empty" :class="{ show: isEmpty }">
-                    <i class="far fa-hand-point-down"></i>
-                    <h4>You currently have no orders</h4>
-                    <h5>Best get shopping EPOCH pronto…</h5>
-                    <router-link to="/">
-                        <button class="btn-shopping">START SHOPPING</button>
-                    </router-link>
+                    <div class="empty" :class="{ show: isEmpty }">
+                        <i class="far fa-hand-point-down"></i>
+                        <h4>You currently have no orders</h4>
+                        <h5>Best get shopping EPOCH pronto…</h5>
+                        <router-link to="/">
+                            <button class="btn-shopping">START SHOPPING</button>
+                        </router-link>
+                    </div>
                 </div>
             </div>
         </div>
@@ -284,6 +300,7 @@ export default {
 <style lang="scss" scoped>
 .body {
     background: #eee;
+    // height: calc(100vh - 62px);
 }
 .title {
     width: 55%;
@@ -311,6 +328,7 @@ export default {
 }
 .wrapper {
     width: 62%;
+    // height: 100%;
     margin: auto;
     display: flex;
     justify-content: center;
@@ -367,6 +385,7 @@ export default {
     }
     .right {
         width: 70%;
+        height: 100%;
         margin-left: 20px;
         .top {
             width: 100%;
@@ -416,9 +435,11 @@ export default {
     .empty {
         background: #fff;
         width: 100%;
-        height: 300px;
+        height: 550px;
+        margin-bottom: 20px;
         margin-top: 15px;
         text-align: center;
+        padding-top: 70px;
         .fa-hand-point-down {
             margin: 40px 0;
             font-size: 40px;
@@ -450,8 +471,38 @@ export default {
             margin-left: 30px;
         }
     }
+    .banner{
+        width: 100%;
+        background: #fff;
+        width: 100%;
+        height: 250px;
+        margin-top: 15px;
+        text-align: center;
+        margin-bottom: 10px;
+        .fa-smile-wink{
+            margin: 15px 0;
+            font-size: 40px;
+        }
+         h4 {
+            font-weight: bold;
+        }
+        h5 {
+            margin: 15px 0 25px 0;
+            font-size: 20px;
+        }
+        .btn-shopping {
+            width: 330px;
+            height: 50px;
+            padding: 10px 28px;
+            background: #2d2d2d;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+    }
     .order {
         width: 100%;
+        height: 100%;
         background: #eee;
         .order-list {
             width: 100%;

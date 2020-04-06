@@ -63,12 +63,14 @@ class CartController extends Controller
             if ($aResult[0]['delete_at'] === 1) {
                 $iId = $aResult[0]['id'];
                 $post = Cart::find($iId);
+                $post->addtime = $dNowDate;
                 $post->delete_at = 2;
                 $post->save();
             } else {
                 $iNum = $aResult[0]['num'];
                 $iId = $aResult[0]['id'];
                 $post = Cart::find($iId);
+                $post->addtime = $dNowDate;
                 $post->num = $iNum +1;
                 $post->save();
             }
@@ -175,6 +177,7 @@ class CartController extends Controller
         } else {
             $iId = $aResult[0]['id'];
             $post = Cart::find($iId);
+            $post->addtime = $dNowDate;
             $post->delete_at = 2;
             $post->save();
         }
