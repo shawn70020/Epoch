@@ -476,9 +476,8 @@ export default {
         background: #fff;
         width: 100%;
         height: 250px;
-        margin-top: 15px;
         text-align: center;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         .fa-smile-wink{
             margin: 15px 0;
             font-size: 40px;
