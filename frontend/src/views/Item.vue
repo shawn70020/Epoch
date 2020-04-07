@@ -104,7 +104,7 @@
                             >
                                 ADD TO BAG
                             </button>
-                            <div class="heart" @click="saveItem(pid)">
+                            <div class="heart" @click="saveItem()">
                                 <i
                                     class="fa-heart"
                                     :class="{ fas: isCheck, far: noCheck }"
@@ -316,7 +316,7 @@ export default {
                     });
             }
         },
-        saveItem(id) {
+        saveItem() {
             if (!this.$store.state.isLogin) {
                 this.$notify({
                     title: "Sorry !",
@@ -328,7 +328,7 @@ export default {
                 axios
                     .post("/api/user/saved", {
                         uid: this.$store.state.info.id,
-                        pid: id
+                        pid: this.$route.params.pid
                     })
                     .then(res => {
                         if (res.data.result === true) {

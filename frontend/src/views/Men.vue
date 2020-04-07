@@ -288,14 +288,6 @@ export default {
                     });
                 });
         }
-        // mousewheel(e) {
-        //     if (e.wheelDelta > 0) {
-        //         console.log("go up");
-        //     } else {
-        //         console.log("go down");
-
-        //     }
-        // }
     }
 };
 </script>

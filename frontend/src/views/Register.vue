@@ -1,7 +1,9 @@
 <template>
     <div class="wrap">
         <div class="title">
+            <router-link to="/">
             <h2>Epoch</h2>
+            </router-link>
         </div>
         <div class="container">
             <div class="tabs">
@@ -194,6 +196,10 @@ export default {
 }
 .title {
     padding: 20px 0;
+    a{
+        text-decoration: none;
+        color: #2d2d2d;
+    }
     h2 {
         text-align: center;
         font-size: 38px;
