@@ -1,194 +1,129 @@
-<template>
-    <div>
-        <Navbar></Navbar>
-        <div class="banner">
-            <router-link to="/women" class="">
-                <div class="shop-link">
-                    WOMEN
-                </div>
-            </router-link>
-            <h5>UP TO 30% OFF BETWEEN-SEASON STYLES</h5>
-            <router-link to="/men" class="">
-                <div class="shop-link">
-                    MEN
-                </div></router-link
-            >
-        </div>
-        <div class="wrap-loading">
-            <loading
-                loader="dots"
-                :active.sync="wrapLoading"
-                :is-full-page="false"
-                :opacity="1"
-            >
-            </loading>
-            <div class="navs">
-                <ol class="bread">
-                    <li><router-link to="/">Home</router-link></li>
-                    <li><router-link to="/men">Men</router-link></li>
-                    <li><a href="#">New In</a></li>
-                </ol>
-            </div>
-            <div class="container">
-                <div class="introduce">
-                    <h3>Men's New in</h3>
-                    <p>
-                        Looking for something new? Discover emerging trends, the
-                        latest clothing for men and the freshest new fits with
-                        our ASOS New In page. From sharp office shirts and suits
-                        to see you right through to 5PM, to the shorts, tees and
-                        vests that’ll keep you looking fresh– you can find the
-                        look here as soon as it lands. What’s more, our men’s
-                        new clothing selection includes all those accessory
-                        touches that make the difference, from laidback caps and
-                        timeless
-                        <span id="more" :style="{ display: show }">
-                            >shades to boardroom-ready watches and belts. Expect
-                            fresh drops from sportswear authorities Nike and
-                            adidas Originals. If you’re after a style change up,
-                            you’ll find the best in men’s new clothing, shoes
-                            and accessories courtesy of our very own ASOS
-                            Design. Men’s denim doesn’t get much better than the
-                            likes of Cheap Monday, while brands like BOSS
-                            combine sophisticated prints with casual fits for a
-                            weekend-ready look.
-                        </span>
-                    </p>
-                    <div class="view-btn">
-                        <button
-                            type="button"
-                            class="btn"
-                            id="myBtn"
-                            @click="showMore"
-                        >
-                            View more
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="product">
-                <div v-for="item in products" :key="item.id" class="item">
-                    <router-link
-                        :to="{
-                            name: 'Item',
-                            params: { pid: item.id }
-                        }"
-                    >
-                        <img
-                            :src="'data:image/png;base64,' + item.image"
-                            class="img-fluid"
-                        />
-                        <div class="item-txt">
-                            <h5>{{ item.name }}</h5>
-                            <h4>NT {{ item.price | currency }}</h4>
-                        </div>
-                    </router-link>
-                </div>
-            </div>
-            <div class="page">
-                <h5>You've viewed {{ nowNum }} of {{ allNum }} products</h5>
-                <div class="progress" style="height: 2.5px;">
-                    <div
-                        class="progress-bar"
-                        role="progressbar"
-                        :style="{ width: bar }"
-                        aria-valuenow="20"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                    ></div>
-                </div>
-                <div class="loading">
-                    <loading
-                        loader="bars"
-                        :active.sync="isLoading"
-                        :is-full-page="false"
-                        :opacity="1"
-                    ></loading>
-                    <button
-                        class="load"
-                        :style="{ display: loadBtn }"
-                        @click="changePage"
-                    >
-                        LOAD MORE
-                    </button>
-                </div>
-            </div>
-            <div class="social">
-                <ul>
-                    <li>
-                        <div class="icon fb">
-                            <i class="fab fa-facebook-square"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon ig">
-                            <i class="fab fa-instagram"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon tw">
-                            <i class="fab fa-twitter"></i>
-                        </div>
-                    </li>
-                    <li>|</li>
-                    <li>
-                        <div class="icon yt">
-                            <i class="fab fa-youtube"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon sc">
-                            <i class="fab fa-snapchat"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon pi">
-                            <i class="fab fa-pinterest"></i>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="foot">
-                <div class="foot-top">
-                    <div class="item">
-                        <h4>HELP & INFORMATION</h4>
-                        <ul>
-                            <li><a href="#">Help</a></li>
-                            <li><a href="#">Deliverey & Returns</a></li>
-                            <li><a href="#">Track Order</a></li>
-                        </ul>
-                    </div>
-                    <div class="item">
-                        <h4>ABOUT VUESTORE</h4>
-                        <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Careers at VueStore</a></li>
-                            <li><a href="#">Investors Site</a></li>
-                        </ul>
-                    </div>
-                    <div class="item">
-                        <h4>MORE FROM VUESTORE</h4>
-                        <ul>
-                            <li><a href="#">Mobile and Apps</a></li>
-                            <li><a href="#">VueStore Marketplcae</a></li>
-                            <li><a href="#">Gift vouchers</a></li>
-                        </ul>
-                    </div>
-                    <div class="item">
-                        <h4>SHOPPING FROM:</h4>
-                        <h5>
-                            You're in <i class="fas fa-globe-americas"></i> |
-                            Change
-                        </h5>
-                    </div>
-                </div>
-                <div class="foot-bot">
-                    <h5>&copy; 2020</h5>
-                    <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
-                </div>
-            </div>
-        </div>
-    </div>
+<template lang="pug">
+div
+  navbar
+  .banner
+    router-link(to='/women')
+      .shop-link
+        | WOMEN
+    h5 UP TO 30% OFF BETWEEN-SEASON STYLES
+    router-link(to='/men')
+      .shop-link
+        | MEN
+  .wrap-loading
+    loading(loader='dots' :active.sync='wrapLoading' :is-full-page='false' :opacity='1')
+    .navs
+      ol.bread
+        li
+          router-link(to='/') Home
+        li
+          router-link(to='/men') Men
+        li
+          a(href='#') New In
+    .container
+      .introduce
+        h3 Men&apos;s New in
+        p
+          | Looking for something new? Discover emerging trends, the
+          | latest clothing for men and the freshest new fits with
+          | our ASOS New In page. From sharp office shirts and suits
+          | to see you right through to 5PM, to the shorts, tees and
+          | vests that&rsquo;ll keep you looking fresh&ndash; you can find the
+          | look here as soon as it lands. What&rsquo;s more, our men&rsquo;s
+          | new clothing selection includes all those accessory
+          | touches that make the difference, from laidback caps and
+          | timeless
+          span#more(:style='{ display: show }')
+            | &gt;shades to boardroom-ready watches and belts. Expect
+            | fresh drops from sportswear authorities Nike and
+            | adidas Originals. If you&rsquo;re after a style change up,
+            | you&rsquo;ll find the best in men&rsquo;s new clothing, shoes
+            | and accessories courtesy of our very own ASOS
+            | Design. Men&rsquo;s denim doesn&rsquo;t get much better than the
+            | likes of Cheap Monday, while brands like BOSS
+            | combine sophisticated prints with casual fits for a
+            | weekend-ready look.
+        .view-btn
+          button#myBtn.btn(type='button' @click='showMore')
+            | View more
+    .product
+      .item(v-for='item in products' :key='item.id')
+        router-link(:to="{\
+        name: 'Item',\
+        params: { pid: item.id }\
+        }")
+          img.img-fluid(:src="'data:image/png;base64,' + item.image")
+          .item-txt
+            h5 {{ item.name }}
+            h4 NT {{ item.price | currency }}
+    .page
+      h5 You&apos;ve viewed {{ nowNum }} of {{ allNum }} products
+      .progress(style='height: 2.5px;')
+        .progress-bar(role='progressbar' :style='{ width: bar }' aria-valuenow='20' aria-valuemin='0' aria-valuemax='100')
+      .loading
+        loading(loader='bars' :active.sync='isLoading' :is-full-page='false' :opacity='1')
+        button.load(:style='{ display: loadBtn }' @click='changePage')
+          | LOAD MORE
+    .social
+      ul
+        li
+          .icon.fb
+            i.fab.fa-facebook-square
+        li
+          .icon.ig
+            i.fab.fa-instagram
+        li
+          .icon.tw
+            i.fab.fa-twitter
+        li |
+        li
+          .icon.yt
+            i.fab.fa-youtube
+        li
+          .icon.sc
+            i.fab.fa-snapchat
+        li
+          .icon.pi
+            i.fab.fa-pinterest
+    .foot
+      .foot-top
+        .item
+          h4 HELP &amp; INFORMATION
+          ul
+            li
+              a(href='#') Help
+            li
+              a(href='#') Deliverey &amp; Returns
+            li
+              a(href='#') Track Order
+        .item
+          h4 ABOUT VUESTORE
+          ul
+            li
+              a(href='#') About Us
+            li
+              a(href='#') Careers at VueStore
+            li
+              a(href='#') Investors Site
+        .item
+          h4 MORE FROM VUESTORE
+          ul
+            li
+              a(href='#') Mobile and Apps
+            li
+              a(href='#') VueStore Marketplcae
+            li
+              a(href='#') Gift vouchers
+        .item
+          h4 SHOPPING FROM:
+          h5
+            | You&apos;re in 
+            i.fas.fa-globe-americas
+            |  |
+            |                             Change
+      .foot-bot
+        h5 &copy; 2020
+        h5 Privacy &amp; Cookies | Ts&amp;Cs | Accessibility
+
 </template>
 <script>
 import axios from "axios";

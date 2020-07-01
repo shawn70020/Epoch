@@ -1,163 +1,120 @@
-<template>
-    <div class="wrap">
-        <Navbar></Navbar>
-        <div class="banner-up">
-            <router-link to="/women" class="">
-                <div class="shop-link">
-                    WOMEN
-                </div>
-            </router-link>
-            <h5>UP TO 30% OFF BETWEEN-SEASON STYLES</h5>
-            <router-link to="/men" class="">
-                <div class="shop-link">
-                    MEN
-                </div></router-link
-            >
-        </div>
-        <div class="banner">
-            <div class="banner-top">
-                <router-link to="/women" class="">
-                    <div class="solgan1">GET 20% OFF*</div>
-                    <div class="solgan2">(HELLO, SAVED ITEMS)</div>
-                    <div class="solgan3">With code: AMAZING20</div>
-                </router-link>
-            </div>
-            <div class="banner-bottom">
-                *Limited time only. Selected styles marked down on site
-            </div>
-        </div>
-        <div class="container">
-            <div class="ad">
-                <div class="title">The Y2K trend</div>
-                <router-link to="/women" class="">
-                    <div class="shop-link">
-                        shop now
-                    </div>
-                </router-link>
-            </div>
-            <div class="row mt-5">
-                <div class="col-6">
-                    <img src="../assets/image/1.jpg" alt="" />
-                    <h4>NEW-SEASON STYLES</h4>
-                    <h5>Looks you haven't met yet</h5>
-                    <router-link to="/men" class="">
-                        <div class="shop-link">
-                            SHOP NOW
-                        </div>
-                    </router-link>
-                </div>
-                <div class="col-6">
-                    <img src="../assets/image/2.jpg" alt="" />
-                    <h4>VARSITY VIBES</h4>
-                    <h5>Campus it up</h5>
-                    <router-link to="/men" class="">
-                        <div class="shop-link">
-                            SHOP THE BRAND
-                        </div>
-                    </router-link>
-                </div>
-                <div class="col-6">
-                    <img src="../assets/image/3.jpg" alt="" />
-                    <h4>FRESH CO-ORDS</h4>
-                    <h5>What a match!</h5>
-                    <router-link to="/men" class="">
-                        <div class="shop-link">
-                            SHOP NOW
-                        </div>
-                    </router-link>
-                </div>
-                <div class="col-6">
-                    <img src="../assets/image/4.jpg" alt="" />
-                    <h4>NEW COLLUSION</h4>
-                    <h5>Oversized, graphic goodness</h5>
-                    <router-link to="/women" class="">
-                        <div class="shop-link">
-                            SHOP THE BRAND
-                        </div>
-                    </router-link>
-                </div>
-            </div>
-        </div>
-        <div class="block">
-            <el-carousel trigger="click" height="580px">
-                <el-carousel-item v-for="item in 4" :key="item">
-                </el-carousel-item>
-            </el-carousel>
-        </div>
-        <div class="social">
-            <ul>
-                <li>
-                    <div class="icon fb">
-                        <i class="fab fa-facebook-square"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon ig">
-                        <i class="fab fa-instagram"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon tw">
-                        <i class="fab fa-twitter"></i>
-                    </div>
-                </li>
-                <li>|</li>
-                <li>
-                    <div class="icon yt">
-                        <i class="fab fa-youtube"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon sc">
-                        <i class="fab fa-snapchat"></i>
-                    </div>
-                </li>
-                <li>
-                    <div class="icon pi">
-                        <i class="fab fa-pinterest"></i>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="foot">
-            <div class="foot-top">
-                <div class="item">
-                    <h4>HELP & INFORMATION</h4>
-                    <ul>
-                        <li><a href="#">Help</a></li>
-                        <li><a href="#">Deliverey & Returns</a></li>
-                        <li><a href="#">Track Order</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>ABOUT VUESTORE</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers at VueStore</a></li>
-                        <li><a href="#">Investors Site</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>MORE FROM VUESTORE</h4>
-                    <ul>
-                        <li><a href="#">Mobile and Apps</a></li>
-                        <li><a href="#">VueStore Marketplcae</a></li>
-                        <li><a href="#">Gift vouchers</a></li>
-                    </ul>
-                </div>
-                <div class="item">
-                    <h4>SHOPPING FROM:</h4>
-                    <h5>
-                        You're in <i class="fas fa-globe-americas"></i> | Change
-                    </h5>
-                </div>
-            </div>
-            <div class="foot-bot">
-                <h5>&copy; 2020</h5>
-                <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
-            </div>
-        </div>
-    </div>
+<template lang="pug">
+.wrap
+  navbar
+  .banner-up
+    router-link(to='/women')
+      .shop-link
+        | WOMEN
+    h5 UP TO 30% OFF BETWEEN-SEASON STYLES
+    router-link(to='/men')
+      .shop-link
+        | MEN
+  .banner
+    .banner-top
+      router-link(to='/women')
+        .solgan1 GET 20% OFF*
+        .solgan2 (HELLO, SAVED ITEMS)
+        .solgan3 With code: AMAZING20
+    .banner-bottom
+      | *Limited time only. Selected styles marked down on site
+  .container
+    .ad
+      .title The Y2K trend
+      router-link(to='/women')
+        .shop-link
+          | shop now
+    .row.mt-5
+      .col-6
+        img(src='../assets/image/1.jpg' alt='')
+        h4 NEW-SEASON STYLES
+        h5 Looks you haven&apos;t met yet
+        router-link(to='/men')
+          .shop-link
+            | SHOP NOW
+      .col-6
+        img(src='../assets/image/2.jpg' alt='')
+        h4 VARSITY VIBES
+        h5 Campus it up
+        router-link(to='/men')
+          .shop-link
+            | SHOP THE BRAND
+      .col-6
+        img(src='../assets/image/3.jpg' alt='')
+        h4 FRESH CO-ORDS
+        h5 What a match!
+        router-link(to='/men')
+          .shop-link
+            | SHOP NOW
+      .col-6
+        img(src='../assets/image/4.jpg' alt='')
+        h4 NEW COLLUSION
+        h5 Oversized, graphic goodness
+        router-link(to='/women')
+          .shop-link
+            | SHOP THE BRAND
+  .block
+    el-carousel(trigger='click' height='580px')
+      el-carousel-item(v-for='item in 4' :key='item')
+  .social
+    ul
+      li
+        .icon.fb
+          i.fab.fa-facebook-square
+      li
+        .icon.ig
+          i.fab.fa-instagram
+      li
+        .icon.tw
+          i.fab.fa-twitter
+      li |
+      li
+        .icon.yt
+          i.fab.fa-youtube
+      li
+        .icon.sc
+          i.fab.fa-snapchat
+      li
+        .icon.pi
+          i.fab.fa-pinterest
+  .foot
+    .foot-top
+      .item
+        h4 HELP &amp; INFORMATION
+        ul
+          li
+            a(href='#') Help
+          li
+            a(href='#') Deliverey &amp; Returns
+          li
+            a(href='#') Track Order
+      .item
+        h4 ABOUT VUESTORE
+        ul
+          li
+            a(href='#') About Us
+          li
+            a(href='#') Careers at VueStore
+          li
+            a(href='#') Investors Site
+      .item
+        h4 MORE FROM VUESTORE
+        ul
+          li
+            a(href='#') Mobile and Apps
+          li
+            a(href='#') VueStore Marketplcae
+          li
+            a(href='#') Gift vouchers
+      .item
+        h4 SHOPPING FROM:
+        h5
+          | You&apos;re in 
+          i.fas.fa-globe-americas
+          |  | Change
+    .foot-bot
+      h5 &copy; 2020
+      h5 Privacy &amp; Cookies | Ts&amp;Cs | Accessibility
+
 </template>
 
 <script>

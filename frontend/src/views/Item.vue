@@ -1,212 +1,131 @@
-<template>
-    <div>
-        <Navbar></Navbar>
-        <div class="banner">
-            <router-link to="/women" class="">
-                <div class="shop-link">
-                    WOMEN
-                </div>
-            </router-link>
-            <h5>UP TO 30% OFF BETWEEN-SEASON STYLES</h5>
-            <router-link to="/men" class="">
-                <div class="shop-link">
-                    MEN
-                </div></router-link
-            >
-        </div>
-        <div class="wrap-loading">
-            <loading
-                loader="dots"
-                :active.sync="wrapLoading"
-                :is-full-page="false"
-                :opacity="1"
-            >
-            </loading>
-            <div class="navs">
-                <ol class="bread">
-                    <li><router-link to="/">Home</router-link></li>
-                    <li v-if="products.sex === 'M'">
-                        <router-link to="/men">Men</router-link>
-                    </li>
-                    <li v-if="products.sex === 'W'">
-                        <router-link to="/women">Women</router-link>
-                    </li>
-                    <li>{{ products.name }}</li>
-                </ol>
-            </div>
-            <div class="container">
-                <div class="top">
-                    <div class="left-img">
-                        <img
-                            :src="'data:image/png;base64,' + products.image"
-                            class="img-fluid"
-                        />
-                    </div>
-                    <div class="right-info">
-                        <h3>{{ products.name }}</h3>
-                        <h4>NT {{ products.price | currency }}</h4>
-                        <h5>COLOUR: White</h5>
-                        <h5 v-if="products.num >= 150" class="sufficient">
-                            STOCK: SUFFICIENT
-                        </h5>
-                        <h5
-                            v-if="150 > products.num && products.num >= 50"
-                            class="enough"
-                        >
-                            STOCK: ENOUGH
-                        </h5>
-                        <h5
-                            v-if="50 > products.num && products.num > 0"
-                            class="few"
-                        >
-                            STOCK: ONLY FEW
-                        </h5>
-                        <h5 v-if="products.num === 0" class="out">
-                            <i class="fas fa-exclamation-circle"></i> STOCK:
-                            SELL OUT
-                        </h5>
-                        <h5>SIZE : {{ value }}</h5>
-                        <el-select
-                            v-model="value"
-                            placeholder="Please Select"
-                            class="el-select"
-                        >
-                            <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
-                            >
-                            </el-option>
-                        </el-select>
-                        <div class="error" :style="{ opacity: showError }">
-                            <div class="msg">
-                                <h5>
-                                    Please select from the available colour and
-                                    size options
-                                </h5>
-                            </div>
-                        </div>
-                        <div class="item-btn">
-                            <button
-                                v-if="products.num > 0"
-                                type="button"
-                                class="btn"
-                                @click="addCart"
-                            >
-                                ADD TO BAG
-                            </button>
-                            <button
-                                v-if="products.num === 0"
-                                type="button"
-                                disabled="disabled"
-                                class="btn"
-                            >
-                                ADD TO BAG
-                            </button>
-                            <div class="heart" @click="saveItem()">
-                                <i
-                                    class="fa-heart"
-                                    :class="{ fas: isCheck, far: noCheck }"
-                                ></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bottom">
-                    <div class="bottom-info">
-                        <h3>PRODUCT DETAILS</h3>
-                        <h5>{{ products.content }}</h5>
-                        <p></p>
-                    </div>
-                    <div class="bottom-info">
-                        <h3>ABOUT ME</h3>
-                        <h5>{{ products.detail }}</h5>
-                        <p></p>
-                    </div>
-                    <div class="bottom-info">
-                        <h3>PRODUCT CODE | CATEGORY</h3>
-                        <h5>{{ products.id }} | {{ products.class }}</h5>
-                        <p></p>
-                    </div>
-                </div>
-            </div>
-            <div class="social">
-                <ul>
-                    <li>
-                        <div class="icon fb">
-                            <i class="fab fa-facebook-square"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon ig">
-                            <i class="fab fa-instagram"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon tw">
-                            <i class="fab fa-twitter"></i>
-                        </div>
-                    </li>
-                    <li>|</li>
-                    <li>
-                        <div class="icon yt">
-                            <i class="fab fa-youtube"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon sc">
-                            <i class="fab fa-snapchat"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="icon pi">
-                            <i class="fab fa-pinterest"></i>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="foot">
-                <div class="foot-top">
-                    <div class="item">
-                        <h4>HELP & INFORMATION</h4>
-                        <ul>
-                            <li><a href="#">Help</a></li>
-                            <li><a href="#">Deliverey & Returns</a></li>
-                            <li><a href="#">Track Order</a></li>
-                        </ul>
-                    </div>
-                    <div class="item">
-                        <h4>ABOUT VUESTORE</h4>
-                        <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Careers at VueStore</a></li>
-                            <li><a href="#">Investors Site</a></li>
-                        </ul>
-                    </div>
-                    <div class="item">
-                        <h4>MORE FROM VUESTORE</h4>
-                        <ul>
-                            <li><a href="#">Mobile and Apps</a></li>
-                            <li><a href="#">VueStore Marketplcae</a></li>
-                            <li><a href="#">Gift vouchers</a></li>
-                        </ul>
-                    </div>
-                    <div class="item">
-                        <h4>SHOPPING FROM:</h4>
-                        <h5>
-                            You're in <i class="fas fa-globe-americas"></i> |
-                            Change
-                        </h5>
-                    </div>
-                </div>
-                <div class="foot-bot">
-                    <h5>&copy; 2020</h5>
-                    <h5>Privacy & Cookies | Ts&Cs | Accessibility</h5>
-                </div>
-            </div>
-        </div>
-    </div>
+<template lang="pug">
+div
+  navbar
+  .banner
+    router-link(to='/women')
+      .shop-link
+        | WOMEN
+    h5 UP TO 30% OFF BETWEEN-SEASON STYLES
+    router-link(to='/men')
+      .shop-link
+        | MEN
+  .wrap-loading
+    loading(loader='dots' :active.sync='wrapLoading' :is-full-page='false' :opacity='1')
+    .navs
+      ol.bread
+        li
+          router-link(to='/') Home
+        li(v-if="products.sex === 'M'")
+          router-link(to='/men') Men
+        li(v-if="products.sex === 'W'")
+          router-link(to='/women') Women
+        li {{ products.name }}
+    .container
+      .top
+        .left-img
+          img.img-fluid(:src="'data:image/png;base64,' + products.image")
+        .right-info
+          h3 {{ products.name }}
+          h4 NT {{ products.price | currency }}
+          h5 COLOUR: White
+          h5.sufficient(v-if='products.num >= 150')
+            | STOCK: SUFFICIENT
+          h5.enough(v-if='150 > products.num && products.num >= 50')
+            | STOCK: ENOUGH
+          h5.few(v-if='50 > products.num && products.num > 0')
+            | STOCK: ONLY FEW
+          h5.out(v-if='products.num === 0')
+            i.fas.fa-exclamation-circle
+            |  STOCK:
+            |                             SELL OUT
+          h5 SIZE : {{ value }}
+          el-select.el-select(v-model='value' placeholder='Please Select')
+            el-option(v-for='item in options' :key='item.value' :label='item.label' :value='item.value')
+          .error(:style='{ opacity: showError }')
+            .msg
+              h5
+                | Please select from the available colour and
+                | size options
+          .item-btn
+            button.btn(v-if='products.num > 0' type='button' @click='addCart')
+              | ADD TO BAG
+            button.btn(v-if='products.num === 0' type='button' disabled='disabled')
+              | ADD TO BAG
+            .heart(@click='saveItem()')
+              i.fa-heart(:class='{ fas: isCheck, far: noCheck }')
+      .bottom
+        .bottom-info
+          h3 PRODUCT DETAILS
+          h5 {{ products.content }}
+          p
+        .bottom-info
+          h3 ABOUT ME
+          h5 {{ products.detail }}
+          p
+        .bottom-info
+          h3 PRODUCT CODE | CATEGORY
+          h5 {{ products.id }} | {{ products.class }}
+          p
+    .social
+      ul
+        li
+          .icon.fb
+            i.fab.fa-facebook-square
+        li
+          .icon.ig
+            i.fab.fa-instagram
+        li
+          .icon.tw
+            i.fab.fa-twitter
+        li |
+        li
+          .icon.yt
+            i.fab.fa-youtube
+        li
+          .icon.sc
+            i.fab.fa-snapchat
+        li
+          .icon.pi
+            i.fab.fa-pinterest
+    .foot
+      .foot-top
+        .item
+          h4 HELP &amp; INFORMATION
+          ul
+            li
+              a(href='#') Help
+            li
+              a(href='#') Deliverey &amp; Returns
+            li
+              a(href='#') Track Order
+        .item
+          h4 ABOUT VUESTORE
+          ul
+            li
+              a(href='#') About Us
+            li
+              a(href='#') Careers at VueStore
+            li
+              a(href='#') Investors Site
+        .item
+          h4 MORE FROM VUESTORE
+          ul
+            li
+              a(href='#') Mobile and Apps
+            li
+              a(href='#') VueStore Marketplcae
+            li
+              a(href='#') Gift vouchers
+        .item
+          h4 SHOPPING FROM:
+          h5
+            | You&apos;re in 
+            i.fas.fa-globe-americas
+            |  |
+            |                             Change
+      .foot-bot
+        h5 &copy; 2020
+        h5 Privacy &amp; Cookies | Ts&amp;Cs | Accessibility
 </template>
 
 <script>

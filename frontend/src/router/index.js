@@ -27,6 +27,7 @@ import Orderdetails from "../views/Orderdetails"
 import Member from "../views/Member"
 import Memberdetails from "../views/Memberdetails"
 import Search from "../views/Search"
+import to from "../views/to"
 
 import store from '../store'
 import axios from "axios";
@@ -71,6 +72,11 @@ const routes = [{
         path: '/register',
         name: 'Register',
         component: Register
+    },
+    {
+        path: '/to',
+        name: 'to',
+        component: to
     },
     {
         path: '/men',
