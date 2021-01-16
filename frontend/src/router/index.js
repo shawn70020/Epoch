@@ -5,7 +5,7 @@ VueRouter.prototype.push = function push(location) {
     return originalPush.call(this, location).catch(err => err);
 };
 import Index from '../views/Index.vue'
-import Login from '../views/Login.vue'
+import Login from '../views/login.vue'
 import Register from '../views/Register.vue'
 import Admin from '../views/Admin.vue'
 import Dashboard from "../components/Dashboard"
@@ -41,23 +41,6 @@ const routes = [{
         path: '/',
         name: 'Index',
         component: Index,
-        beforeEnter: (to, from, next) => {
-            let token = localStorage.getItem('token');
-            let isLogin = localStorage.getItem('isLogin');
-            if (store.state.isLogin && !isLogin) {
-                //將local狀態改變
-                localStorage.setItem('isLogin', store.state.isLogin);
-                //使用local的token給vuex取得該使用者資訊
-                store.commit('getUserInfo', token);
-                next();
-            } else if (isLogin) {
-                store.state.isLogin = true;
-                store.commit('getUserInfo', token);
-                next();
-            } else {
-                next();
-            }
-        },
     },
     {
         path: '/login',
@@ -76,45 +59,11 @@ const routes = [{
         path: '/men',
         name: 'Men',
         component: Men,
-        beforeEnter: (to, from, next) => {
-            let token = localStorage.getItem('token');
-            let isLogin = localStorage.getItem('isLogin');
-            if (store.state.isLogin && !isLogin) {
-                //將local狀態改變
-                localStorage.setItem('isLogin', store.state.isLogin);
-                //使用local的token給vuex取得該使用者資訊
-                store.commit('getUserInfo', token);
-                next();
-            } else if (isLogin) {
-                store.state.isLogin = true;
-                store.commit('getUserInfo', token);
-                next();
-            } else {
-                next();
-            }
-        },
     },
     {
         path: '/women',
         name: 'Women',
         component: Women,
-        beforeEnter: (to, from, next) => {
-            let token = localStorage.getItem('token');
-            let isLogin = localStorage.getItem('isLogin');
-            if (store.state.isLogin && !isLogin) {
-                //將local狀態改變
-                localStorage.setItem('isLogin', store.state.isLogin);
-                //使用local的token給vuex取得該使用者資訊
-                store.commit('getUserInfo', token);
-                next();
-            } else if (isLogin) {
-                store.state.isLogin = true;
-                store.commit('getUserInfo', token);
-                next();
-            } else {
-                next();
-            }
-        },
     },
     {
         path: '/item/:pid',
@@ -178,23 +127,6 @@ const routes = [{
         path: '/search',
         name: 'Search',
         component: Search,
-        beforeEnter: (to, from, next) => {
-            let token = localStorage.getItem('token');
-            let isLogin = localStorage.getItem('isLogin');
-            if (store.state.isLogin && !isLogin) {
-                //將local狀態改變
-                localStorage.setItem('isLogin', store.state.isLogin);
-                //使用local的token給vuex取得該使用者資訊
-                store.commit('getUserInfo', token);
-                next();
-            } else if (isLogin) {
-                store.state.isLogin = true;
-                store.commit('getUserInfo', token);
-                next();
-            } else {
-                next();
-            }
-        },
     },
     {
         path: '/account',
@@ -299,9 +231,9 @@ const routes = [{
                             path: '/login',
                         });
                     }
-                    if (login === true) {
+                    if (login) {
                         axios.get(`/api/user/status/${token}`).then(res => {
-                            if (res.data.result === false) {
+                            if (!res.data.result) {
                                 next({
                                     path: '/login',
                                 });

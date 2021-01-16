@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { apiUserSignUp } from '../api'
 export default {
     name: "Register",
     data() {
@@ -143,15 +143,15 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     const vm = this;
-                    axios
-                        .post("/api/signin", {
+                    let params = {
                             email: vm.ruleForm.email,
                             password: vm.ruleForm.password,
                             name: vm.ruleForm.username,
                             date: vm.ruleForm.time,
                             sex: vm.ruleForm.sex
-                        })
-                        .then(res => {
+                    }
+                    apiUserSignUp(params).then(res => {
+                            console.log(res)
                             if (res.data.result === true) {
                                 this.$notify({
                                     title: "Success !",

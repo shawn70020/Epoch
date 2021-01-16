@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\models\User;
 use App\models\Cart;
 use App\models\Order;
 use App\models\Orderdetail;
 use App\models\Orderinfo;
 use App\models\Product;
-use Illuminate\Support\Facades\Hash;
+use App\models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     /**
-    * 會員註冊
-    * @return json
-    */
+     * 會員註冊
+     * @return json
+     */
     public function store(Request $_oRequest)
     {
         ## 檢查會員是否重複
         $aResult = User::select('email')->where('email', $_oRequest->input('email'))->get();
         if (!collect($aResult)->isEmpty()) {
-            return response()->json(['result' => false,'msg' => 'This Email is already exist !']);
+            return response()->json(['result' => false, 'msg' => 'This Email is already exist !']);
         };
         ## 取得當下時間
         $dNowDate = (string) Carbon::now('Asia/Taipei');
@@ -31,11 +31,11 @@ class UserController extends Controller
         ## 新增會員
         $aArray = [
             'email' => $_oRequest->input('email'),
-            'passwd' =>  Hash::make($_oRequest->input('password')),
+            'passwd' => Hash::make($_oRequest->input('password')),
             'name' => $_oRequest->input('name'),
             'birthday' => $_oRequest->input('date'),
-            'sex' =>  $_oRequest->input('sex'),
-            'addDate' =>  $dNowDate,
+            'sex' => $_oRequest->input('sex'),
+            'addDate' => $dNowDate,
         ];
 
         User::create($aArray);
@@ -57,7 +57,7 @@ class UserController extends Controller
         };
 
         ## 會員密碼錯誤
-        $sCheckPasswd  = $aResult[0]['passwd'];
+        $sCheckPasswd = $aResult[0]['passwd'];
         if ((!Hash::check($_oRequest->input('password'), $sCheckPasswd))) {
             return response()->json(['result' => false]);
         };
@@ -67,7 +67,7 @@ class UserController extends Controller
             return response()->json(['result' => 'frozen']);
         }
         ## 給予Token並且設置在資料庫及更改上次登入時間
-        $iUid  = $aResult[0]['id'];
+        $iUid = $aResult[0]['id'];
         $sToken = $this->generateKey();
         $dNowDate = (string) Carbon::now('Asia/Taipei');
         $User = User::find($iUid);
@@ -76,12 +76,12 @@ class UserController extends Controller
         $User->save();
 
         ## 判斷身份導路由並給予使用者相關資訊
-        $iLevel  = $aResult[0]['level'];
+        $iLevel = $aResult[0]['level'];
         $sSex = $aResult[0]['sex'];
         if ($iLevel === 0) {
-            return response()->json(['result' => true, 'level' => 'member', 'sex' => $sSex, 'token' => $sToken ]);
+            return response()->json(['result' => true, 'level' => 'member', 'sex' => $sSex, 'token' => $sToken]);
         } else {
-            return response()->json(['result' => true, 'level' => 'admin', 'token' => $sToken ]);
+            return response()->json(['result' => true, 'level' => 'admin', 'token' => $sToken]);
         }
     }
 
@@ -104,9 +104,9 @@ class UserController extends Controller
     public function userLogout(Request $_oRequest)
     {
         ## 判斷會員id是否為空
-        $iUid =  $_oRequest->input('user');
+        $iUid = $_oRequest->input('user');
         ## 登出解除cookie及資料庫token
-        $aUser =  User::find($iUid);
+        $aUser = User::find($iUid);
         $aUser->token = null;
         $aUser->save();
 
@@ -119,10 +119,15 @@ class UserController extends Controller
      */
     public function getUserInfo($sToken)
     {
-        $aResult = User::select('id', 'name')->where('token', $sToken)->firstorFail();
-        $iUid = $aResult['id'];
-        $aCart = Cart::select('pid', 'num')->where('uid', $iUid)->where('delete_at', null)->orWhere('delete_at', 2)->get();
-        return response()->json(['result' => true, 'info'=> $aResult,'cart' => $aCart]);
+        if ($sToken) {
+            $aResult = User::select('id', 'name')->where('token', $sToken)->firstorFail();
+            $iUid = $aResult['id'];
+            $aCart = Cart::select('pid', 'num')->where('uid', $iUid)->where('delete_at', null)->orWhere('delete_at', 2)->get();
+            return response()->json(['result' => true, 'info' => $aResult, 'cart' => $aCart]);
+        } else {
+            return false;
+        }
+
     }
 
     /**
@@ -149,12 +154,12 @@ class UserController extends Controller
 
         ## 檢查會員是否存在及狀態
         if ($_iUid === '') {
-            return response()->json(['result' => false,'msg' => 'Member Not Exist']);
+            return response()->json(['result' => false, 'msg' => 'Member Not Exist']);
         }
 
         ##檢查信箱格式
         if (!preg_match("/([\w\-]+\@[\w\-]+\.[\w\-]+)/", $sEmail)) {
-            return response()->json(['result' => false,'msg' => 'Wrong Email Type']);
+            return response()->json(['result' => false, 'msg' => 'Wrong Email Type']);
         }
 
         ## 更改會員資料
@@ -179,19 +184,19 @@ class UserController extends Controller
 
         ## 檢查會員是否存在及狀態
         if ($_iUid === '') {
-            return response()->json(['result' => false,'msg' => 'Member Not Exist']);
+            return response()->json(['result' => false, 'msg' => 'Member Not Exist']);
         }
 
         ## 舊密碼確認
-        $aResult =User::select('passwd')->where('id', $_iUid)->get();
+        $aResult = User::select('passwd')->where('id', $_iUid)->get();
         $sPassWd = $aResult[0]['passwd'];
         if (!Hash::check($sOld, $sPassWd)) {
-            return response()->json(['result' => false,'msg' => 'Olp Password Not Correct!']);
+            return response()->json(['result' => false, 'msg' => 'Olp Password Not Correct!']);
         }
 
         ## 密碼重複驗證
         if ($sOld === $sNew) {
-            return response()->json(['result' => false,'msg' => "Can't Use Same Password"]);
+            return response()->json(['result' => false, 'msg' => "Can't Use Same Password"]);
         }
 
         ## 更改密碼
@@ -217,7 +222,7 @@ class UserController extends Controller
 
         ## 不為空
         $arr = [];
-        for ($i = 0;$i < count($aResult); $i++) {
+        for ($i = 0; $i < count($aResult); $i++) {
             $aData = Product::find($aResult[$i]['pid']);
             array_push($arr, $aData);
         }
@@ -225,21 +230,21 @@ class UserController extends Controller
     }
 
     /**
-    * 取得該頁會員資料
-    * @return json
-    */
+     * 取得該頁會員資料
+     * @return json
+     */
     public function changeUserPage($num)
     {
         $aResult = User::all();
-        $iTotalPage =  floor(count($aResult)/10) + 1;
+        $iTotalPage = floor(count($aResult) / 10) + 1;
 
         ##取得抓取筆數
-        $nowNum = ($num- 1) * 10;
+        $nowNum = ($num - 1) * 10;
 
         ## 取得單一會員資料
         $aResult = User::where('level', 0)->orderBy('addDate', 'DESC')->skip($nowNum)->take(10)->get();
 
-        return response()->json(['result' => true, 'data' => $aResult,'total' => $iTotalPage]);
+        return response()->json(['result' => true, 'data' => $aResult, 'total' => $iTotalPage]);
     }
 
     /**
@@ -254,7 +259,7 @@ class UserController extends Controller
         ## 該會員訂單資料
         $aOrder = Order::select('id', 'status', 'addDate')->where('uid', $uid)->orderBy('addDate', 'DESC')->get();
 
-        return response()->json(['result' => true, 'data' => $aResult,'order' => $aOrder]);
+        return response()->json(['result' => true, 'data' => $aResult, 'order' => $aOrder]);
     }
 
     /**
@@ -287,29 +292,29 @@ class UserController extends Controller
         }
         ## 取得訂單詳細明細
         $orderinfo = [];
-        for ($i = 0;$i < count($aResult); $i++) {
+        for ($i = 0; $i < count($aResult); $i++) {
             $aData = Orderdetail::select('pid')->where('oid', $aResult[$i]['id'])->get();
             array_push($orderinfo, $aData);
         }
 
         ## 取得訂單商品圖
         $aImage = [];
-        for ($i = 0;$i < count($orderinfo); $i++) {
+        for ($i = 0; $i < count($orderinfo); $i++) {
             $arr = [];
-            for ($j =0;$j<count($orderinfo[$i]); $j++) {
+            for ($j = 0; $j < count($orderinfo[$i]); $j++) {
                 $aProduct = Product::select('id', 'image')->where('id', $orderinfo[$i][$j]['pid'])->get();
                 array_push($arr, $aProduct[0]);
             }
             array_push($aImage, $arr);
         }
 
-        return response()->json(['result' => true, 'data' => $aResult,'image'=>$aImage, 'total' => $iTotal]);
+        return response()->json(['result' => true, 'data' => $aResult, 'image' => $aImage, 'total' => $iTotal]);
     }
 
     public function changeOrderPage($_iUid, $num)
     {
         ##取得抓取筆數
-        $nowNum = ($num- 1) * 2;
+        $nowNum = ($num - 1) * 2;
         ## 取得前兩筆訂單id
         $aResult = Order::select('id', 'shipDate')->where('uid', $_iUid)->orderBy('addDate', 'DESC')->skip($nowNum)->take(2)->get();
 
@@ -318,23 +323,23 @@ class UserController extends Controller
         }
         ## 取得訂單詳細明細
         $orderinfo = [];
-        for ($i = 0;$i < count($aResult); $i++) {
+        for ($i = 0; $i < count($aResult); $i++) {
             $aData = Orderdetail::select('pid')->where('oid', $aResult[$i]['id'])->get();
             array_push($orderinfo, $aData);
         }
 
         ## 取得訂單商品圖
         $aImage = [];
-        for ($i = 0;$i < count($orderinfo); $i++) {
+        for ($i = 0; $i < count($orderinfo); $i++) {
             $arr = [];
-            for ($j =0;$j<count($orderinfo[$i]); $j++) {
+            for ($j = 0; $j < count($orderinfo[$i]); $j++) {
                 $aProduct = Product::select('id', 'image')->where('id', $orderinfo[$i][$j]['pid'])->get();
                 array_push($arr, $aProduct[0]);
             }
             array_push($aImage, $arr);
         }
 
-        return response()->json(['result' => true, 'data' => $aResult,'image'=>$aImage]);
+        return response()->json(['result' => true, 'data' => $aResult, 'image' => $aImage]);
     }
 
     /**
@@ -349,7 +354,7 @@ class UserController extends Controller
 
         ## 取得訂單細項
         $arr = [];
-        for ($i = 0;$i<count($aNum);$i++) {
+        for ($i = 0; $i < count($aNum); $i++) {
             $aProduct = Product::select('name', 'image', 'price')->where('id', $aNum[$i]['pid'])->get();
             array_push($arr, $aProduct[0]);
         }
@@ -357,7 +362,7 @@ class UserController extends Controller
         ## 取得訂單收件人資訊
         $aInfo = Orderinfo::select('name', 'phone', 'address', 'note', 'payment')->where('oid', $_iOid)->get();
 
-        return response()->json(['result' => true, 'data' => $aResult[0],'num'=>$aNum,'item'=>$arr,'info'=>$aInfo[0]]);
+        return response()->json(['result' => true, 'data' => $aResult[0], 'num' => $aNum, 'item' => $arr, 'info' => $aInfo[0]]);
     }
 
     public function checkStatus($_sToken)

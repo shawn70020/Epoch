@@ -1,6 +1,3 @@
-import axios from 'axios';
-export default {
-    getUser: function () {
-        return axios.get('api/test')
-    },
-}
+import epochApi from './axios';
+
+export const apiUserSignUp = params => epochApi.post('/signin', params);
