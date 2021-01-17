@@ -191,7 +191,7 @@
     </div>
 </template>
 <script>
-import axios from "axios";
+import { MenProducts, ProductsPage } from "../api";
 import Navbar from "../components/Navbar";
 export default {
     data() {
@@ -229,8 +229,7 @@ export default {
         },
         getProducts() {
             this.wrapLoading = true;
-            axios
-                .get("/api/products/men")
+            MenProducts()
                 .then(res => {
                     this.products = res.data.data;
                     this.allNum = res.data.total;
@@ -258,8 +257,7 @@ export default {
         },
         changePage() {
             this.isLoading = true;
-            axios
-                .get(`/api/products/men/page=${this.page}`)
+            ProductsPage('men',this.page)
                 .then(res => {
                     let newData = res.data.data;
                     for (let i = 0; i < newData.length; i++) {

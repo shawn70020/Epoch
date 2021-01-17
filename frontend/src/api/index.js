@@ -1,3 +1,7 @@
 import epochApi from './axios';
-
-export const apiUserSignUp = params => epochApi.post('/signin', params);
+//Get
+export const MenProducts = () => epochApi.get('/products/men');
+export const ProductsPage = (sex,page) => epochApi.get(`/products/${sex}/page=${page}`);
+//Post
+export const UserSignUp = params => epochApi.post('/signin', params);
+export const UserLogin = params => epochApi.post('/login', params);

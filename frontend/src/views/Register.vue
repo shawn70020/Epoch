@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { apiUserSignUp } from '../api'
+import { UserSignUp } from '../api'
 export default {
     name: "Register",
     data() {
@@ -150,9 +150,8 @@ export default {
                             date: vm.ruleForm.time,
                             sex: vm.ruleForm.sex
                     }
-                    apiUserSignUp(params).then(res => {
-                            console.log(res)
-                            if (res.data.result === true) {
+                    UserSignUp(params).then(res => {
+                            if (res.data.result) {
                                 this.$notify({
                                     title: "Success !",
                                     message: "Lead You To Login",

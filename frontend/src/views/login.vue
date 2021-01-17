@@ -2,7 +2,7 @@
     <div class="wrap">
         <div class="title">
             <router-link to="/">
-            <h2>Epoch</h2>
+                <h2>Epoch</h2>
             </router-link>
         </div>
         <div class="container">
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { UserLogin } from "../api";
 export default {
     name: "Login",
     data() {
@@ -112,14 +112,14 @@ export default {
                 if (valid) {
                     const vm = this;
                     vm.isLoading = true;
-                    axios
-                        .post("/api/login", {
+                    let params = {
                             email: vm.ruleForm.email,
                             password: vm.ruleForm.password
-                        })
+                    }
+                    UserLogin(params)
                         .then(res => {
                             vm.isLoading = false;
-                            if (res.data.result === true) {
+                            if (res.data.result) {
                                 localStorage.setItem("token", res.data.token);
                                 this.$store.state.isLogin = true;
                                 if (res.data.level === "member") {
@@ -176,7 +176,7 @@ export default {
 }
 .title {
     padding: 20px 0;
-    a{
+    a {
         text-decoration: none;
         color: #2d2d2d;
     }
