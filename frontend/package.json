@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "vue-cli-service serve",
     "build": "rm -rf ../public/{js,css,img} && vue-cli-service build --no-clean",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "test": "jest --coverage",
+    "lint": "vue-cli-service lint",
+    "dev": "vue-cli-service serve"
   },
   "dependencies": {
     "bootstrap": "^4.4.1",
@@ -14,7 +15,7 @@
     "core-js": "^3.6.4",
     "echarts": "^4.6.0",
     "element-ui": "^2.13.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.1",
     "popper.js": "^1.16.1",
     "vee-validate": "^2.2.15",
     "vue": "^2.6.11",
@@ -30,10 +31,11 @@
     "@vue/cli-plugin-babel": "^4.2.0",
     "@vue/cli-plugin-eslint": "^4.2.3",
     "@vue/cli-plugin-router": "^4.2.0",
+    "@vue/cli-plugin-unit-jest": "^4.5.10",
     "@vue/cli-plugin-unit-mocha": "^4.2.0",
     "@vue/cli-plugin-vuex": "^4.2.0",
     "@vue/cli-service": "^4.2.0",
-    "@vue/test-utils": "1.0.0-beta.31",
+    "@vue/test-utils": "^1.0.3",
     "babel-eslint": "^10.0.3",
     "chai": "^4.1.2",
     "eslint": "^6.7.2",
